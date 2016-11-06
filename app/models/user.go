@@ -3,21 +3,29 @@ package models
 import (
 	"time"
 
+	"github.com/dongri/goutils"
 	gorp "gopkg.in/gorp.v1"
 )
 
 // User ...
 type User struct {
-	ID       int       `db:"id" json:"id"`
-	UserName string    `db:"user_name" json:"user_name"`
-	Password string    `db:"password" json:"password"`
-	Name     string    `db:"name" json:"name"`
-	Created  time.Time `db:"created" json:"created"`
-	Updated  time.Time `db:"updated" json:"updated"`
+	ID          int       `db:"id" json:"id"`
+	UserName    string    `db:"username" json:"username"`
+	Password    string    `db:"password" json:"password"`
+	AccessToken string    `db:"access_token" json:"access_token"`
+	Name        string    `db:"name" json:"name"`
+	Created     time.Time `db:"created" json:"created"`
+	Updated     time.Time `db:"updated" json:"updated"`
 }
 
 // Insert ...
 func (u *User) Insert(tx gorp.Transaction) error {
+	random := new(goutils.Random)
+	random.UseNumber()
+	random.UseSmallLetter()
+	random.UseCapitalLetter()
+	r := random.Random(40)
+	u.AccessToken = r
 	u.Created = time.Now().UTC()
 	u.Updated = time.Now().UTC()
 	err := tx.Insert(u)
@@ -34,7 +42,7 @@ func (u *User) Update(tx gorp.Transaction) error {
 // GetUserByUserName ...
 func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 	u := new(User)
-	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE user_name = $1", userName); err != nil {
+	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE username = $1", userName); err != nil {
 		return nil, err
 	}
 	return u, nil

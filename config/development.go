@@ -4,5 +4,5 @@ type developmentConfig struct {
 }
 
 func (c developmentConfig) PostgresURI() string {
-	return "host=postgres dbname=mitty user=root sslmode=disable"
+	return "host=localhost dbname=mitty user=root sslmode=disable"
 }

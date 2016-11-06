@@ -10,3 +10,5 @@ mitty-server:
     max-size: "500k"
   ports:
     - "8000:8000"
+  external_links:
+    - postgres

@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"database/sql"
+	"fmt"
 	"net/http"
 
 	"mitty.co/mitty-server/app/filters"
@@ -12,7 +14,7 @@ import (
 
 // SignUpParams ...
 type SignUpParams struct {
-	UserName string `json:"user_name"`
+	UserName string `json:"username"`
 	Password string `json:"password"`
 }
 
@@ -20,7 +22,7 @@ type SignUpParams struct {
 func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&p.UserName: binding.Field{
-			Form:     "user_name",
+			Form:     "username",
 			Required: true,
 		},
 		&p.Password: binding.Field{
@@ -32,6 +34,7 @@ func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 
 // SignUpHandler ...
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Print("===========================")
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()
@@ -52,6 +55,22 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
+
+	u, err := models.GetUserByUserName(*tx, p.UserName)
+	fmt.Println(err)
+	if err != nil && err != sql.ErrNoRows {
+		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
+			"err": err,
+		})
+		return
+	}
+	if u != nil {
+		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
+			"err": "Username has already been taken",
+		})
+		return
+	}
+
 	user := new(models.User)
 	user.UserName = p.UserName
 	user.Password = p.Password
@@ -63,7 +82,8 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
-		"user": user,
+		"user_id":      user.ID,
+		"access_token": user.AccessToken,
 	})
 }
 
@@ -89,17 +109,24 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	user := new(models.User)
-	user.UserName = p.UserName
-	user.Password = p.Password
-	err = user.Insert(*tx)
+
+	user, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
 			"err": err,
 		})
 		return
 	}
-	render.JSON(w, http.StatusCreated, map[string]interface{}{
-		"user": user,
+
+	if user.Password != p.Password {
+		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
+			"err": "Password Error",
+		})
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"user_id":      user.ID,
+		"access_token": user.AccessToken,
 	})
 }

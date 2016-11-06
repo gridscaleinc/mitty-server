@@ -21,4 +21,6 @@ func BuildRouter() http.Handler {
 
 func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
+	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
+	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
 }
