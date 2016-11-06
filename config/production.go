@@ -4,5 +4,5 @@ type productionConfig struct {
 }
 
 func (c productionConfig) PostgresURI() string {
-	return "host=postgres dbname=mitty user=root sslmode=disable"
+	return "postgres://root:CaWUVmZsN29tPD@mitty.czsj6nwy3czj.ap-northeast-1.rds.amazonaws.com:5432/mitty?sslmode=disable"
 }
