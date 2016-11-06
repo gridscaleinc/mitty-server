@@ -1,0 +1,12 @@
+mitty-server:
+  container_name: mitty-server
+  build: .
+  dockerfile: devDockerfile
+  environment:
+    - GO_ENV=docker
+  volumes:
+    - .:/go/src/mitty.co/mitty-server
+  log_opt:
+    max-size: "500k"
+  ports:
+    - "8000:8000"
