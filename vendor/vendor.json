@@ -39,6 +39,12 @@
 			"revisionTime": "2016-11-03T02:43:54Z"
 		},
 		{
+			"checksumSHA1": "JwO9c/TQ/lYEIImntuijBX40BLQ=",
+			"path": "github.com/mholt/binding",
+			"revision": "89411c4ffb61f0ebef45d8bdb830103b358ef9fa",
+			"revisionTime": "2015-11-10T04:10:14Z"
+		},
+		{
 			"checksumSHA1": "m4QwaQdvaqDo6Fp4BoykRkEFQ8E=",
 			"path": "github.com/unrolled/render",
 			"revision": "526faf80cd4b305bb8134abea8d20d5ced74faa6",
