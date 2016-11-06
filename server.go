@@ -40,7 +40,7 @@ func main() {
 
 	// setup filters
 	mws := []alice.Constructor{
-		//logging.NewHandler,
+		helpers.NewHandler,
 		func(handler http.Handler) http.Handler { return filters.RenderSetupHandler(envName, handler) },
 		//func(handler http.Handler) http.Handler { return filters.AuthHandler(handler) },
 	}

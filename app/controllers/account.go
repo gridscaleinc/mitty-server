@@ -34,7 +34,6 @@ func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 
 // SignUpHandler ...
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("===========================")
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()
@@ -77,7 +76,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	err = user.Insert(*tx)
 	if err != nil {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
@@ -113,7 +112,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	user, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err,
+			"err": err.Error(),
 		})
 		return
 	}
