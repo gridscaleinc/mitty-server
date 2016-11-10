@@ -5,6 +5,7 @@ import "fmt"
 // EnvConfigSet ...
 type EnvConfigSet interface {
 	PostgresURI() string
+	PasswordSalt() string
 }
 
 // CurrentSet ...
