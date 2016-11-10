@@ -4,8 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/binary"
 	"errors"
-	"fmt"
-	"sync"
+	"sync/atomic"
 )
 
 var (
@@ -13,7 +12,6 @@ var (
 	errBinaryCopyNotSupported     = errors.New("pq: only text format supported for COPY")
 	errCopyToNotSupported         = errors.New("pq: COPY TO is not supported")
 	errCopyNotSupportedOutsideTxn = errors.New("pq: COPY is only allowed inside a transaction")
-	errCopyInProgress             = errors.New("pq: COPY in progress")
 )
 
 // CopyIn creates a COPY FROM statement which can be prepared with
@@ -50,10 +48,9 @@ type copyin struct {
 	rowData chan []byte
 	done    chan bool
 
-	closed bool
-
-	sync.Mutex // guards err
-	err        error
+	closed   bool
+	err      error
+	errorset int32
 }
 
 const ciBufferSize = 64 * 1024
@@ -70,7 +67,7 @@ func (cn *conn) prepareCopyIn(q string) (_ driver.Stmt, err error) {
 		cn:      cn,
 		buffer:  make([]byte, 0, ciBufferSize),
 		rowData: make(chan []byte),
-		done:    make(chan bool, 1),
+		done:    make(chan bool),
 	}
 	// add CopyData identifier + 4 bytes for message length
 	ci.buffer = append(ci.buffer, 'd', 0, 0, 0, 0)
@@ -140,50 +137,31 @@ func (ci *copyin) flush(buf []byte) {
 
 func (ci *copyin) resploop() {
 	for {
-		var r readBuf
-		t, err := ci.cn.recvMessage(&r)
-		if err != nil {
-			ci.cn.bad = true
-			ci.setError(err)
-			ci.done <- true
-			return
-		}
+		t, r := ci.cn.recv1()
 		switch t {
 		case 'C':
 			// complete
-		case 'N':
-			// NoticeResponse
 		case 'Z':
-			ci.cn.processReadyForQuery(&r)
+			ci.cn.processReadyForQuery(r)
 			ci.done <- true
 			return
 		case 'E':
-			err := parseError(&r)
+			err := parseError(r)
 			ci.setError(err)
 		default:
 			ci.cn.bad = true
-			ci.setError(fmt.Errorf("unknown response during CopyIn: %q", t))
-			ci.done <- true
-			return
+			errorf("unknown response: %q", t)
 		}
 	}
 }
 
 func (ci *copyin) isErrorSet() bool {
-	ci.Lock()
-	isSet := (ci.err != nil)
-	ci.Unlock()
-	return isSet
+	return atomic.LoadInt32(&ci.errorset) != 0
 }
 
-// setError() sets ci.err if one has not been set already.  Caller must not be
-// holding ci.Mutex.
 func (ci *copyin) setError(err error) {
-	ci.Lock()
-	if ci.err == nil {
-		ci.err = err
-	}
-	ci.Unlock()
+	ci.err = err
+	atomic.StoreInt32(&ci.errorset, 1)
 }
 
 func (ci *copyin) NumInput() int {
@@ -216,7 +194,9 @@ func (ci *copyin) Exec(v []driver.Value) (r driver.Result, err error) {
 	}
 
 	if len(v) == 0 {
-		return nil, ci.Close()
+		err = ci.Close()
+		ci.closed = true
+		return nil, err
 	}
 
 	numValues := len(v)
@@ -239,10 +219,9 @@ func (ci *copyin) Exec(v []driver.Value) (r driver.Result, err error) {
 }
 
 func (ci *copyin) Close() (err error) {
-	if ci.closed { // Don't do anything, we're already closed
-		return nil
+	if ci.closed {
+		return errCopyInClosed
 	}
-	ci.closed = true
 
 	if ci.cn.bad {
 		return driver.ErrBadConn
@@ -259,7 +238,6 @@ func (ci *copyin) Close() (err error) {
 	}
 
 	<-ci.done
-	ci.cn.inCopy = false
 
 	if ci.isErrorSet() {
 		err = ci.err
