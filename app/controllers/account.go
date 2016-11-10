@@ -1,9 +1,7 @@
 package controllers
 
 import (
-	"crypto/sha256"
 	"database/sql"
-	"encoding/hex"
 	"net/http"
 
 	"mitty.co/mitty-server/app/filters"
@@ -11,6 +9,7 @@ import (
 	"mitty.co/mitty-server/app/models"
 	"mitty.co/mitty-server/config"
 
+	"github.com/dongri/goutils"
 	"github.com/mholt/binding"
 )
 
@@ -73,8 +72,8 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	user := new(models.User)
 	user.UserName = p.UserName
-	bytes := sha256.Sum256([]byte(p.Password + config.CurrentSet.PasswordSalt()))
-	user.Password = hex.EncodeToString(bytes[:])
+	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
+	user.Password = hashedPassword
 	err = user.Insert(*tx)
 	if err != nil {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
@@ -119,10 +118,9 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bytes := sha256.Sum256([]byte(p.Password + config.CurrentSet.PasswordSalt()))
-	inputPassword := hex.EncodeToString(bytes[:])
+	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
 
-	if user.Password != inputPassword {
+	if user.Password != hashedPassword {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
 			"err": "Password Error",
 		})
