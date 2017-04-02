@@ -1,14 +1,38 @@
-mitty-server:
-  container_name: mitty-server
-  build: .
-  dockerfile: devDockerfile
-  environment:
-    - GO_ENV=docker
-  volumes:
-    - .:/go/src/mitty.co/mitty-server
-  log_opt:
-    max-size: "500k"
-  ports:
-    - "8000:8000"
-  external_links:
-    - postgres
+version: "3"
+
+
+services:
+  postgres:
+    image: postgres:9.6.0
+    container_name: postgres
+    # /data/db
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./data/ddl:/var/lib/postgresql/ddl
+    ports:
+      - "5432:5432"
+    networks:
+      mitty_docker:
+
+  mitty-server:
+    container_name: mitty-server
+    build:
+      context: .
+      dockerfile: devDockerfile
+    environment:
+      - GO_ENV=docker
+    volumes:
+      - .:/go/src/mitty.co/mitty-server
+    logging:
+      options:
+        max-size: "500k"
+    ports:
+      - "8000:8000"
+    external_links:
+      - postgres
+    networks:
+      mitty_docker:
+
+networks:
+  mitty_docker:
+    external: true
