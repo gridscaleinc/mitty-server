@@ -7,6 +7,7 @@ https://docs.docker.com/docker-for-mac/
 ```
 $ git clone git@github.com:gridscaleinc/mitty-server.git
 $ cd mitty-server
+$ docker network create --driver bridge mitty_docker
 $ docker-compose up -d
 ```
 http://localhost:8000
