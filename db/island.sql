@@ -1,3 +1,4 @@
+drop table island cascade ;
 create table island (
     id              serial PRIMARY KEY,
     nickname        varchar(89),

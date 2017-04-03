@@ -1,4 +1,5 @@
-create table event (
+drop table events cascade;
+create table events (
         id			serial8	PRIMARY KEY,
         type			varchar(20),
         category		varchar(20),

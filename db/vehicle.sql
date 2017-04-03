@@ -1,3 +1,4 @@
+drop table vehicle cascade;
 create table vehicle(
     islandId              int4 PRIMARY KEY,
     serviceNo             varchar(64),

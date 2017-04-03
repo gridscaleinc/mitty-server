@@ -1,3 +1,5 @@
+drop table activity cascade;
+
 create table activity (
         id	        	serial8	,
         seq			int2	,

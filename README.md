@@ -30,21 +30,19 @@ $ docker-compose stop
 ```
 
 ##コンテーナーの中にはいで作業する。(postgresを例として）
-# container idを確認する
+cd mitty-server
+./loginDb.sh
 
-$ docker ps
-CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                         NAMES
-314874e143c5        postgres:9.6.0      "/docker-entrypoint.s"   3 minutes ago       Up 3 minutes        0.0.0.0:5432->5432/tcp        mitty_postgres
-4796ea8c4e65        nginx:1.11.5        "nginx -g 'daemon off"   3 minutes ago       Up 3 minutes        0.0.0.0:80->80/tcp, 443/tcp   mitty_nginx
+su postgres    -- DBA user 
+cd /var/db     -- DB のワークエリア
+psql -d mitty  -- mitty Database にログイン
 
-$ docker exec -it 314874e143c5 /bin/bash
-root@314874e143c5:/# su postgres
-$ psql
-psql (9.6.0)
-Type "help" for help.
-
-postgres=# 
-```
+---- psqlの基本コマンド
+1)  \list    ----> database をリストアップ
+2)  \d       ----> table をリストアップ
+3)  \q       ----> psqlから抜ける。  exitじゃないよ。
+4)  \h       ----> Help
+5   select 、insert .....
 
 # api format
 レスポンスは全てjsonで行う。
