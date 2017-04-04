@@ -14,7 +14,7 @@ type User struct {
 	UserName      string    `db:"username" json:"username"`
 	Password      string    `db:"password" json:"password"`
 	AccessToken   string    `db:"access_token" json:"access_token"`
-	MainAddress   string    `db:"mail_address" json:"mail_address"`
+	MailAddress   string    `db:"mail_address" json:"mail_address"`
 	MailConfirmed bool      `db:"mail_confirmed" json:"mail_confirmed"`
 	Status        string    `db:"status" json:"status"`
 	Created       time.Time `db:"created" json:"created"`

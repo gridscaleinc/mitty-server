@@ -15,19 +15,24 @@ import (
 
 // SignUpParams ...
 type SignUpParams struct {
-	UserName string `json:"username"`
-	Password string `json:"password"`
+	UserName    string
+	Password    string
+	MailAddress string
 }
 
 // FieldMap defines parameter requirements
 func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&p.UserName: binding.Field{
-			Form:     "username",
+			Form:     "user_name",
 			Required: true,
 		},
 		&p.Password: binding.Field{
 			Form:     "password",
+			Required: true,
+		},
+		&p.MailAddress: binding.Field{
+			Form:     "mail_address",
 			Required: true,
 		},
 	}
@@ -74,6 +79,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	user.UserName = p.UserName
 	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
 	user.Password = hashedPassword
+	user.MailAddress = p.MailAddress
 	err = user.Insert(*tx)
 	if err != nil {
 		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
