@@ -9,13 +9,16 @@ import (
 
 // User ...
 type User struct {
-	ID          int       `db:"id" json:"id"`
-	UserName    string    `db:"username" json:"username"`
-	Password    string    `db:"password" json:"password"`
-	AccessToken string    `db:"access_token" json:"access_token"`
-	Name        string    `db:"name" json:"name"`
-	Created     time.Time `db:"created" json:"created"`
-	Updated     time.Time `db:"updated" json:"updated"`
+	ID            int       `db:"id" json:"id"`
+	Name          string    `db:"name" json:"name"`
+	UserName      string    `db:"username" json:"username"`
+	Password      string    `db:"password" json:"password"`
+	AccessToken   string    `db:"access_token" json:"access_token"`
+	MainAddress   string    `db:"mail_address" json:"mail_address"`
+	MailConfirmed bool      `db:"mail_confirmed" json:"mail_confirmed"`
+	Status        string    `db:"status" json:"status"`
+	Created       time.Time `db:"created" json:"created"`
+	Updated       time.Time `db:"updated" json:"updated"`
 }
 
 // Insert ...
