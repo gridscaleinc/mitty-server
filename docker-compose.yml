@@ -2,9 +2,9 @@ version: "3"
 
 
 services:
-  postgres:
+  mitty-postgres:
     image: postgres:9.6.0
-    container_name: postgres
+    container_name: mitty-postgres
     # /data/db
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
@@ -29,7 +29,7 @@ services:
     ports:
       - "8000:8000"
     external_links:
-      - postgres
+      - mitty-postgres
     networks:
       mitty_docker:
 
