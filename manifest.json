@@ -1,0 +1,10 @@
+{
+    "dependencies": {
+        "github.com/flosch/pongo2": {
+            "branch": "master"
+        },
+        "github.com/lib/pq": {
+            "branch": "master"
+        }
+    }
+}

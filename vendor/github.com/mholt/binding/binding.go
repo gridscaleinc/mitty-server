@@ -41,7 +41,7 @@ func Bind(req *http.Request, userStruct FieldMapper) Errors {
 			return Form(req, userStruct)
 		} else {
 			errs.Add([]string{}, ContentTypeError, "Empty Content-Type")
-			errs = append(errs, Validate(req, userStruct)...)
+			errs = Validate(errs, req, userStruct)
 		}
 	} else {
 		errs.Add([]string{}, ContentTypeError, "Unsupported Content-Type")
@@ -123,7 +123,7 @@ func defaultJsonBinder(req *http.Request, userStruct FieldMapper) Errors {
 		return errs
 	}
 
-	errs = append(errs, Validate(req, userStruct)...)
+	errs = Validate(errs, req, userStruct)
 
 	return errs
 }
@@ -131,9 +131,7 @@ func defaultJsonBinder(req *http.Request, userStruct FieldMapper) Errors {
 // Validate ensures that all conditions have been met on every field in the
 // populated struct. Validation should occur after the request has been
 // deserialized into the struct.
-func Validate(req *http.Request, userStruct FieldMapper) Errors {
-	var errs Errors
-
+func Validate(errs Errors, req *http.Request, userStruct FieldMapper) Errors {
 	fm := userStruct.FieldMap(req)
 
 	for fieldPointer, fieldNameOrSpec := range fm {
@@ -353,8 +351,13 @@ func bindForm(req *http.Request, userStruct FieldMapper, formData map[string][]s
 
 		fieldName, _, fieldSpec := fieldNameAndSpec(fieldNameOrSpec)
 		_, isFile := fieldPointer.(**multipart.FileHeader)
-		_, isFileSlice := fieldPointer.(*[]**multipart.FileHeader)
+		_, isFileSlice := fieldPointer.(*[]*multipart.FileHeader)
 		strs := formData[fieldName]
+
+		if fieldSpec.Binder != nil {
+			errs = fieldSpec.Binder(fieldName, strs, errs)
+			continue
+		}
 
 		if !isFile && !isFileSlice {
 			if len(strs) == 0 {
@@ -370,11 +373,6 @@ func bindForm(req *http.Request, userStruct FieldMapper, formData map[string][]s
 			if err != nil {
 				errs.Add([]string{fieldName}, TypeError, err.Error())
 			}
-		}
-
-		if fieldSpec.Binder != nil {
-			errs = fieldSpec.Binder(fieldName, strs, errs)
-			continue
 		}
 
 		switch t := fieldPointer.(type) {
@@ -651,10 +649,11 @@ func bindForm(req *http.Request, userStruct FieldMapper, formData map[string][]s
 			if files, ok := formFile[fieldName]; ok {
 				*t = files[0]
 			}
-		case *[]**multipart.FileHeader:
+
+		case *[]*multipart.FileHeader:
 			if files, ok := formFile[fieldName]; ok {
 				for _, file := range files {
-					*t = append(*t, &file)
+					*t = append(*t, file)
 				}
 			}
 		default:
@@ -663,7 +662,7 @@ func bindForm(req *http.Request, userStruct FieldMapper, formData map[string][]s
 
 	}
 
-	errs = append(errs, Validate(req, userStruct)...)
+	errs = Validate(errs, req, userStruct)
 
 	return errs
 }

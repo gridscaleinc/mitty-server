@@ -4,7 +4,8 @@ import (
 	"database/sql/driver"
 	"encoding/binary"
 	"errors"
-	"sync/atomic"
+	"fmt"
+	"sync"
 )
 
 var (
@@ -12,6 +13,7 @@ var (
 	errBinaryCopyNotSupported     = errors.New("pq: only text format supported for COPY")
 	errCopyToNotSupported         = errors.New("pq: COPY TO is not supported")
 	errCopyNotSupportedOutsideTxn = errors.New("pq: COPY is only allowed inside a transaction")
+	errCopyInProgress             = errors.New("pq: COPY in progress")
 )
 
 // CopyIn creates a COPY FROM statement which can be prepared with
@@ -48,9 +50,10 @@ type copyin struct {
 	rowData chan []byte
 	done    chan bool
 
-	closed   bool
-	err      error
-	errorset int32
+	closed bool
+
+	sync.Mutex // guards err
+	err        error
 }
 
 const ciBufferSize = 64 * 1024
@@ -67,7 +70,7 @@ func (cn *conn) prepareCopyIn(q string) (_ driver.Stmt, err error) {
 		cn:      cn,
 		buffer:  make([]byte, 0, ciBufferSize),
 		rowData: make(chan []byte),
-		done:    make(chan bool),
+		done:    make(chan bool, 1),
 	}
 	// add CopyData identifier + 4 bytes for message length
 	ci.buffer = append(ci.buffer, 'd', 0, 0, 0, 0)
@@ -94,13 +97,13 @@ awaitCopyInResponse:
 			err = parseError(r)
 		case 'Z':
 			if err == nil {
-				cn.bad = true
+				ci.setBad()
 				errorf("unexpected ReadyForQuery in response to COPY")
 			}
 			cn.processReadyForQuery(r)
 			return nil, err
 		default:
-			cn.bad = true
+			ci.setBad()
 			errorf("unknown response for copy query: %q", t)
 		}
 	}
@@ -119,7 +122,7 @@ awaitCopyInResponse:
 			cn.processReadyForQuery(r)
 			return nil, err
 		default:
-			cn.bad = true
+			ci.setBad()
 			errorf("unknown response for CopyFail: %q", t)
 		}
 	}
@@ -137,31 +140,63 @@ func (ci *copyin) flush(buf []byte) {
 
 func (ci *copyin) resploop() {
 	for {
-		t, r := ci.cn.recv1()
+		var r readBuf
+		t, err := ci.cn.recvMessage(&r)
+		if err != nil {
+			ci.setBad()
+			ci.setError(err)
+			ci.done <- true
+			return
+		}
 		switch t {
 		case 'C':
 			// complete
+		case 'N':
+			// NoticeResponse
 		case 'Z':
-			ci.cn.processReadyForQuery(r)
+			ci.cn.processReadyForQuery(&r)
 			ci.done <- true
 			return
 		case 'E':
-			err := parseError(r)
+			err := parseError(&r)
 			ci.setError(err)
 		default:
-			ci.cn.bad = true
-			errorf("unknown response: %q", t)
+			ci.setBad()
+			ci.setError(fmt.Errorf("unknown response during CopyIn: %q", t))
+			ci.done <- true
+			return
 		}
 	}
 }
 
-func (ci *copyin) isErrorSet() bool {
-	return atomic.LoadInt32(&ci.errorset) != 0
+func (ci *copyin) setBad() {
+	ci.Lock()
+	ci.cn.bad = true
+	ci.Unlock()
 }
 
+func (ci *copyin) isBad() bool {
+	ci.Lock()
+	b := ci.cn.bad
+	ci.Unlock()
+	return b
+}
+
+func (ci *copyin) isErrorSet() bool {
+	ci.Lock()
+	isSet := (ci.err != nil)
+	ci.Unlock()
+	return isSet
+}
+
+// setError() sets ci.err if one has not been set already.  Caller must not be
+// holding ci.Mutex.
 func (ci *copyin) setError(err error) {
-	ci.err = err
-	atomic.StoreInt32(&ci.errorset, 1)
+	ci.Lock()
+	if ci.err == nil {
+		ci.err = err
+	}
+	ci.Unlock()
 }
 
 func (ci *copyin) NumInput() int {
@@ -184,7 +219,7 @@ func (ci *copyin) Exec(v []driver.Value) (r driver.Result, err error) {
 		return nil, errCopyInClosed
 	}
 
-	if ci.cn.bad {
+	if ci.isBad() {
 		return nil, driver.ErrBadConn
 	}
 	defer ci.cn.errRecover(&err)
@@ -194,9 +229,7 @@ func (ci *copyin) Exec(v []driver.Value) (r driver.Result, err error) {
 	}
 
 	if len(v) == 0 {
-		err = ci.Close()
-		ci.closed = true
-		return nil, err
+		return nil, ci.Close()
 	}
 
 	numValues := len(v)
@@ -219,11 +252,12 @@ func (ci *copyin) Exec(v []driver.Value) (r driver.Result, err error) {
 }
 
 func (ci *copyin) Close() (err error) {
-	if ci.closed {
-		return errCopyInClosed
+	if ci.closed { // Don't do anything, we're already closed
+		return nil
 	}
+	ci.closed = true
 
-	if ci.cn.bad {
+	if ci.isBad() {
 		return driver.ErrBadConn
 	}
 	defer ci.cn.errRecover(&err)
@@ -238,6 +272,7 @@ func (ci *copyin) Close() (err error) {
 	}
 
 	<-ci.done
+	ci.cn.inCopy = false
 
 	if ci.isErrorSet() {
 		err = ci.err

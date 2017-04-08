@@ -1,0 +1,102 @@
+{
+    "memo": "302d118efa790b75b6daf556e2aa5d8eaff9f29a46dbbbb38571c491b249ab8d",
+    "projects": [
+        {
+            "name": "github.com/Sirupsen/logrus",
+            "version": "v0.11.5",
+            "revision": "ba1b36c82c5e05c4f912a88eab0dcd91a171688f",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/dongri/goutils",
+            "branch": "master",
+            "revision": "31059ebe1d6765daa5901e78dfd05afe7a42b9b9",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/flosch/pongo2",
+            "branch": "master",
+            "revision": "1d0f0d3af150c4a65dfd424d742f7374819e7d29",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gorilla/context",
+            "version": "v1.1",
+            "revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/gorilla/mux",
+            "version": "v1.3.0",
+            "revision": "392c28fe23e1c45ddba891b0320b3b5df220beea",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/juju/errors",
+            "branch": "master",
+            "revision": "6f54ff6318409d31ff16261533ce2c8381a4fd5d",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/justinas/alice",
+            "version": "1.0.0",
+            "revision": "052b8b6c18edb9db317af86806d8e00ebaa94160",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/lib/pq",
+            "branch": "master",
+            "revision": "2704adc878c21e1329f46f6e56a1c387d788ff94",
+            "packages": [
+                ".",
+                "oid"
+            ]
+        },
+        {
+            "name": "github.com/mholt/binding",
+            "version": "v0.3.0",
+            "revision": "f53601f1387c422be7317a2b01d96b2455d2d2d6",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/unrolled/render",
+            "branch": "master",
+            "revision": "50716a0a853771bb36bfce61a45cdefdb98c2e6e",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "golang.org/x/sys",
+            "branch": "master",
+            "revision": "f3918c30c5c2cb527c0b071a27c35120a6c0719a",
+            "packages": [
+                "unix"
+            ]
+        },
+        {
+            "name": "gopkg.in/gorp.v1",
+            "version": "v1.7.1",
+            "revision": "c87af80f3cc5036b55b83d77171e156791085e2e",
+            "packages": [
+                "."
+            ]
+        }
+    ]
+}
