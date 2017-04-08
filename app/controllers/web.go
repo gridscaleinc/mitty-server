@@ -7,5 +7,5 @@ import (
 
 // WelcomeHandler ...
 func WelcomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "welcome mitty!")
+	fmt.Fprintf(w, "<h2>welcome mitty!</h2>")
 }
