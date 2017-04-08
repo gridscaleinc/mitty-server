@@ -11,12 +11,19 @@ import (
 func BuildRouter() http.Handler {
 	appRouter := mux.NewRouter()
 
+	webRouter := appRouter.PathPrefix("/").Subrouter()
+	webRoutes(webRouter)
+
 	publicRouter := appRouter.PathPrefix("/api/").Subrouter()
 	publicRoutes(publicRouter)
 
 	appRouter.NotFoundHandler = http.HandlerFunc(controllers.NotFoundHandler)
 
 	return appRouter
+}
+
+func webRoutes(r *mux.Router) {
+	r.HandleFunc("/", controllers.WelcomeHandler).Methods("GET")
 }
 
 func publicRoutes(r *mux.Router) {
