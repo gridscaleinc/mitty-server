@@ -4,6 +4,7 @@ MAINTAINER Dongri Jin <dongrify@gmail.com>
 
 RUN apk add --update git
 
+RUN go get -u github.com/pressly/goose/cmd/goose
 RUN go get github.com/githubnemo/CompileDaemon
 
 ADD . /go/src/mitty.co/mitty-server
