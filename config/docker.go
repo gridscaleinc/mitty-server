@@ -4,7 +4,7 @@ type dockerConfig struct {
 }
 
 func (c dockerConfig) PostgresURI() string {
-	return "host=postgres dbname=mitty user=root sslmode=disable"
+	return "postgres://root:mpNffadJrfnWpvZxnrZz2Zjz@dev.mitty.co:5432/mitty_db?sslmode=disable"
 }
 
 func (c dockerConfig) PasswordSalt() string {
