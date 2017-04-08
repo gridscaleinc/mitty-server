@@ -9,7 +9,7 @@ import (
 	"mitty.co/mitty-server/app/models"
 	"mitty.co/mitty-server/config"
 
-	"github.com/dongri/goutils"
+	goutils "github.com/dongri/goutils"
 	"github.com/mholt/binding"
 )
 

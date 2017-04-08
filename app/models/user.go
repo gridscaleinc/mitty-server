@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/dongri/goutils"
+	goutils "github.com/dongri/goutils"
 	gorp "gopkg.in/gorp.v1"
 )
 
