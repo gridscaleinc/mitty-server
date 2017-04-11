@@ -11,7 +11,7 @@ import (
 type User struct {
 	ID            int       `db:"id" json:"id"`
 	Name          string    `db:"name" json:"name"`
-	UserName      string    `db:"username" json:"username"`
+	UserName      string    `db:"user_name" json:"user_name"`
 	Password      string    `db:"password" json:"password"`
 	AccessToken   string    `db:"access_token" json:"access_token"`
 	MailAddress   string    `db:"mail_address" json:"mail_address"`
