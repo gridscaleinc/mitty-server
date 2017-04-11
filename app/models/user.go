@@ -50,3 +50,13 @@ func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 	}
 	return u, nil
 }
+
+// GetAdminUsers ...
+func GetAdminUsers(dbmap *gorp.DbMap) ([]User, error) {
+	users := []User{}
+	_, err := dbmap.Select(&users, "select * from users")
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}

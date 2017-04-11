@@ -24,7 +24,7 @@ type SignUpParams struct {
 func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&p.UserName: binding.Field{
-			Form:     "user_name",
+			Form:     "username",
 			Required: true,
 		},
 		&p.Password: binding.Field{
@@ -33,7 +33,7 @@ func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.MailAddress: binding.Field{
 			Form:     "mail_address",
-			Required: true,
+			Required: false,
 		},
 	}
 }

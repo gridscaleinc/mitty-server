@@ -5,6 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"mitty.co/mitty-server/app/controllers"
+	"mitty.co/mitty-server/app/filters"
 )
 
 // BuildRouter creates and returns a router which hold whole handler functions.
@@ -30,4 +31,10 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
+
+	r.Handle("/admin/users", basicAuth(controllers.StatusHandler)).Methods("GET")
+}
+
+func basicAuth(handler http.HandlerFunc) http.Handler {
+	return filters.BasicAuthHandler(handler)
 }
