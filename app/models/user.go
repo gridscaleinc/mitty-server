@@ -45,7 +45,7 @@ func (u *User) Update(tx gorp.Transaction) error {
 // GetUserByUserName ...
 func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 	u := new(User)
-	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE username = $1", userName); err != nil {
+	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE user_name = $1", userName); err != nil {
 		return nil, err
 	}
 	return u, nil
