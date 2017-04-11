@@ -8,7 +8,7 @@ type basicAuth struct {
 
 func (b *basicAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	username, password, ok := r.BasicAuth()
-	if ok == true && username == "wise" && password == "fuckfuckfuck" {
+	if ok == true && username == "mitty" && password == "mittymitty" {
 		b.next.ServeHTTP(w, r)
 		return
 	}
