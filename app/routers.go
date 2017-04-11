@@ -25,6 +25,7 @@ func BuildRouter() http.Handler {
 
 func webRoutes(r *mux.Router) {
 	r.HandleFunc("/", controllers.WelcomeHandler).Methods("GET")
+	r.Handle("/admin/users", basicAuth(controllers.StatusHandler)).Methods("GET")
 }
 
 func publicRoutes(r *mux.Router) {
@@ -32,7 +33,6 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
 
-	r.Handle("/admin/users", basicAuth(controllers.StatusHandler)).Methods("GET")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {
