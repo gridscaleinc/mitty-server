@@ -25,13 +25,16 @@ func BuildRouter() http.Handler {
 
 func webRoutes(r *mux.Router) {
 	r.HandleFunc("/", controllers.WelcomeHandler).Methods("GET")
+	r.Handle("/admin", basicAuth(controllers.AdminIndexHandler)).Methods("GET")
 	r.Handle("/admin/users", basicAuth(controllers.AdminUsersHandler)).Methods("GET")
+	r.Handle("/admin/events", basicAuth(controllers.AdminEventsHandler)).Methods("GET")
 }
 
 func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
+	r.HandleFunc("/new/event", controllers.PostEventHandler).Methods("POST")
 
 }
 

@@ -18,9 +18,9 @@ CREATE
             ,gallery_id int4
             ,meeting_id int4
             ,price_name1 VARCHAR (100)
-            ,price1 money
+            ,price1 integer
             ,price_name2 VARCHAR (100)
-            ,price2 money
+            ,price2 integer
             ,currency VARCHAR (3)
             ,price_info VARCHAR (200)
             ,description text
