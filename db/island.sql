@@ -33,6 +33,7 @@ create table island (
     address2        varchar(100),
     address3        varchar(100),
     latitude        float8,
-    longitude       float8
+    longitude       float8,
+    created    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  	updated	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-

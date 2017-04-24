@@ -5,5 +5,7 @@ create table gallery (
 	caption		varchar	(100),
 	brief_info	text,
 	content_id	int8,
-	free_text	text
+	free_text	text,
+	created    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	updated	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
