@@ -115,6 +115,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
+		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
 		})
@@ -123,6 +124,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	var p GalleryContentParams
 	err = json.Unmarshal(body, &p)
 	if err != nil {
+		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
 		})
@@ -135,6 +137,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	gallery.BriefInfo = p.Gallery.BriefInfo
 	gallery.FreeText = p.Gallery.FreeText
 	if err := gallery.Insert(*tx); err != nil {
+		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
 		})
@@ -146,6 +149,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	contents.Name = p.Content.Name
 	contents.LinkURL = p.Content.LinkURL
 	if err := contents.Insert(*tx); err != nil {
+		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
 		})
