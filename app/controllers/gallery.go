@@ -114,10 +114,20 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	// defer r.Body.Close()
 
 	body, err := ioutil.ReadAll(r.Body)
-	fmt.Println(err)
+	if err != nil {
+		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+			"errors": err,
+		})
+		return
+	}
 	var p GalleryContentParams
 	err = json.Unmarshal(body, &p)
-	fmt.Println(err)
+	if err != nil {
+		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+			"errors": err,
+		})
+		return
+	}
 
 	gallery := new(models.Gallery)
 	gallery.Seq = p.Gallery.Seq
