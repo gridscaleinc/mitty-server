@@ -1,5 +1,5 @@
 {
-    "memo": "302d118efa790b75b6daf556e2aa5d8eaff9f29a46dbbbb38571c491b249ab8d",
+    "memo": "901db18269da75b698fff75989e07b8f4a814e042adf21a6b89733a852e54ba1",
     "projects": [
         {
             "name": "github.com/Sirupsen/logrus",
@@ -7,6 +7,37 @@
             "revision": "ba1b36c82c5e05c4f912a88eab0dcd91a171688f",
             "packages": [
                 "."
+            ]
+        },
+        {
+            "name": "github.com/aws/aws-sdk-go",
+            "version": "v1.8.17",
+            "revision": "8cab5437f896c3048506422a6fb9f5a7f2df9944",
+            "packages": [
+                "aws",
+                "aws/awserr",
+                "aws/awsutil",
+                "aws/client",
+                "aws/client/metadata",
+                "aws/corehandlers",
+                "aws/credentials",
+                "aws/credentials/ec2rolecreds",
+                "aws/credentials/endpointcreds",
+                "aws/credentials/stscreds",
+                "aws/defaults",
+                "aws/ec2metadata",
+                "aws/endpoints",
+                "aws/request",
+                "aws/session",
+                "aws/signer/v4",
+                "private/protocol",
+                "private/protocol/query",
+                "private/protocol/query/queryutil",
+                "private/protocol/rest",
+                "private/protocol/restxml",
+                "private/protocol/xml/xmlutil",
+                "service/s3",
+                "service/sts"
             ]
         },
         {
@@ -26,6 +57,14 @@
             ]
         },
         {
+            "name": "github.com/go-ini/ini",
+            "version": "v1.27.0",
+            "revision": "e7fea39b01aea8d5671f6858f0532f56e8bff3a5",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "github.com/gorilla/context",
             "version": "v1.1",
             "revision": "1ea25387ff6f684839d82767c1733ff4d4d15d0a",
@@ -37,6 +76,14 @@
             "name": "github.com/gorilla/mux",
             "version": "v1.3.0",
             "revision": "392c28fe23e1c45ddba891b0320b3b5df220beea",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "github.com/jmespath/go-jmespath",
+            "version": "0.2.2",
+            "revision": "3433f3ea46d9f8019119e7dd41274e112a2359a9",
             "packages": [
                 "."
             ]

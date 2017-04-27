@@ -1,10 +1,17 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/s3"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -27,7 +34,7 @@ type Content struct {
 	Mime    string `json:"mime"`
 	Name    string `json:"name"`
 	LinkURL string `json:"link_url"`
-	// sData    []byte `json:"data"`
+	Data    []byte `json:"data"`
 }
 
 // GalleryContentParams ...
@@ -45,6 +52,7 @@ type GalleryContentParams struct {
 		Mime    string `json:"mime"`
 		Name    string `json:"name"`
 		LinkURL string `json:"link_url"`
+		Data    []byte `json:"data"`
 	} `json:"content"`
 }
 
@@ -131,6 +139,8 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	putToS3(p.Content.Data, "hoge.png")
+
 	gallery := new(models.Gallery)
 	gallery.Seq = p.Gallery.Seq
 	gallery.Caption = p.Gallery.Caption
@@ -165,4 +175,31 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(p.Gallery.IslandID)
 
 	render.JSON(w, http.StatusCreated, output)
+}
+
+func putToS3(buf []byte, fileName string) {
+	//s3Config := s.Config.S3Config
+	cre := credentials.NewStaticCredentials(
+		"AKIAI6WJQ2KNFSEAB4OQ",
+		"61XGKqSGs6VcEDvOONaqp6zWbaINH1GEbTDw4fXI",
+		"")
+
+	cli := s3.New(session.New(), &aws.Config{
+		Credentials: cre,
+		Region:      aws.String("ap-northeast-1"),
+	})
+
+	reader := bytes.NewReader(buf)
+
+	_, err := cli.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String("mitty-image"),
+		Key:    aws.String("/content/" + fileName),
+		Body:   reader,
+	})
+	fmt.Println("===S3===")
+	fmt.Println(err)
+	fmt.Println("=======")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
