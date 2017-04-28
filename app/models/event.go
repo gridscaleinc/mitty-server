@@ -19,7 +19,7 @@ type Event struct {
 	AlldayFlag          bool      `db:"allday_flag" json:"allday_flag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
 	LogoID              int       `db:"logo_id" json:"logo_id"`
-	GalleryID           int       `db:"gallery_id" json:"gallery_id"`
+	GalleryID           int64     `db:"gallery_id" json:"gallery_id"`
 	MeetingID           int       `db:"meeting_id" json:"meeting_id"`
 	PriceName1          string    `db:"price_name1" json:"price_name1"`
 	Price1              int       `db:"price1" json:"price1"`
@@ -71,4 +71,13 @@ func GetAdminEvents(dbmap *gorp.DbMap) ([]Event, error) {
 		return nil, err
 	}
 	return events, nil
+}
+
+// GetEventByID ...
+func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
+	event := new(Event)
+	if err := tx.SelectOne(&event, "select * from events where id = $1", ID); err != nil {
+		return nil, err
+	}
+	return event, nil
 }

@@ -21,7 +21,7 @@ type Island struct {
 	OwnerID       int       `db:"owner_id" json:"owner_id"`
 	CreatorID     int       `db:"creator_id" json:"creator_id"`
 	MeetingID     int       `db:"meeting_id" json:"meeting_id"`
-	GalleryID     int       `db:"gallery_id" json:"gallery_id"`
+	GalleryID     int64     `db:"gallery_id" json:"gallery_id"`
 	Tel           string    `db:"tel" json:"tel"`
 	Fax           string    `db:"fax" json:"fax"`
 	MailAddress   string    `db:"mailaddress" json:"mailaddress"`
@@ -59,4 +59,13 @@ func (s *Island) Update(tx gorp.Transaction) error {
 	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
+}
+
+// GetIslandByID ...
+func GetIslandByID(tx *gorp.Transaction, ID int) (*Island, error) {
+	island := new(Island)
+	if err := tx.SelectOne(&island, "select * from island where id = $1", ID); err != nil {
+		return nil, err
+	}
+	return island, nil
 }
