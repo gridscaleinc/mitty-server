@@ -78,12 +78,11 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("----")
 	fmt.Println(err)
 
-	gallery := new(models.Gallery)
-	gallery.Seq = p.Gallery.Seq
-	gallery.Caption = p.Gallery.Caption
-	gallery.BriefInfo = p.Gallery.BriefInfo
-	gallery.FreeText = p.Gallery.FreeText
-	if err = gallery.Insert(*tx); err != nil {
+	contents := new(models.Contents)
+	contents.Mime = p.Content.Mime
+	contents.Name = p.Content.Name
+	contents.LinkURL = filePath //p.Content.LinkURL
+	if err = contents.Insert(*tx); err != nil {
 		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
@@ -91,11 +90,13 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	contents := new(models.Contents)
-	contents.Mime = p.Content.Mime
-	contents.Name = p.Content.Name
-	contents.LinkURL = filePath //p.Content.LinkURL
-	if err = contents.Insert(*tx); err != nil {
+	gallery := new(models.Gallery)
+	gallery.Seq = p.Gallery.Seq
+	gallery.Caption = p.Gallery.Caption
+	gallery.BriefInfo = p.Gallery.BriefInfo
+	gallery.FreeText = p.Gallery.FreeText
+	gallery.ContentID = contents.ID
+	if err = gallery.Insert(*tx); err != nil {
 		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
