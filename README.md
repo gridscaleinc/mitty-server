@@ -52,7 +52,8 @@ psql -d mitty  -- mitty Database にログイン
 クライアントは取得access tokenで認証付きリクエストおする。
 
 # server log
+```
 $ ssh mitty-server
 $ cd go/src/mitty.co/mitty-server
 $ docker-compose logs -f
-
+```
