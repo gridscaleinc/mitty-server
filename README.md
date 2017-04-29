@@ -50,3 +50,9 @@ psql -d mitty  -- mitty Database にログイン
 # api authentication
 認証はログインする度にサーバー側でaccess token発行クライアントに渡す。
 クライアントは取得access tokenで認証付きリクエストおする。
+
+# server log
+$ ssh mitty-server
+$ cd go/src/mitty.co/mitty-server
+$ docker-compose logs -f
+
