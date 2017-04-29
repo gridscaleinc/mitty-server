@@ -4,6 +4,7 @@ create table events (
         type			                                 varchar(20),
         category		                             varchar(20),
         theme			                             varchar(50),
+        tag                                            varchar(50),
         title			                                 varchar(100),
         action		                                 text,
         start_datetime	 	                     date,
