@@ -12,6 +12,7 @@ type Event struct {
 	Type                string    `db:"type" json:"type"`
 	Category            string    `db:"category" json:"category"`
 	Theme               string    `db:"theme" json:"theme"`
+	Tag                 string    `db:"tag" json:"tag"`
 	Title               string    `db:"title" json:"title"`
 	Action              string    `db:"action" json:"action"`
 	StartDatetime       time.Time `db:"start_datetime" json:"start_datetime"`

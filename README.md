@@ -22,3 +22,25 @@ $ cd go/src/mitty.co/mitty-server
 $ git pull origin master
 $ docker-compose logs -f
 ```
+
+# Error
+
+### input error
+status: 400
+```
+{
+  "errors":[
+    "tag Required",
+    "type Required"
+  ]
+}
+```
+### internal server error
+status: 500
+```
+{
+  "errors":[
+    "database insert error"
+  ]
+}
+```

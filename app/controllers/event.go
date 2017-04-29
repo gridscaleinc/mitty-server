@@ -14,7 +14,7 @@ import (
 // EventParams ...
 type EventParams struct {
 	Type          string
-	Category      string
+	Tag           string
 	Title         string
 	Action        string
 	StartDatetime time.Time
@@ -47,8 +47,8 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 			Form:     "type",
 			Required: true,
 		},
-		&p.Category: binding.Field{
-			Form:     "category",
+		&p.Tag: binding.Field{
+			Form:     "tag",
 			Required: true,
 		},
 		&p.Title: binding.Field{
@@ -69,7 +69,7 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.AlldayFlag: binding.Field{
 			Form:     "allDayFlag",
-			Required: true,
+			Required: false,
 		},
 		&p.IslandID: binding.Field{
 			Form:     "islandId",
@@ -77,27 +77,27 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.PriceName1: binding.Field{
 			Form:     "priceName1",
-			Required: true,
+			Required: false,
 		},
 		&p.Price1: binding.Field{
 			Form:     "price1",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceName2: binding.Field{
 			Form:     "priceName2",
-			Required: true,
+			Required: false,
 		},
 		&p.Price2: binding.Field{
 			Form:     "price2",
-			Required: true,
+			Required: false,
 		},
 		&p.Currency: binding.Field{
 			Form:     "currency",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceInfo: binding.Field{
 			Form:     "priceInfo",
-			Required: true,
+			Required: false,
 		},
 		&p.Description: binding.Field{
 			Form:     "description",
@@ -105,23 +105,23 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.ContactTel: binding.Field{
 			Form:     "contactTel",
-			Required: true,
+			Required: false,
 		},
 		&p.ContactFax: binding.Field{
 			Form:     "contactFax",
-			Required: true,
+			Required: false,
 		},
 		&p.ContactMail: binding.Field{
 			Form:     "contactMail",
-			Required: true,
+			Required: false,
 		},
 		&p.OfficialURL: binding.Field{
 			Form:     "officialUrl",
-			Required: true,
+			Required: false,
 		},
 		&p.Organizer: binding.Field{
 			Form:     "organizer",
-			Required: true,
+			Required: false,
 		},
 		&p.SourceName: binding.Field{
 			Form:     "sourceName",
@@ -129,15 +129,15 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.SourceURL: binding.Field{
 			Form:     "sourceUrl",
-			Required: true,
+			Required: false,
 		},
 		&p.Anticipation: binding.Field{
 			Form:     "anticipation",
-			Required: true,
+			Required: false,
 		},
 		&p.AccessControl: binding.Field{
 			Form:     "accessControl",
-			Required: true,
+			Required: false,
 		},
 		&p.Language: binding.Field{
 			Form:     "language",
@@ -162,16 +162,14 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 	p := new(EventParams)
-	if errors := binding.Bind(r, p); errors != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"errors": errors,
-		})
+	if errs := binding.Bind(r, p); errs != nil {
+		helpers.RenderInputError(w, r, errs)
 		return
 	}
 
 	e := new(models.Event)
 	e.Type = p.Type
-	e.Category = p.Category
+	e.Tag = p.Tag
 	e.Title = p.Title
 	e.Action = p.Action
 	e.StartDatetime = p.StartDatetime
@@ -196,9 +194,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.AccessControl = p.AccessControl
 	e.Language = p.Language
 	if err := e.Save(*tx); err != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err.Error(),
-		})
+		helpers.RenderDBError(w, r, err)
 		return
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{

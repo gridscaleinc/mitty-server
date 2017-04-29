@@ -6,6 +6,7 @@ CREATE TABLE if not exists events (
     type VARCHAR (20),
     category VARCHAR (20),
     theme VARCHAR (50),
+    tag VARCHAR (50),
     title VARCHAR (100),
     action text,
     start_datetime DATE,
