@@ -2,7 +2,10 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"net/http"
+	"net/mail"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -54,37 +57,42 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 	p := new(SignUpParams)
-	if errors := binding.Bind(r, p); errors != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"errors": errors,
-		})
+	if errs := binding.Bind(r, p); errs != nil {
+		helpers.RenderInputError(w, r, errs)
 		return
 	}
 
 	u, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil && err != sql.ErrNoRows {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err,
-		})
+		helpers.RenderDBError(w, r, err)
 		return
 	}
 	if u != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": "Username has already been taken",
-		})
+		err = errors.New("Username has already been taken")
+		helpers.RenderDBError(w, r, err)
 		return
+	}
+
+	emailAddress := ""
+	if p.MailAddress != "" {
+		email, e := mail.ParseAddress(p.MailAddress)
+		if e != nil {
+			helpers.RenderDBError(w, r, e)
+			return
+		}
+		emailAddress = email.Address
+		e = helpers.SendEmail("noreply@mitty.co", emailAddress, "Confirm", "confirm email address")
+		fmt.Println(e)
 	}
 
 	user := new(models.User)
 	user.UserName = p.UserName
 	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
 	user.Password = hashedPassword
-	user.MailAddress = p.MailAddress
+	user.MailAddress = emailAddress
 	err = user.Insert(*tx)
 	if err != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err.Error(),
-		})
+		helpers.RenderDBError(w, r, err)
 		return
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
@@ -109,27 +117,22 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 	p := new(SignUpParams)
-	if errors := binding.Bind(r, p); errors != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"errors": errors,
-		})
+	if errs := binding.Bind(r, p); errs != nil {
+		helpers.RenderInputError(w, r, errs)
 		return
 	}
 
 	user, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": err.Error(),
-		})
+		helpers.RenderDBError(w, r, err)
 		return
 	}
 
 	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
 
 	if user.Password != hashedPassword {
-		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
-			"err": "Password Error",
-		})
+		err = errors.New("Password Error")
+		helpers.RenderDBError(w, r, err)
 		return
 	}
 

@@ -1,5 +1,5 @@
 {
-    "memo": "901db18269da75b698fff75989e07b8f4a814e042adf21a6b89733a852e54ba1",
+    "memo": "91e756b68f8e70806824d5d3d60d1f83a66ca337abd2bdcca98bdd48476edfb3",
     "projects": [
         {
             "name": "github.com/Sirupsen/logrus",
@@ -122,6 +122,14 @@
             ]
         },
         {
+            "name": "github.com/pkg/errors",
+            "version": "v0.8.0",
+            "revision": "645ef00459ed84a119197bfb8d8205042c6df63d",
+            "packages": [
+                "."
+            ]
+        },
+        {
             "name": "github.com/unrolled/render",
             "branch": "master",
             "revision": "50716a0a853771bb36bfce61a45cdefdb98c2e6e",
@@ -141,6 +149,14 @@
             "name": "gopkg.in/gorp.v1",
             "version": "v1.7.1",
             "revision": "c87af80f3cc5036b55b83d77171e156791085e2e",
+            "packages": [
+                "."
+            ]
+        },
+        {
+            "name": "gopkg.in/mailgun/mailgun-go.v1",
+            "version": "v1.1.0",
+            "revision": "a4002e2df2e8ca2da6a6fbb4a72871b504e49f50",
             "packages": [
                 "."
             ]
