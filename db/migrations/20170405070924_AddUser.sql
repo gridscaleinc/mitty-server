@@ -9,6 +9,7 @@ create table if not exists users (
   access_token    varchar(255),
   mail_address    varchar(50),
   mail_confirmed  boolean,
+  mail_token      varchar(255),
   status          varchar	(20),
   created         timestamp  not null DEFAULT CURRENT_TIMESTAMP,
   updated         timestamp  not null DEFAULT CURRENT_TIMESTAMP,

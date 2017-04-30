@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/mail"
+	"time"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -81,8 +82,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		emailAddress = email.Address
-		e = helpers.SendEmail("noreply@mitty.co", emailAddress, "Confirm", "confirm email address")
-		fmt.Println(e)
 	}
 
 	user := new(models.User)
@@ -90,6 +89,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	hashedPassword := goutils.Sha256Sum256(p.Password + config.CurrentSet.PasswordSalt())
 	user.Password = hashedPassword
 	user.MailAddress = emailAddress
+	user.MailConfirmed = false
+	if emailAddress != "" {
+		user.MailToken = goutils.Sha256Sum256(time.Now().String() + config.CurrentSet.PasswordSalt())
+		err = helpers.SendEmail("noreply@mitty.co", emailAddress, "Confirm", "confirm email address\nhttp://dev.mitty.co/email/confirm?token="+user.MailToken)
+		fmt.Println(err)
+	}
 	err = user.Insert(*tx)
 	if err != nil {
 		helpers.RenderDBError(w, r, err)

@@ -16,6 +16,7 @@ type User struct {
 	AccessToken   string    `db:"access_token" json:"access_token"`
 	MailAddress   string    `db:"mail_address" json:"mail_address"`
 	MailConfirmed bool      `db:"mail_confirmed" json:"mail_confirmed"`
+	MailToken     string    `db:"mail_token" json:"mail_token"`
 	Status        string    `db:"status" json:"status"`
 	Created       time.Time `db:"created" json:"created"`
 	Updated       time.Time `db:"updated" json:"updated"`
@@ -59,4 +60,13 @@ func GetAdminUsers(dbmap *gorp.DbMap) ([]User, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+// GetUserByEmailToken ...
+func GetUserByEmailToken(tx gorp.Transaction, token string) (*User, error) {
+	u := new(User)
+	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE mail_token = $1", token); err != nil {
+		return nil, err
+	}
+	return u, nil
 }
