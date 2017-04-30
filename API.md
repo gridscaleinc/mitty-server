@@ -52,8 +52,9 @@ APIによって、認証済みでないと呼び出しできない。　そう�
 ```
 POST http://dev.mitty.co/api/signup
 parameter:
-  username: string
-  password: string
+  username: string　　（必須）　
+  password: string         (必須）
+  mail_address: string 　（任意？）
 ```
 
 ### 2.[Sign in](id:sign-in)
