@@ -38,6 +38,10 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/new/event", controllers.PostEventHandler).Methods("POST")
 	r.HandleFunc("/gallery/content", controllers.PostGalleryContentHandler).Methods("POST")
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
+
+	r.HandleFunc("/activity/list", controllers.GetActivityHandler).Methods("GET")
+	r.HandleFunc("/new/activity", controllers.PostActivityHandler).Methods("POST")
+	r.HandleFunc("/new/activity/item", controllers.PostActivityItemHandler).Methods("POST")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

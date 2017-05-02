@@ -17,31 +17,31 @@ import (
 
 // EventParams ...
 type EventParams struct {
-	Type          string
-	Tag           string
-	Title         string
-	Action        string
-	StartDatetime time.Time
-	EndDatetime   time.Time
-	AlldayFlag    bool
-	IslandID      int
-	PriceName1    string
-	Price1        int
-	PriceName2    string
-	Price2        int
-	Currency      string
-	PriceInfo     string
-	Description   string
-	ContactTel    string
-	ContactFax    string
-	ContactMail   string
-	OfficialURL   string
-	Organizer     string
-	SourceName    string
-	SourceURL     string
-	Anticipation  string
-	AccessControl string
-	Language      string
+	Type          string    `json:"type"`
+	Tag           string    `json:"tag"`
+	Title         string    `json:"title"`
+	Action        string    `json:"action"`
+	StartDatetime time.Time `json:"startDate"`
+	EndDatetime   time.Time `json:"endDate"`
+	AlldayFlag    bool      `json:"allDayFlag"`
+	IslandID      int       `json:"islandId"`
+	PriceName1    string    `json:"priceName1"`
+	Price1        int       `json:"price1"`
+	PriceName2    string    `json:"priceName2"`
+	Price2        int       `json:"price2"`
+	Currency      string    `json:"currency"`
+	PriceInfo     string    `json:"priceInfo"`
+	Description   string    `json:"description"`
+	ContactTel    string    `json:"contactTel"`
+	ContactFax    string    `json:"contactFax"`
+	ContactMail   string    `json:"contactMail"`
+	OfficialURL   string    `json:"officialUrl"`
+	Organizer     string    `json:"organizer"`
+	SourceName    string    `json:"sourceName"`
+	SourceURL     string    `json:"sourceUrl"`
+	Anticipation  string    `json:"anticipation"`
+	AccessControl string    `json:"accessControl"`
+	Language      string    `json:"language"`
 }
 
 // FieldMap defines parameter requirements

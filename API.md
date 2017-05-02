@@ -10,6 +10,7 @@
 8. [Register New Event](#8register-new-event)
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
+11. [Register New Activity Item](#10register-new-activity-item)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -334,19 +335,73 @@ JSON形式のパラメータを読み込み、、、、
 
 ### 10.[Register New Activity](id:activity-register)
 ```
-POST /api/activity/register
+POST /api/new/activity
 
 ```
 *Input parameter*
 ```
-{}
+{
+    title: string,            -- (M) タイトル
+    mainEventId:Int,          -- (O) メインイベント ID   
+    memo: string              -- (O)      
+}
 
 ```
 *Output response*
 ```
-{}
+{ 
+  result: {
+    activityId: int
+  }
+  
+  }
 ```
 *Description*
 ```
-JSON形式のパラメータを読み込み、、、、
+活動とは一人の個人での一連の活動アイテムのまとまり。活動はいずれ一つのイベントが裏にあるが、
+イベントより先に活動を登録する際は、eventIdはまだ確定していない。
+このAPIは幾つの項目を登録することで、新規活動IDを採番し、結果として返す。
 ```
+
+*See also*
+```
+  activity.sql
+```
+
+### 11.[Register New Activity Item](id:activity-register)
+```
+POST /api/new/activity/item
+
+```
+*Input parameter*
+```
+{
+     activityId : int8 ,         -- (M) アクティビティ ID
+     eventId: int8	,            -- (M) イベントID。
+     title: string ,             -- (M) varchar(200),
+     memo		 ,                  -- (O) memo
+     notification: bool ,        -- (M) アラーム要否  
+     notificationDateTime: timestamp  -- (O) アラーム時刻
+}
+
+```
+*Output response*
+```
+{
+なし
+}
+```
+*Description*
+```
+活動アイテムの一つを登録。
+活動アイテムとはある個人が特定のイベントに参加することについての情報を管理。
+```
+
+*See also*
+```
+  activity.sql
+  activityItem.sql
+```
+
+
+
