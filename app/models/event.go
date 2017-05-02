@@ -1,7 +1,10 @@
 package models
 
 import (
+	"strconv"
 	"time"
+
+	"mitty.co/mitty-server/app/helpers"
 
 	gorp "gopkg.in/gorp.v1"
 )
@@ -54,6 +57,11 @@ func (s *Event) Save(tx gorp.Transaction) error {
 	s.Created = time.Now().UTC()
 	s.Lastupdated = time.Now().UTC()
 	err := tx.Insert(s)
+	if err == nil {
+		go func() {
+			helpers.ESIndex("mitty", "event", s, strconv.FormatInt(s.ID, 10))
+		}()
+	}
 	return err
 }
 
@@ -61,6 +69,22 @@ func (s *Event) Save(tx gorp.Transaction) error {
 func (s *Event) Update(tx gorp.Transaction) error {
 	s.Lastupdated = time.Now().UTC()
 	_, err := tx.Update(s)
+	if err == nil {
+		go func() {
+			helpers.ESIndex("mitty", "event", s, strconv.FormatInt(s.ID, 10))
+		}()
+	}
+	return err
+}
+
+// Delete ...
+func (s *Event) Delete(tx gorp.Transaction) error {
+	_, err := tx.Delete(s)
+	if err == nil {
+		go func() {
+			helpers.ESDelete("mitty", "event", strconv.FormatInt(s.ID, 10))
+		}()
+	}
 	return err
 }
 

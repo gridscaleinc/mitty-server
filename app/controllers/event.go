@@ -1,8 +1,12 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"reflect"
 	"time"
+
+	elastic "gopkg.in/olivere/elastic.v5"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -199,5 +203,42 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"eventId": e.ID,
+	})
+}
+
+// SearchEventHandler ...
+func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+
+	action := r.URL.Query().Get("action")
+	description := r.URL.Query().Get("description")
+	sourceName := r.URL.Query().Get("source_name")
+
+	matchQuery1 := elastic.NewMatchQuery("action", action)
+	matchQuery1.Boost(4)
+	matchQuery2 := elastic.NewMatchQuery("description", description)
+	matchQuery2.Boost(2)
+	matchQuery3 := elastic.NewMatchQuery("source_name", sourceName)
+	matchQuery3.Boost(1)
+
+	query := elastic.NewBoolQuery()
+	query.Should(matchQuery1, matchQuery2, matchQuery3)
+
+	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+
+	var events []models.Event
+	var event models.Event
+	for _, item := range searchResult.Each(reflect.TypeOf(event)) {
+		if t, ok := item.(models.Event); ok {
+			fmt.Printf("User by %s: %s\n", t.Title, t.Description)
+			events = append(events, t)
+		}
+	}
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"events": events,
 	})
 }
