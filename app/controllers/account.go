@@ -19,9 +19,9 @@ import (
 
 // SignUpParams ...
 type SignUpParams struct {
-	UserName    string
-	Password    string
-	MailAddress string
+	UserName    string `json:"user_name"`
+	Password    string `json:"password"`
+	MailAddress string `json:"mail_address"`
 }
 
 // FieldMap defines parameter requirements
