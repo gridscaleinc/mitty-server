@@ -411,7 +411,7 @@ POST /api/new/activity/item
 
 ### 12.[Register New Island](id:island-register)
 ```
-POST /api/new//item
+POST /api/new/island
 
 ```
 *Input parameter*
