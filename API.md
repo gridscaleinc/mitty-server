@@ -10,7 +10,7 @@
 8. [Register New Event](#8register-new-event)
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
-11. [Register New Activity Item](#10register-new-activity-item)
+11. [Register New Activity Item](#11register-new-activity-item)
 
 ### [Common Rules](id:common-rules)
 *表記*
