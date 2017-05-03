@@ -11,6 +11,7 @@
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
 11. [Register New Activity Item](#11register-new-activity-item)
+12. [Register Island](#12register-island)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -408,4 +409,66 @@ POST /api/new/activity/item
 ```
 
 
+### 12.[Register New Island](id:island-register)
+```
+POST /api/new//item
 
+```
+*Input parameter*
+```
+{
+  nickname           : string      --(O)  愛称
+  name               : string      --(M)  名称
+  logoId             : int         --(O)  LogoのContent Id
+  description        : string      --(O)  説明
+  category           : string      --(M)  カテゴリ
+  mobilityType       : string      --(M)  移動性分類
+  realityType        : string      --(M)  実在性分類
+  ownershipType      : string      --(M)  所有者分類
+  ownerName          : string      --(O)  所有者名
+  ownerId            : int         --(O)  所有者のMitty User Id
+  creatorId          : int         --(O)  作成者のMitty User Id 
+  meetingId          : int         --(O)  会議Id
+  galleryId          : int         --(O)  ギャラリーID
+  tel                : string      --(O)  電話番号
+  fax                : string      --(O)  FAX
+  mailaddress        : string      --(O)  メールアドレス
+  webpage            : string      --(O) 　WebページのURL
+  likes              : string      --(O)  いいねの数
+  countryCode        : string      --(O)  国コード
+  countryName        : string      --(O)  国名称
+  state              : string      --(O)  都道府県　
+  city               : string      --(O)  市、区
+  postcode           : string      --(O)  郵便番号
+  thoroghfare        : string      --(O)  大通り
+  subthroghfare      : string      --(O)  通り
+  buildingName       : string      --(O)  建物名称
+  floorNumber        : string      --(O)  フロー番号
+  roomNumber         : string      --(O)  部屋番号
+  address1           : string      --(O)  住所行１
+  address2           : string      --(O)  住所行２
+  address3           : string      --(O)  住所行３
+  latitude           : double      --(O)  地理位置の緯度
+  longitude          : double      --(O)  地理位置の経度
+}
+
+```
+*Output response*
+```
+{
+  result: {
+    islandId: int
+  }
+  
+}
+```
+*Description*
+```
+島とは人が集まる場所。従来的な特定な住所にある組織が入居する建物がメインだが、飛行機、タクシーなど移動体も島として登録する場合がある。また仮想的な集会場、ライブ会場なども考えられる。ゲームの世界になると、空想的なUFOなども視野にある。
+こいった情報を登録するのがこの API.
+```
+
+*See also*
+```
+  island.sql
+```
