@@ -210,19 +210,21 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 
-	action := r.URL.Query().Get("action")
-	description := r.URL.Query().Get("description")
-	sourceName := r.URL.Query().Get("source_name")
+	queryParams := r.URL.Query().Get("q")
 
-	matchQuery1 := elastic.NewMatchQuery("action", action)
+	matchQuery1 := elastic.NewMatchQuery("action", queryParams)
 	matchQuery1.Boost(4)
-	matchQuery2 := elastic.NewMatchQuery("description", description)
+	matchQuery2 := elastic.NewMatchQuery("description", queryParams)
 	matchQuery2.Boost(2)
-	matchQuery3 := elastic.NewMatchQuery("source_name", sourceName)
+	matchQuery3 := elastic.NewMatchQuery("source_name", queryParams)
 	matchQuery3.Boost(1)
+	matchQuery4 := elastic.NewMatchQuery("category", queryParams)
+	matchQuery4.Boost(1)
+	matchQuery5 := elastic.NewMatchQuery("tag", queryParams)
+	matchQuery5.Boost(1)
 
 	query := elastic.NewBoolQuery()
-	query.Should(matchQuery1, matchQuery2, matchQuery3)
+	query.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
 
 	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
 	if err != nil {
