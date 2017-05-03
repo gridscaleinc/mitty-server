@@ -34,7 +34,7 @@ func GetActivityHandler(w http.ResponseWriter, r *http.Request) {
 // ActivityParams ...
 type ActivityParams struct {
 	Title       string `json:"title"`
-	MainEventID int    `json:"mainEventId"`
+	MainEventID int64  `json:"mainEventId"`
 	Memo        string `json:"memo"`
 }
 

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
@@ -14,11 +15,12 @@ import (
 // ActivityItemParams ...
 type ActivityItemParams struct {
 	ActivityID           int       `json:"activityId"`
-	EventID              int       `json:"eventId"`
+	EventID              int64     `json:"eventId"`
 	Title                string    `json:"title"`
 	Memo                 string    `json:"memo"`
 	Notification         bool      `json:"notification"`
 	NotificationDateTime time.Time `json:"notificationDateTime"`
+	AsMainEvent          bool      `json:"asMainEvent"`
 }
 
 // FieldMap defines parameter requirements
@@ -46,6 +48,10 @@ func (p *ActivityItemParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.NotificationDateTime: binding.Field{
 			Form:     "notificationDateTime",
+			Required: false,
+		},
+		&p.AsMainEvent: binding.Field{
+			Form:     "asMainEvent",
 			Required: false,
 		},
 	}
@@ -82,6 +88,19 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	if err := activityItem.Insert(*tx); err != nil {
 		helpers.RenderDBError(w, r, err)
 		return
+	}
+
+	if p.AsMainEvent == true {
+		activity, err := models.GetActivityByID(tx, p.ActivityID)
+		if err != nil && err != sql.ErrNoRows {
+			helpers.RenderDBError(w, r, err)
+			return
+		}
+		activity.MainEventID = activityItem.EventID
+		if err := activity.Update(*tx); err != nil {
+			helpers.RenderDBError(w, r, err)
+			return
+		}
 	}
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{})

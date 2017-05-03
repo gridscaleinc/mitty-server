@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -17,31 +18,33 @@ import (
 
 // EventParams ...
 type EventParams struct {
-	Type          string    `json:"type"`
-	Tag           string    `json:"tag"`
-	Title         string    `json:"title"`
-	Action        string    `json:"action"`
-	StartDatetime time.Time `json:"startDate"`
-	EndDatetime   time.Time `json:"endDate"`
-	AlldayFlag    bool      `json:"allDayFlag"`
-	IslandID      int       `json:"islandId"`
-	PriceName1    string    `json:"priceName1"`
-	Price1        int       `json:"price1"`
-	PriceName2    string    `json:"priceName2"`
-	Price2        int       `json:"price2"`
-	Currency      string    `json:"currency"`
-	PriceInfo     string    `json:"priceInfo"`
-	Description   string    `json:"description"`
-	ContactTel    string    `json:"contactTel"`
-	ContactFax    string    `json:"contactFax"`
-	ContactMail   string    `json:"contactMail"`
-	OfficialURL   string    `json:"officialUrl"`
-	Organizer     string    `json:"organizer"`
-	SourceName    string    `json:"sourceName"`
-	SourceURL     string    `json:"sourceUrl"`
-	Anticipation  string    `json:"anticipation"`
-	AccessControl string    `json:"accessControl"`
-	Language      string    `json:"language"`
+	Type              string    `json:"type"`
+	Tag               string    `json:"tag"`
+	Title             string    `json:"title"`
+	Action            string    `json:"action"`
+	StartDatetime     time.Time `json:"startDate"`
+	EndDatetime       time.Time `json:"endDate"`
+	AlldayFlag        bool      `json:"allDayFlag"`
+	IslandID          int       `json:"islandId"`
+	PriceName1        string    `json:"priceName1"`
+	Price1            int       `json:"price1"`
+	PriceName2        string    `json:"priceName2"`
+	Price2            int       `json:"price2"`
+	Currency          string    `json:"currency"`
+	PriceInfo         string    `json:"priceInfo"`
+	Description       string    `json:"description"`
+	ContactTel        string    `json:"contactTel"`
+	ContactFax        string    `json:"contactFax"`
+	ContactMail       string    `json:"contactMail"`
+	OfficialURL       string    `json:"officialUrl"`
+	Organizer         string    `json:"organizer"`
+	SourceName        string    `json:"sourceName"`
+	SourceURL         string    `json:"sourceUrl"`
+	Anticipation      string    `json:"anticipation"`
+	AccessControl     string    `json:"accessControl"`
+	Language          string    `json:"language"`
+	RelatedActivityID int       `json:"relatedActivityId"`
+	AsMainEvent       bool      `json:"asMainEvent"`
 }
 
 // FieldMap defines parameter requirements
@@ -147,6 +150,14 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 			Form:     "language",
 			Required: true,
 		},
+		&p.RelatedActivityID: binding.Field{
+			Form:     "relatedActivityId",
+			Required: false,
+		},
+		&p.AsMainEvent: binding.Field{
+			Form:     "asMainEvent",
+			Required: false,
+		},
 	}
 }
 
@@ -201,6 +212,32 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 		helpers.RenderDBError(w, r, err)
 		return
 	}
+
+	if p.RelatedActivityID != 0 {
+		activityItem := new(models.ActivityItem)
+		activityItem.ActivityID = p.RelatedActivityID
+		activityItem.EventID = e.ID
+		activityItem.Title = e.Title
+		activityItem.Notification = false
+		if err := activityItem.Insert(*tx); err != nil {
+			helpers.RenderDBError(w, r, err)
+			return
+		}
+
+		if p.AsMainEvent == true {
+			activity, err := models.GetActivityByID(tx, p.RelatedActivityID)
+			if err != nil && err != sql.ErrNoRows {
+				helpers.RenderDBError(w, r, err)
+				return
+			}
+			activity.MainEventID = activityItem.EventID
+			if err := activity.Update(*tx); err != nil {
+				helpers.RenderDBError(w, r, err)
+				return
+			}
+		}
+	}
+
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"eventId": e.ID,
 	})
