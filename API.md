@@ -384,7 +384,8 @@ POST /api/new/activity/item
      title: string ,             -- (M) varchar(200),
      memo		 ,                  -- (O) memo
      notification: bool ,        -- (M) アラーム要否  
-     notificationDateTime: timestamp  -- (O) アラーム時刻
+     notificationDateTime: timestamp,  -- (O) アラーム時刻
+     asMainEvent: bool           -- (M) trueの場合、activity.mainEventId=eventIdで更新。
 }
 
 ```
