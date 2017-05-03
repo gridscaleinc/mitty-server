@@ -11,7 +11,7 @@
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
 11. [Register New Activity Item](#11register-new-activity-item)
-12. [Register Island](#12register-island)
+12. [Register Island](#12register-new-island)
 
 ### [Common Rules](id:common-rules)
 *表記*
