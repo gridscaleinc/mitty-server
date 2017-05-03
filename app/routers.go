@@ -37,6 +37,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
 	r.HandleFunc("/new/event", controllers.PostEventHandler).Methods("POST")
 	r.HandleFunc("/gallery/content", controllers.PostGalleryContentHandler).Methods("POST")
+	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 
 	r.HandleFunc("/activity/list", controllers.GetActivityHandler).Methods("GET")
 	r.HandleFunc("/new/activity", controllers.PostActivityHandler).Methods("POST")
