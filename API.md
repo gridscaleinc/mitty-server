@@ -261,7 +261,10 @@ sourceName: string,    (M)      -- 情報源の名称
 sourceUrl: URL,        (O)      -- 情報源のWebPageのURL
 anticipation: string,  (O)      -- イベント参加方式、 OPEN：　自由参加、　INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
 accessControl: string, (O)      -- イベント情報のアクセス制御：　PUBLIC: 全公開、　PRIVATE: 非公開、 SHARED:関係者のみ
-language: string       (M)      -- 言語情報　(Ja_JP, en_US, en_GB) elastic　searchに使用する。
+language: string ,     (M)      -- 言語情報　(Ja_JP, en_US, en_GB) elastic　searchに使用する。
+relatedActivityId: int, (O)     -- 指定された場合、Activity Itemを一件自動登録する。
+asMainEvent: bool       (O)　　　-- relatedActivityIdが指定された場合のみ意味ある。
+                                   trueの場合は該当activityのmainEventIdを更新する。
 }
 ```
 *Output response*
