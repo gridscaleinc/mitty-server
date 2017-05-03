@@ -10,7 +10,8 @@
 8. [Register New Event](#8register-new-event)
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
-11. [Register New Activity Item](#10register-new-activity-item)
+11. [Register New Activity Item](#11register-new-activity-item)
+12. [Register Island](#12register-new-island)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -261,7 +262,10 @@ sourceName: string,    (M)      -- 情報源の名称
 sourceUrl: URL,        (O)      -- 情報源のWebPageのURL
 anticipation: string,  (O)      -- イベント参加方式、 OPEN：　自由参加、　INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
 accessControl: string, (O)      -- イベント情報のアクセス制御：　PUBLIC: 全公開、　PRIVATE: 非公開、 SHARED:関係者のみ
-language: string       (M)      -- 言語情報　(Ja_JP, en_US, en_GB) elastic　searchに使用する。
+language: string ,     (M)      -- 言語情報　(Ja_JP, en_US, en_GB) elastic　searchに使用する。
+relatedActivityId: int, (O)     -- 指定された場合、Activity Itemを一件自動登録する。
+asMainEvent: bool       (O)　　　-- relatedActivityIdが指定された場合のみ意味ある。
+                                   trueの場合は該当activityのmainEventIdを更新する。
 }
 ```
 *Output response*
@@ -381,7 +385,8 @@ POST /api/new/activity/item
      title: string ,             -- (M) varchar(200),
      memo		 ,                  -- (O) memo
      notification: bool ,        -- (M) アラーム要否  
-     notificationDateTime: timestamp  -- (O) アラーム時刻
+     notificationDateTime: timestamp,  -- (O) アラーム時刻
+     asMainEvent: bool           -- (M) trueの場合、activity.mainEventId=eventIdで更新。
 }
 
 ```
@@ -404,4 +409,66 @@ POST /api/new/activity/item
 ```
 
 
+### 12.[Register New Island](id:island-register)
+```
+POST /api/new/island
 
+```
+*Input parameter*
+```
+{
+  nickname           : string      --(O)  愛称
+  name               : string      --(M)  名称
+  logoId             : int         --(O)  LogoのContent Id
+  description        : string      --(O)  説明
+  category           : string      --(M)  カテゴリ
+  mobilityType       : string      --(M)  移動性分類
+  realityType        : string      --(M)  実在性分類
+  ownershipType      : string      --(M)  所有者分類
+  ownerName          : string      --(O)  所有者名
+  ownerId            : int         --(O)  所有者のMitty User Id
+  creatorId          : int         --(O)  作成者のMitty User Id 
+  meetingId          : int         --(O)  会議Id
+  galleryId          : int         --(O)  ギャラリーID
+  tel                : string      --(O)  電話番号
+  fax                : string      --(O)  FAX
+  mailaddress        : string      --(O)  メールアドレス
+  webpage            : string      --(O) 　WebページのURL
+  likes              : string      --(O)  いいねの数
+  countryCode        : string      --(O)  国コード
+  countryName        : string      --(O)  国名称
+  state              : string      --(O)  都道府県　
+  city               : string      --(O)  市、区
+  postcode           : string      --(O)  郵便番号
+  thoroghfare        : string      --(O)  大通り
+  subthroghfare      : string      --(O)  通り
+  buildingName       : string      --(O)  建物名称
+  floorNumber        : string      --(O)  フロー番号
+  roomNumber         : string      --(O)  部屋番号
+  address1           : string      --(O)  住所行１
+  address2           : string      --(O)  住所行２
+  address3           : string      --(O)  住所行３
+  latitude           : double      --(O)  地理位置の緯度
+  longitude          : double      --(O)  地理位置の経度
+}
+
+```
+*Output response*
+```
+{
+  result: {
+    islandId: int
+  }
+  
+}
+```
+*Description*
+```
+島とは人が集まる場所。従来的な特定な住所にある組織が入居する建物がメインだが、飛行機、タクシーなど移動体も島として登録する場合がある。また仮想的な集会場、ライブ会場なども考えられる。ゲームの世界になると、空想的なUFOなども視野にある。
+こいった情報を登録するのがこの API.
+```
+
+*See also*
+```
+  island.sql
+```
