@@ -12,6 +12,7 @@
 10. [Register New Activity](#10register-new-activity)
 11. [Register New Activity Item](#11register-new-activity-item)
 12. [Register Island](#12register-new-island)
+12. [Activity Details](#13activity-details)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -480,3 +481,75 @@ POST /api/new/island
 ```
   island.sql
 ```
+
+### 13.[Activity Details](id:activity-details)
+```
+GET /api/activity/details
+
+```
+*Input parameter*
+```
+{
+ id:   String   
+}
+
+```
+*Output response*
+```
+{
+  activity: {
+     id:
+     main_event_id
+     title
+     memo
+  }
+  details:
+  [
+    detail, detail,....
+  ]
+}
+
+detail: {
+ eventId: int,             -- ActivityItemEventId
+ title: String,            -- ActivityItemのTitle
+ memo: String              -- ActivityItemのMemo
+ notification:Bool         
+ notificationTime:   date
+ eventTitle:String         -- EventsのTitle
+ startDateTime:Date,       -- Eventのstart_datetime
+ endDateTime:Date,
+ allDayFlag:Bool,          
+ eventLogoUrl:String       -- EventのLogoIDから結びつけるContentsのLinkURL
+}
+```
+*Description*
+```
+活動詳細のための検索。
+
+SQL：
+select 
+   a.id,
+   a.title,
+   a.memo,
+   a.main_Event_Id,
+   i.event_Id,
+   i.memo,
+   i.notification,
+   notificationdatetime,
+   e.title,
+   e.start_Datetime,
+   e.end_Datetime,
+   e.allDay_Flag,
+   c.link_url as eventLogoUrl
+from
+   activity as a 
+   left join activity_item as i on a.id=i.activity_id
+   inner join events as e on i.event_id=e.id
+   left outer join contents as c on e.logo_id=c.id
+where 
+   a.id=[id]
+   and 
+   a.owner_id=[loginUserId]
+        
+```
+
