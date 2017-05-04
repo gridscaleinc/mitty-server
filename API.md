@@ -304,7 +304,6 @@ GET /api/activity/list
 *Input parameter*
 ```
 {
- category: Enum("thisYear"/"nextYear"/"specific")
  key:   String   
 }
 
@@ -319,22 +318,31 @@ GET /api/activity/list
 }
 
 activity: {
- id: int,
- eventId: int,
- eventTitle: String,
- memo: String
- startDateTime: dateTime,
- endDateTime: dateTime,
- notification: boolean,
-
-
-
-
+ id: int,                  -- Activity のID
+ eventId: int,             -- ActivityのMainEventId
+ title: String,            -- ActivityのTitle
+ startDateTime,            -- MainEventのstart_datetime
+ eventLogoUrl              -- MainEventのLogoIDから結びつけるContentsのLinkURL
 }
 ```
 *Description*
 ```
-JSON形式のパラメータを読み込み、、、、
+活動一覧画面に表示するための検索。
+
+SQL：
+select 
+         a.id,
+         a.main_event_id, 
+         a.title,
+         e.start_datetime,
+         c.link_url as event_logo_url
+from activity as a 
+        left outer join events as e on a.main_event_id=e.id 
+        left outer join contents as c on e.logo_id=c.id
+where
+        owner_id=[user_id]                         (Login中のUSERID,どう取得する？）
+        title like '%key%' or memo like '%key%'    (KeyがNULLの場合該当条件なし)
+        
 ```
 
 ### 10.[Register New Activity](id:activity-register)
