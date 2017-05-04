@@ -330,20 +330,18 @@ activity: {
 活動一覧画面に表示するための検索。
 
 SQL：
-　select 
+select 
          a.id,
          a.main_event_id, 
          a.title,
          e.start_datetime,
          c.link_url as event_logo_url
 from activity as a 
-        inner join activity_item as i on a.id=i.activity_id 
-        　　　　and a.main_event_id=i.event_id
-        inner join events as e on i.event_id=e.id 
+        left outer join events as e on a.main_event_id=e.id 
         left outer join contents as c on e.logo_id=c.id
 where
-        owner_id=[user_id]
-        title like '%key%' or memo like '%key%'
+        owner_id=[user_id]                         (Login中のUSERID,どう取得する？）
+        title like '%key%' or memo like '%key%'    (KeyがNULLの場合該当条件なし)
         
 ```
 
