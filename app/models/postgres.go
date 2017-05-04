@@ -6,9 +6,9 @@ import "gopkg.in/gorp.v1"
 func AddTableWithName(dbmap *gorp.DbMap) {
 	dbmap.AddTableWithName(User{}, "users").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Event{}, "events").SetKeys(true, "ID")
-	dbmap.AddTableWithName(Gallery{}, "gallery").SetKeys(true, "ID", "SEQ")
+	dbmap.AddTableWithName(Gallery{}, "gallery").SetKeys(false, "ID", "SEQ")
 	dbmap.AddTableWithName(Island{}, "island").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Contents{}, "contents").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Activity{}, "activity").SetKeys(true, "ID")
-	dbmap.AddTableWithName(ActivityItem{}, "activity_item").SetKeys(true, "ACTIVITY_ID","EVENT_ID")
+	dbmap.AddTableWithName(ActivityItem{}, "activity_item").SetKeys(false, "ACTIVITY_ID","EVENT_ID")
 }
