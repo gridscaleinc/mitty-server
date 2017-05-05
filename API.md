@@ -7,12 +7,13 @@
 5. [Add content for island logo](#5add-content-for-island-logo)
 6. [Add content for profile icon](#6add-content-for-profile-icon)
 7. [Event Searching](#7event-searching)
+7-1. [Event Searching](#7-1event-details)
 8. [Register New Event](#8register-new-event)
 9. [Activity List](#9activity-list)
 10. [Register New Activity](#10register-new-activity)
 11. [Register New Activity Item](#11register-new-activity-item)
 12. [Register Island](#12register-new-island)
-12. [Activity Details](#13activity-details)
+
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -184,46 +185,52 @@ JSON形式のパラメータを読み込み
 
 ### 7.[Event Searching](id:event-search)
 ```
-GET /api/event/list
+GET /api/search/event?q=
 
 ```
 *Input parameter*
 ```
 {
- category: Enum("recommendation"/"latest"/"topRate"),
- key:   String   
+ q:   String   
 }
 
 ```
 *Output response*
 ```
-{
-  count: int
-  [
+{ events]  [
     event1, event2,....
   ]
 }
 
 event: {
-  id: int,
-  title: String,
-  type: enum,            (M)
-  iconUrl: byte array,   (O)
-  tag:                ,  (M)
-  startDate: dateTime,   (M)
-  endDate: dateTime,     (M)
-  allDayFlag: book,      (M)
-  action: string,        (M)
-  image:     URL,        (O)
-  island:    URL,        (O)
-  placeName: string,     (O)
-  address :  string,     (O)
-  islandIcon: URL,       (O)
-  contactMail: String,   (O)
-  contactTel: string,    (O)
-  infoSource: string,    (O)
-  url: URL               (O)
-}
+        //  イベント情報
+        title           // イベントタイトル
+        action              // イベントの行い概要内容
+        startDate        // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        endDate         // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        allDayFlag      // 時刻非表示フラグ。
+        eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
+        imageUrl        // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
+                              // のLinkUrl
+        priceName1   // 価格名称１
+        price1             // 価格額１
+        priceName2   // 価格名称2
+        price2            // 価格額２
+        currency        // 通貨　(USD,JPY,などISO通貨３桁表記)
+        priceInfo        // 価格について一般的な記述
+        anticipation        //   イベント参加方式、 OPEN：　自由参加、
+                            　   //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
+        accessControl  //     イベント情報のアクセス制御：　PUBLIC: 全公開、
+                                 //    PRIVATE: 非公開、 SHARED:関係者のみ
+        likes                  //   いいねの数
+        // 島情報
+        isLandName      // isLandIdに結びつく島名称
+        isLandLogoUrl   // 該当island（島）のlogo_idが指すContentsのLinkURL
+　　//  投稿者情報
+       publisher:           // 投稿者の名前
+       //  加入情報　　ログイン中ユーザーが該当イベントを加入しているかどうかを示す。
+       participationStatus  // Participating/Watching/Notyet
+ }
 ```
 
 
@@ -231,6 +238,68 @@ event: {
 ```
 JSON形式のパラメータを読み込み、、、、
 ```
+### 7-1.[Event Searching](id:event-search)
+```
+GET /api/event/of?id=xxx
+
+```
+*Input parameter*
+```
+{
+ id:   String   
+}
+
+```
+*Output response*
+```
+event: {
+        //  イベント情報
+        type            // イベントの種類
+        category        // カテゴリー
+        theme           // テーマ
+        tag             // イベントについて利用者が入力したデータの分類識別。
+        title           // イベントタイトル
+        action          // イベントの行い概要内容
+        startDate       // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        endDate         // イベント終了日時
+        allDayFlag      // 時刻非表示フラグ。
+        islandId        　// 島ID
+        isLandName      // isLandIdに結びつく島名称
+        isLandLogoUrl   // 該当island（島）のlogo_idが指すContentsのLinkURL
+        eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
+        imageUrl        // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
+                              // のLinkUrl
+        galleryId         // Gallery Id   
+        meetingId       // 会議番号
+        priceName1   // 価格名称１
+        price1             // 価格額１
+        priceName2   // 価格名称2
+        price2            // 価格額２
+        currency        // 通貨　(USD,JPY,などISO通貨３桁表記)
+        priceInfo        // 価格について一般的な記述
+        description     // イベントについて詳細な説明記述
+        contactTel       // 連絡電話番号
+        contactFax     //  連絡FAX
+        contactMail    //  連絡メール
+        officialUrl        //  イベント公式ページURL
+        organizer        //  主催者の個人や団体の名称
+        sourceName   // 情報源の名称
+        sourceUrl           // 情報源のWebPageのURL
+        anticipation        //   イベント参加方式、 OPEN：　自由参加、
+                            　   //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
+        accessControl  //     イベント情報のアクセス制御：　PUBLIC: 全公開、
+                                 //    PRIVATE: 非公開、 SHARED:関係者のみ
+        likes                  //   いいねの数
+        anguage　　    //(M) 言語情報　(Ja_JP, en_US, en_GB) elasticsearchに使用する。
+ }
+```
+
+
+*Description*
+```
+JSON形式のパラメータを読み込み、、、、
+```
+
 ### 8.[Register New Event](id:event-register)
 ```
 POST /api/new/event
@@ -335,11 +404,11 @@ select
          a.id,
          a.main_event_id, 
          a.title,
-         e.start_datetime,
+         start_datetime,
          c.link_url as event_logo_url
 from activity as a 
-        left outer join events as e on a.main_event_id=e.id 
-        left outer join contents as c on e.logo_id=c.id
+        left outer join events as e on a.main_event_id=id 
+        left outer join contents as c on logo_id=c.id
 where
         owner_id=[user_id]                         (Login中のUSERID,どう取得する？）
         title like '%key%' or memo like '%key%'    (KeyがNULLの場合該当条件なし)
@@ -536,16 +605,16 @@ select
    i.memo,
    i.notification,
    notificationdatetime,
-   e.title,
-   e.start_Datetime,
-   e.end_Datetime,
-   e.allDay_Flag,
+   title,
+   start_Datetime,
+   end_Datetime,
+   allDay_Flag,
    c.link_url as eventLogoUrl
 from
    activity as a 
    left join activity_item as i on a.id=i.activity_id
-   inner join events as e on i.event_id=e.id
-   left outer join contents as c on e.logo_id=c.id
+   inner join events as e on i.event_id=id
+   left outer join contents as c on logo_id=c.id
 where 
    a.id=[id]
    and 
