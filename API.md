@@ -204,41 +204,50 @@ GET /api/search/event?q=
 
 event: {
         //  イベント情報
-        title           // イベントタイトル
+        title               // イベントタイトル
         action              // イベントの行い概要内容
-        startDate        // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
-        endDate         // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
-        allDayFlag      // 時刻非表示フラグ。
-        eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
-        imageUrl        // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
-                              // のLinkUrl
-        priceName1   // 価格名称１
-        price1             // 価格額１
-        priceName2   // 価格名称2
-        price2            // 価格額２
-        currency        // 通貨　(USD,JPY,などISO通貨３桁表記)
-        priceInfo        // 価格について一般的な記述
+        startDate           // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        endDate             // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        allDayFlag          // 時刻非表示フラグ。
+        eventLogoUrl        // 該当イベントのLogoIdが指すContentsのLinkUrl
+        imageUrl            // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
+                            // のLinkUrl
+        priceName1          // 価格名称１
+        price1              // 価格額１
+        priceName2          // 価格名称2
+        price2              // 価格額２
+        currency            // 通貨　(USD,JPY,などISO通貨３桁表記)
+        priceInfo           // 価格について一般的な記述
         anticipation        //   イベント参加方式、 OPEN：　自由参加、
-                            　   //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
-        accessControl  //     イベント情報のアクセス制御：　PUBLIC: 全公開、
-                                 //    PRIVATE: 非公開、 SHARED:関係者のみ
-        likes                  //   いいねの数
+                            //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
+        accessControl       //     イベント情報のアクセス制御：　PUBLIC: 全公開、
+                            //    PRIVATE: 非公開、 SHARED:関係者のみ
+        likes               //   いいねの数
         // 島情報
-        isLandName      // isLandIdに結びつく島名称
-        isLandLogoUrl   // 該当island（島）のlogo_idが指すContentsのLinkURL
-　　//  投稿者情報
-       publisher:           // 投稿者の名前
-       //  加入情報　　ログイン中ユーザーが該当イベントを加入しているかどうかを示す。
-       participationStatus  // Participating/Watching/Notyet
+        isLandName          // isLandIdに結びつく島名称
+        isLandLogoUrl       // 該当island（島）のlogo_idが指すContentsのLinkURL
+　　     //  投稿者情報
+        publisherName       // 投稿者の名前
+        publisherIconUrl    // 投稿者のアイコンのURL  
+        publishedDays:      // 何日たちましたか
  }
 ```
 
 
 *Description*
 ```
-JSON形式のパラメータを読み込み、、、、
+q=keysによって、Ealstic Search から該当eventの候補を取得し、下記付加処理、情報をつけて、結果を返す。
+1. 閲覧可否のチェック
+　　AccessControl＝Privateのイベントは出力しない。
+　　
+2. 島情報
+　　島名とLogo
+　　
+3. 投稿者情報
+   何日まえに投稿したか、投稿者なお名前。
+
 ```
-### 7-1.[Event Searching](id:event-search)
+### 7-1.[Event Fetching](id:event-fetch)
 ```
 GET /api/event/of?id=xxx
 
@@ -263,41 +272,60 @@ event: {
         startDate       // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
         endDate         // イベント終了日時
         allDayFlag      // 時刻非表示フラグ。
-        islandId        　// 島ID
+        islandId        // 島ID
+        eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
+        galleryId       // Gallery Id   
+        meetingId       // 会議番号
+        priceName1      // 価格名称１
+        price1          // 価格額１
+        priceName2      // 価格名称2
+        price2          // 価格額２
+        currency        // 通貨　(USD,JPY,などISO通貨３桁表記)
+        priceInfo       // 価格について一般的な記述
+        description     // イベントについて詳細な説明記述
+        contactTel      // 連絡電話番号
+        contactFax      //  連絡FAX
+        contactMail     //  連絡メール
+        officialUrl     //  イベント公式ページURL
+        organizer       //  主催者の個人や団体の名称
+        sourceName      // 情報源の名称
+        sourceUrl       // 情報源のWebPageのURL
+        anticipation    // イベント参加方式、 OPEN：　自由参加、
+                        // INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
+        accessControl   // イベント情報のアクセス制御：　PUBLIC: 全公開、
+                        // PRIVATE: 非公開、 SHARED:関係者のみ
+        likes           // いいねの数
+        language　　     //(M) 言語情報　(Ja_JP, en_US, en_GB) elasticsearchに使用する。
+
+        //  島情報
         isLandName      // isLandIdに結びつく島名称
         isLandLogoUrl   // 該当island（島）のlogo_idが指すContentsのLinkURL
-        eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
-        imageUrl        // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
-                              // のLinkUrl
-        galleryId         // Gallery Id   
-        meetingId       // 会議番号
-        priceName1   // 価格名称１
-        price1             // 価格額１
-        priceName2   // 価格名称2
-        price2            // 価格額２
-        currency        // 通貨　(USD,JPY,などISO通貨３桁表記)
-        priceInfo        // 価格について一般的な記述
-        description     // イベントについて詳細な説明記述
-        contactTel       // 連絡電話番号
-        contactFax     //  連絡FAX
-        contactMail    //  連絡メール
-        officialUrl        //  イベント公式ページURL
-        organizer        //  主催者の個人や団体の名称
-        sourceName   // 情報源の名称
-        sourceUrl           // 情報源のWebPageのURL
-        anticipation        //   イベント参加方式、 OPEN：　自由参加、
-                            　   //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
-        accessControl  //     イベント情報のアクセス制御：　PUBLIC: 全公開、
-                                 //    PRIVATE: 非公開、 SHARED:関係者のみ
-        likes                  //   いいねの数
-        anguage　　    //(M) 言語情報　(Ja_JP, en_US, en_GB) elasticsearchに使用する。
+        
+        //  投稿者情報
+        publisherName   // 投稿者の名前
+        publisherIconUrl // 投稿者のアイコンのURL  
+        publishedDays:   // 何日たちましたか
+
+        //  加入情報　　ログイン中ユーザーが該当イベントを加入しているかどうかを示す。
+        participationStatus  // Participating/Watching/Notyet
+
  }
 ```
 
-
 *Description*
 ```
-JSON形式のパラメータを読み込み、、、、
+id=[id]によって、DB から該当eventを取得し、下記付加処理、情報をつけて、結果を返す。
+1. 閲覧可否のチェック
+　　AccessControl＝Privateのイベントは出力しない。
+　　
+2. 島情報
+　　島名とLogo
+　　
+3. 投稿者情報
+   何日まえに投稿したか、投稿者なお名前。
+   
+4. 参加情報
+　　参加したか、Watchしたか。
 ```
 
 ### 8.[Register New Event](id:event-register)
