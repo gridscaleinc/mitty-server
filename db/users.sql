@@ -8,6 +8,7 @@ create table users (
   mail_address    varchar(50),
   mail_confirmed  boolean,
   status          varchar	(20),
+  icon             varchar(500),
   created         timestamp  not null DEFAULT CURRENT_TIMESTAMP,
   updated         timestamp  not null DEFAULT CURRENT_TIMESTAMP,
   UNIQUE          (user_name)

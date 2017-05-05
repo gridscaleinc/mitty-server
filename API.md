@@ -218,14 +218,14 @@ event: {
         price2              // 価格額２
         currency            // 通貨　(USD,JPY,などISO通貨３桁表記)
         priceInfo           // 価格について一般的な記述
-        anticipation        //   イベント参加方式、 OPEN：　自由参加、
+        participation        //   イベント参加方式、 OPEN：　自由参加、
                             //    INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
         accessControl       //     イベント情報のアクセス制御：　PUBLIC: 全公開、
                             //    PRIVATE: 非公開、 SHARED:関係者のみ
         likes               //   いいねの数
         // 島情報
-        isLandName          // isLandIdに結びつく島名称
-        isLandLogoUrl       // 該当island（島）のlogo_idが指すContentsのLinkURL
+        islandName          // isLandIdに結びつく島名称
+        islandLogoUrl       // 該当island（島）のlogo_idが指すContentsのLinkURL
 　　     //  投稿者情報
         publisherName       // 投稿者の名前
         publisherIconUrl    // 投稿者のアイコンのURL  
@@ -244,8 +244,41 @@ q=keysによって、Ealstic Search から該当eventの候補を取得し、下
 　　島名とLogo
 　　
 3. 投稿者情報
-   何日まえに投稿したか、投稿者なお名前。
+   何日まえに投稿したか、投稿者なお名前。 
 
+```
+*参考SQL*
+```
+select 
+        e.title               ,
+        e.action           ,
+        e.start_datetime  as startDate,     
+        e.end_datetime   as endDate  ,  
+        e.allday_flag        as allDayFlag,
+        c1.link_url as eventLogoUrl      ,
+        c3.link_url         as imageUrl  ,
+        e.price_name1    as priceName1,
+        e.price1              ,
+        e.price_name2   as priceName2,
+        e.price2              ,
+        e.currency          ,
+        e.price_info        as priceInfo,
+        e.participation     ,
+        e.access_control as accessControl,
+        e.likes ,
+        i.name              as isLandName,
+        u.user_name    as  publisherName ,
+        u.icon                as publisherIconUrl,
+        (current_date -  e.created) as  createpublishedDays
+from 
+       events as e
+       left join contents as c1 on e.logo_id=c1.id
+       inner join island as i on e.islandid=i.id
+       left join contents as c2 on i.logo_id=c2.id
+       left join gallery as g on e.gallery_id=g.id and g.seq=1
+       left join contents as c3 on g.content_id=c3.id
+       left join users as u on e.publisher_id=u.id
+where id in (id1,id2,id3,.............id100)
 ```
 ### 7-1.[Event Fetching](id:event-fetch)
 ```
@@ -290,7 +323,7 @@ event: {
         organizer       //  主催者の個人や団体の名称
         sourceName      // 情報源の名称
         sourceUrl       // 情報源のWebPageのURL
-        anticipation    // イベント参加方式、 OPEN：　自由参加、
+        participation    // イベント参加方式、 OPEN：　自由参加、
                         // INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
         accessControl   // イベント情報のアクセス制御：　PUBLIC: 全公開、
                         // PRIVATE: 非公開、 SHARED:関係者のみ
@@ -358,7 +391,7 @@ officialUrl: URL,      (O)      -- イベント公式ページURL
 organizer: string,     (O)      -- 主催者の個人や団体の名称
 sourceName: string,    (M)      -- 情報源の名称
 sourceUrl: URL,        (O)      -- 情報源のWebPageのURL
-anticipation: string,  (O)      -- イベント参加方式、 OPEN：　自由参加、　INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
+participation: string,  (O)      -- イベント参加方式、 OPEN：　自由参加、　INVITATION:招待制、PRIVATE:個人用、他の人は参加不可。
 accessControl: string, (O)      -- イベント情報のアクセス制御：　PUBLIC: 全公開、　PRIVATE: 非公開、 SHARED:関係者のみ
 language: string ,     (M)      -- 言語情報　(Ja_JP, en_US, en_GB) elastic　searchに使用する。
 relatedActivityId: int, (O)     -- 指定された場合、Activity Itemを一件自動登録する。

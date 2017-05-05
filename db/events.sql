@@ -29,7 +29,7 @@ create table events (
         source_name                          varchar(100),
         source_url                               varchar(200),
         number_of_anticipants            int4,
-        anticipation                              varchar(20),
+        participation                            varchar(20),
         access_control                        varchar(20),
         likes                                         int4,
         status                                       varchar(20),
