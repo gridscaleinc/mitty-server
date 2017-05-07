@@ -29,6 +29,7 @@ func webRoutes(r *mux.Router) {
 	r.Handle("/admin", basicAuth(controllers.AdminIndexHandler)).Methods("GET")
 	r.Handle("/admin/users", basicAuth(controllers.AdminUsersHandler)).Methods("GET")
 	r.Handle("/admin/events", basicAuth(controllers.AdminEventsHandler)).Methods("GET")
+	r.Handle("/talk", basicAuth(controllers.TalkIndexHandler)).Methods("GET")
 }
 
 func publicRoutes(r *mux.Router) {

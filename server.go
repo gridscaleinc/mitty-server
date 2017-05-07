@@ -46,9 +46,6 @@ func main() {
 		//func(handler http.Handler) http.Handler { return filters.AuthHandler(handler) },
 	}
 
-    fs := http.FileServer(http.Dir("./talk"))
-	http.Handle("/talk", fs)
-	
 	// Configure websocket route
 	http.HandleFunc("/talk/ws", talk.WebsocketHandler)
 
