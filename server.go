@@ -51,7 +51,7 @@ func main() {
 
     // Start listening for incoming chat messages
 	go talk.MessageHandler()
-		
+
 	appHandler := alice.New(mws...).Then(app.BuildRouter())
 
 	http.Handle("/", appHandler)

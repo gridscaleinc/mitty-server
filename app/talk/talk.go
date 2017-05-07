@@ -35,7 +35,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Register our new client
 	clients[ws] = true
-
+    logrus.Printf("WebsocketHandler Start handling new client.")
 	for {
 		var msg Message
 		// Read in a new message as JSON and map it to a Message object
@@ -54,6 +54,7 @@ func MessageHandler() {
 	for {
 		// Grab the next message from the broadcast channel
 		msg := <-broadcast
+		logrus.Printf("New message:%v", msg)
 		// Send it out to every client that is currently connected
 		for client := range clients {
 			err := client.WriteJSON(msg)
