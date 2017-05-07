@@ -47,7 +47,7 @@ func main() {
 	}
 
 	// Configure websocket route
-	http.HandleFunc("/talk/ws", talk.WebsocketHandler)
+	http.HandleFunc("/ws/", talk.WebsocketHandler)
 
     // Start listening for incoming chat messages
 	go talk.MessageHandler()
