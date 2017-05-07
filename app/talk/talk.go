@@ -24,7 +24,7 @@ type Message struct {
 }
 
 
-func WebsoketHandler(w http.ResponseWriter, r *http.Request) {
+func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
