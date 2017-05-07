@@ -24,7 +24,7 @@ type Message struct {
 }
 
 
-func handleConnections(w http.ResponseWriter, r *http.Request) {
+func WebsoketHandler(w http.ResponseWriter, r *http.Request) {
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -50,7 +50,7 @@ func handleConnections(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func handleMessages() {
+func MessageHandler() {
 	for {
 		// Grab the next message from the broadcast channel
 		msg := <-broadcast

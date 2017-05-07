@@ -50,10 +50,10 @@ func main() {
 	http.Handle("/talk", fs)
 	
 	// Configure websocket route
-	http.HandleFunc("/talk/ws", talk.handleConnections)
+	http.HandleFunc("/talk/ws", talk.WebsocketHandler)
 
     // Start listening for incoming chat messages
-	go talk.handleMessages()
+	go talk.MessageHandler()
 		
 	appHandler := alice.New(mws...).Then(app.BuildRouter())
 
