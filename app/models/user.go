@@ -18,6 +18,7 @@ type User struct {
 	MailConfirmed bool      `db:"mail_confirmed" json:"mail_confirmed"`
 	MailToken     string    `db:"mail_token" json:"mail_token"`
 	Status        string    `db:"status" json:"status"`
+	Icon          string    `db:"icon" json:"icon"`
 	Created       time.Time `db:"created" json:"created"`
 	Updated       time.Time `db:"updated" json:"updated"`
 }

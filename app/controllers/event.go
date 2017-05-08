@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 	"time"
 
 	elastic "gopkg.in/olivere/elastic.v5"
@@ -40,7 +41,7 @@ type EventParams struct {
 	Organizer         string    `json:"organizer"`
 	SourceName        string    `json:"sourceName"`
 	SourceURL         string    `json:"sourceUrl"`
-	Anticipation      string    `json:"anticipation"`
+	Participation     string    `json:"participation"`
 	AccessControl     string    `json:"accessControl"`
 	Language          string    `json:"language"`
 	RelatedActivityID int       `json:"relatedActivityId"`
@@ -138,8 +139,8 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 			Form:     "sourceUrl",
 			Required: false,
 		},
-		&p.Anticipation: binding.Field{
-			Form:     "anticipation",
+		&p.Participation: binding.Field{
+			Form:     "participation",
 			Required: false,
 		},
 		&p.AccessControl: binding.Field{
@@ -205,7 +206,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.Organizer = p.Organizer
 	e.SourceName = p.SourceName
 	e.SourceURL = p.SourceURL
-	e.Anticipation = p.Anticipation
+	e.Participation = p.Participation
 	e.AccessControl = p.AccessControl
 	e.Language = p.Language
 	if err := e.Save(*tx); err != nil {
@@ -279,5 +280,36 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"events": events,
+	})
+}
+
+// EventFetchingHandler ...
+func EventFetchingHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	idParams := r.URL.Query().Get("id")
+	eventID, err := strconv.Atoi(idParams)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+	event, err := models.GetEventDetailByID(tx, 1, eventID)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"event": event,
 	})
 }

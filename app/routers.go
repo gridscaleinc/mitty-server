@@ -45,6 +45,8 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/new/activity/item", controllers.PostActivityItemHandler).Methods("POST")
 
 	r.HandleFunc("/new/island", controllers.PostIslandHandler).Methods("POST")
+
+	r.HandleFunc("/event/of", controllers.EventFetchingHandler).Methods("GET")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

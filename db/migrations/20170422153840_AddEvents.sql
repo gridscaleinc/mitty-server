@@ -31,7 +31,7 @@ CREATE TABLE if not exists events (
     source_name VARCHAR (100),
     source_url VARCHAR (200),
     number_of_anticipants int4,
-    anticipation VARCHAR (20),
+    participation VARCHAR (20),
     access_control VARCHAR (20),
     likes int4,
     status VARCHAR (20),

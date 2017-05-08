@@ -40,7 +40,7 @@ type Event struct {
 	SourceName          string    `db:"source_name" json:"source_name"`
 	SourceURL           string    `db:"source_url" json:"source_url"`
 	NumberOfAnticipants int       `db:"number_of_anticipants" json:"number_of_anticipants"`
-	Anticipation        string    `db:"anticipation" json:"anticipation"`
+	Participation       string    `db:"participation" json:"participation"`
 	AccessControl       string    `db:"access_control" json:"access_control"`
 	Likes               int       `db:"likes" json:"likes"`
 	Status              string    `db:"status" json:"status"`
@@ -105,4 +105,39 @@ func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
 		return nil, err
 	}
 	return event, nil
+}
+
+// GetEventDetailByID ...
+func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, error) {
+	type result struct {
+		Event
+		IsLandName          *string `db:"island_name" json:"isLandName"`
+		IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
+		PublisherName       *string `db:"publisher_name" json:"publisherName"`
+		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
+		PublishedDays       int     `db:"published_days" json:"publishedDays"`
+		ParticipationStatus bool    `db:"participation_status" json:"participationStatus"`
+	}
+
+	eventDetail := new(result)
+	if err := tx.SelectOne(&eventDetail, `select events.*,
+		island.name as island_name,
+		contents.link_url as island_logo_url,
+		users.name as publisher_name,
+		users.icon as publisher_icon_url,
+		DATE 'now' - events.created as published_days,
+		CASE WHEN activity.owner_id is null THEN false
+      ELSE true
+    END as participation_status
+		from events
+		left join island on island.id = events.islandid
+		left join contents on contents.id = events.logo_id
+		left join users on users.id = events.publisher_id
+		left join activity_item on activity_item.event_id = events.id
+		left join activity on activity.id = activity_item.activity_id and activity.owner_id=$1
+		where events.id = $2;
+		`, userID, ID); err != nil {
+		return nil, err
+	}
+	return eventDetail, nil
 }
