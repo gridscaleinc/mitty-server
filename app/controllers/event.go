@@ -247,6 +247,18 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 // SearchEventHandler ...
 func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
 
 	queryParams := r.URL.Query().Get("q")
 
@@ -263,6 +275,7 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	query := elastic.NewBoolQuery()
 	query.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
+	query.Filter(elastic.NewTermQuery("access_control", "public"))
 
 	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
 	if err != nil {
@@ -270,12 +283,18 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var events []models.Event
+	userID := -1
+	var events []interface{}
 	var event models.Event
 	for _, item := range searchResult.Each(reflect.TypeOf(event)) {
 		if t, ok := item.(models.Event); ok {
 			fmt.Printf("User by %s: %s\n", t.Title, t.Description)
-			events = append(events, t)
+			eventDetail, err := models.GetEventDetailByID(tx, userID, int(t.ID))
+			if err != nil {
+				helpers.RenderDBError(w, r, err)
+				return
+			}
+			events = append(events, eventDetail)
 		}
 	}
 	render.JSON(w, http.StatusOK, map[string]interface{}{
