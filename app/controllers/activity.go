@@ -28,15 +28,14 @@ func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 
 	key := r.URL.Query().Get("key")
 
-	userID := -1
+	userID := 0
 	activities, err := models.GetActivityListByKey(tx, userID, key)
 	if err != nil {
 		helpers.RenderDBError(w, r, err)
 		return
 	}
 
-	count := len(activities.(map[string]interface{}))
-
+	count := len(activities)
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"count":      count,
 		"activities": activities,

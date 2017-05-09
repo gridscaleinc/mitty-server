@@ -17,6 +17,15 @@ type Activity struct {
 	Updated     time.Time `db:"updated" json:"updated"`
 }
 
+// ActivityList ...
+type ActivityList struct {
+	ID            int        `db:"id" json:"id"`                       //  Activity のID
+	EventID       int        `db:"eventId" json:"eventId"`             // ActivityのMainEventId
+	Title         string     `db:"title" json:"title"`                 // ActivityのTitle
+	StartDateTime *time.Time `db:"startDateTime" json:"startDateTime"` // MainEventのstart_datetime
+	EventLogoURL  *string    `db:"eventLogoUrl" json:"eventLogoUrl"`   // MainEventのLogoIDから結びつけるContentsのLinkURL
+}
+
 // ActivityDetail ...
 type ActivityDetail struct {
 	ID               int64     `db:"id" json:"id"`
@@ -67,15 +76,8 @@ func GetActivityByID(tx *gorp.Transaction, ID int) (*Activity, error) {
 }
 
 // GetActivityListByKey ...
-func GetActivityListByKey(tx *gorp.Transaction, userID int, key string) (interface{}, error) {
-	type activity struct {
-		ID            int       `db:"id" json:"id"`                       //  Activity のID
-		EventID       int       `db:"eventId" json:"eventId"`             // ActivityのMainEventId
-		Title         string    `db:"title" json:"title"`                 // ActivityのTitle
-		StartDateTime time.Time `db:"startDateTime" json:"startDateTime"` // MainEventのstart_datetime
-		EventLogoURL  string    `db:"eventLogoUrl" json:"eventLogoUrl"`   // MainEventのLogoIDから結びつけるContentsのLinkURL
-	}
-	activities := []activity{}
+func GetActivityListByKey(tx *gorp.Transaction, userID int, key string) ([]ActivityList, error) {
+	activities := []ActivityList{}
 	_, err := tx.Select(&activities, `
 		select
       a.id,
