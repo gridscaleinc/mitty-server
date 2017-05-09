@@ -40,13 +40,16 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/gallery/content", controllers.PostGalleryContentHandler).Methods("POST")
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 
-	r.HandleFunc("/activity/list", controllers.GetActivityHandler).Methods("GET")
 	r.HandleFunc("/new/activity", controllers.PostActivityHandler).Methods("POST")
 	r.HandleFunc("/new/activity/item", controllers.PostActivityItemHandler).Methods("POST")
 
 	r.HandleFunc("/new/island", controllers.PostIslandHandler).Methods("POST")
 
 	r.HandleFunc("/event/of", controllers.EventFetchingHandler).Methods("GET")
+
+	r.HandleFunc("/activity/list", controllers.GetActivityListHandler).Methods("GET")
+	r.HandleFunc("/activity/details", controllers.GetActivityDetailHandler).Methods("GET")
+
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

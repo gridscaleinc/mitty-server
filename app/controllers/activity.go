@@ -10,8 +10,8 @@ import (
 	"github.com/mholt/binding"
 )
 
-// GetActivityHandler ...
-func GetActivityHandler(w http.ResponseWriter, r *http.Request) {
+// GetActivityListHandler ...
+func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()
@@ -26,8 +26,20 @@ func GetActivityHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
+	key := r.URL.Query().Get("key")
+
+	userID := -1
+	activities, err := models.GetActivityListByKey(tx, userID, key)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+
+	count := len(activities.(map[string]interface{}))
+
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"soon": "TODO",
+		"count":      count,
+		"activities": activities,
 	})
 }
 
@@ -89,4 +101,44 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"activityId": activity.ID,
 	})
+}
+
+// GetActivityDetailHandler ...
+func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	id := r.URL.Query().Get("id")
+	userID := 0
+
+	details, err := models.GetActivityDetailsByID(tx, userID, id)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+
+	activity := new(models.Activity)
+	if len(details) > 0 {
+		activity.ID = details[0].ID
+		activity.MainEventID = details[0].MainEventID
+		activity.Title = details[0].Title
+		activity.Memo = details[0].Memo
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"activity": activity,
+		"details":  details,
+	})
+
 }
