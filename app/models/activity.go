@@ -88,8 +88,8 @@ func GetActivityListByKey(tx *gorp.Transaction, userID int, key string) (interfa
 	    left outer join contents as c on e.logo_id=c.id
 		where
 		  a.owner_id=$1 and
-			(a.title like '%$2%' or a.memo like '%$2%');
-		`, userID, key)
+			(a.title like '%$2%' or a.memo like '%$3%');
+		`, userID, key, key)
 	return activities, err
 }
 
