@@ -108,12 +108,12 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   e.start_datetime as startDateTime,
 		   e.end_datetime as endDateTime,
 		   e.allday_flag as allDayFlag,
-		   c.link_url as eventLogoUrl
+		   COALESCE(c.link_url, '') as eventLogoUrl
 		from
 		   activity as a
 		   left join activity_item as i on a.id=i.activity_id
 		   inner join events as e on i.event_id=e.id
-		   left outer join contents as c on logo_id=c.id
+		   left outer join contents as c on e.logo_id=c.id
 		where
 		   a.id=$1
 		   and
