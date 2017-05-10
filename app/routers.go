@@ -10,6 +10,16 @@ import (
 
 // BuildRouter creates and returns a router which hold whole handler functions.
 func BuildRouter() http.Handler {
+	cssHandler := http.FileServer(http.Dir("./public/css/"))
+	fontsHandler := http.FileServer(http.Dir("./public/fonts/"))
+	imagesHandler := http.FileServer(http.Dir("./public/img/"))
+	javascriptHandler := http.FileServer(http.Dir("./public/js/"))
+
+	http.Handle("/css/", http.StripPrefix("/css/", cssHandler))
+	http.Handle("/fonts/", http.StripPrefix("/fonts/", fontsHandler))
+	http.Handle("/img/", http.StripPrefix("/images/", imagesHandler))
+	http.Handle("/js/", http.StripPrefix("/js/", javascriptHandler))
+
 	appRouter := mux.NewRouter()
 
 	webRouter := appRouter.PathPrefix("/").Subrouter()
