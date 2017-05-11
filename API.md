@@ -14,6 +14,7 @@
 12. [Register Island](#12register-new-island)
 13. [Activity Details](#13activity-details)
 14. [Event Fetching](#14event-fetching)
+15. [Island Info](#15island-info)
 
 
 ### [Common Rules](id:common-rules)
@@ -685,3 +686,42 @@ id=[id]によって、DB から該当eventを取得し、下記付加処理、�
 　　参加したか、Watchしたか。
 ```
 
+### 15.[Island Info](id:island-info)
+```
+GET /api/island/info?name=[name]
+```
+*Input Parameter*
+```
+name: String 島の名称。
+```
+*Out put response*
+```
+{
+islands:[island,....]
+}
+
+{
+  nickname           : string      --(O)  愛称
+  name               : string      --(M)  名称
+  logoUrl            : int         -- 該当 島のLogoIdに紐つくContentのURL
+  address1           : string      --(O)  住所行１
+  address2           : string      --(O)  住所行２
+  address3           : string      --(O)  住所行３
+  latitude           : double      --(O)  地理位置の緯度
+  longitude          : double      --(O)  地理位置の経度
+}
+
+```
+*Description*
+
+```
+利用者が場所を選ぶ際に、名称から選ぶ。選んだ場所の名称を元にMittyのislandテーブルから検索し、
+すでに存在した場合、その情報を返す。
+同じ名前が複数あっても、複数件を全件返す。(同じ名前複数存在は別途防ぐ措置を考える）
+
+```
+
+*See also*
+```
+  island.sql
+```
