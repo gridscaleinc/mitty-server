@@ -249,3 +249,30 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 		"islandId": island.ID,
 	})
 }
+
+// GetIslandHandler ...
+func GetIslandHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	name := r.URL.Query().Get("name")
+	islands, err := models.SearchIslandByName(tx, name)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
+	}
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"islands": islands,
+	})
+
+}

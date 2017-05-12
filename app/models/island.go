@@ -69,3 +69,31 @@ func GetIslandByID(tx *gorp.Transaction, ID int) (*Island, error) {
 	}
 	return island, nil
 }
+
+// SearchIslandByName ...
+func SearchIslandByName(tx *gorp.Transaction, name string) (interface{}, error) {
+	// Island struct
+	type island struct {
+		Nickname  string `db:"nickname" json:"nickname"`
+		Name      string `db:"name" json:"name"`
+		LogoURL   string `db:"logo_url" json:"logoUrl"`
+		Address1  string `db:"address1" json:"address1"`
+		Address2  string `db:"address2" json:"address2"`
+		Address3  string `db:"address3" json:"address3"`
+		Latitude  string `db:"latitude" json:"latitude"`
+		Longitude string `db:"longitude" json:"longitude"`
+	}
+	islands := []island{}
+
+	if _, err := tx.Select(&islands, `
+		select
+		  i.nickname, i.name, i.address1, i.address2, i.address3,
+			i.latitude, i.longitude,
+			COALESCE(c.link_url, '') as logo_url
+		from island as i
+		left join contents as c on c.id = i.logo_id
+		where i.name like '%' || $1 || '%'`, name); err != nil {
+		return nil, err
+	}
+	return islands, nil
+}
