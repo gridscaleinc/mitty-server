@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -263,19 +264,27 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query().Get("q")
 
 	matchQuery1 := elastic.NewMatchQuery("action", queryParams)
-	matchQuery1.Boost(4)
+	//matchQuery1.Boost(4)
 	matchQuery2 := elastic.NewMatchQuery("description", queryParams)
-	matchQuery2.Boost(2)
 	matchQuery3 := elastic.NewMatchQuery("source_name", queryParams)
-	matchQuery3.Boost(1)
 	matchQuery4 := elastic.NewMatchQuery("category", queryParams)
-	matchQuery4.Boost(1)
 	matchQuery5 := elastic.NewMatchQuery("tag", queryParams)
-	matchQuery5.Boost(1)
 
+	query1 := elastic.NewBoolQuery()
+	query1.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
 	query := elastic.NewBoolQuery()
-	query.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
-	query.Filter(elastic.NewTermQuery("access_control", "public"))
+	query.Must(query1, elastic.NewTermQuery("access_control", "public"))
+
+	src, err := query.Source()
+	if err != nil {
+		panic(err)
+	}
+	data, err := json.Marshal(src)
+	if err != nil {
+		panic(err)
+	}
+	s := string(data)
+	fmt.Println(s)
 
 	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
 	if err != nil {
@@ -288,9 +297,8 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	var event models.Event
 	for _, item := range searchResult.Each(reflect.TypeOf(event)) {
 		if t, ok := item.(models.Event); ok {
-			fmt.Printf("User by %s: %s\n", t.Title, t.Description)
 			eventDetail, err := models.GetEventDetailByID(tx, userID, int(t.ID))
-			if err != nil {
+			if err != nil && err != sql.ErrNoRows {
 				helpers.RenderDBError(w, r, err)
 				return
 			}
