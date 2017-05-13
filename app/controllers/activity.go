@@ -127,7 +127,7 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	activity, err := models.GetActivityByID(tx. id)
+	activity, err := models.GetActivityByID(tx, id)
 	if err != nil {
 		helpers.RenderDBError(w, r, err)
 		return
