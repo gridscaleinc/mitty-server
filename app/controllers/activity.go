@@ -127,12 +127,10 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	activity := new(models.Activity)
-	if len(details) > 0 {
-		activity.ID = details[0].ID
-		activity.MainEventID = details[0].MainEventID
-		activity.Title = details[0].Title
-		activity.Memo = details[0].Memo
+	activity, err := models.GetActivityByID(tx. id)
+	if err != nil {
+		helpers.RenderDBError(w, r, err)
+		return
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{

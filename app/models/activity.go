@@ -28,8 +28,6 @@ type ActivityList struct {
 
 // ActivityDetail ...
 type ActivityDetail struct {
-	ID               int64     `db:"id" json:"id"`
-	MainEventID      int64     `db:"main_event_id" json:"main_event_id"`
 	Title            string    `db:"title" json:"title"`
 	Memo             string    `db:"memo" json:"memo"`
 	EventID          int64     `db:"eventId" json:"eventId"`
@@ -100,21 +98,19 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 	details := []ActivityDetail{}
 	_, err := tx.Select(&details, `
 		select
-		   a.id,
-		   a.title,
-		   a.memo,
-		   COALESCE(a.main_event_id,0) as main_event_id,
-		   COALESCE(i.event_Id,0) as eventId,
-		   COALESCE(i.notification, false) as notification,
-		   COALESCE(notificationdatetime, now()) as notificationTime,
-		   COALESCE(e.start_datetime, now()) as startDateTime,
-		   COALESCE(e.end_datetime, now()) as endDateTime,
-		   COALESCE(e.allday_flag,false) as allDayFlag,
+		   i.event_Id as eventId,
+		   i.title,
+		   i.memo,
+		   i.notification,
+		   notificationdatetime as notificationTime,
+		   e.start_datetime as startDateTime,
+		   e.end_datetime as endDateTime,
+		   e.allday_flag as allDayFlag,
 		   COALESCE(c.link_url, '') as eventLogoUrl
 		from
 		   activity as a
-		   left join activity_item as i on a.id=i.activity_id
-		   left outer join events as e on i.event_id=e.id
+		   inner join activity_item as i on a.id=i.activity_id
+		   inner join events as e on i.event_id=e.id
 		   left outer join contents as c on e.logo_id=c.id
 		where
 		   a.id=$1
