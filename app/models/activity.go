@@ -105,7 +105,7 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   a.memo,
 		   COALESCE(a.main_event_id,0) as main_event_id,
 		   COALESCE(i.event_Id,0) as eventId,
-		   i.notification,
+		   COALESCE(i.notification, false) as notification,
 		   notificationdatetime as notificationTime,
 		   e.start_datetime as startDateTime,
 		   e.end_datetime as endDateTime,
