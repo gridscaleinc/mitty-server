@@ -106,10 +106,10 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   COALESCE(a.main_event_id,0) as main_event_id,
 		   COALESCE(i.event_Id,0) as eventId,
 		   COALESCE(i.notification, false) as notification,
-		   notificationdatetime as notificationTime,
-		   e.start_datetime as startDateTime,
-		   e.end_datetime as endDateTime,
-		   e.allday_flag as allDayFlag,
+		   COALESCE(notificationdatetime, now()) as notificationTime,
+		   COALESCE(e.start_datetime, now()) as startDateTime,
+		   COALESCE(e.end_datetime, now()) as endDateTime,
+		   COALESCE(e.allday_flag,false) as allDayFlag,
 		   COALESCE(c.link_url, '') as eventLogoUrl
 		from
 		   activity as a
