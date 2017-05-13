@@ -7,7 +7,6 @@ import (
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
 
-    sql  "database/sql"
 	"github.com/mholt/binding"
 )
 
