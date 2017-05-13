@@ -7,6 +7,7 @@ import (
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
 
+    sql  "database/sql"
 	"github.com/mholt/binding"
 )
 
@@ -90,7 +91,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 
 	activity := new(models.Activity)
 	activity.Title = p.Title
-	activity.MainEventID = p.MainEventID
+	activity.MainEventID = sql.NullInt64{Int64: p.MainEventID, Valid:true}
 	activity.Memo = p.Memo
 	if err := activity.Insert(*tx); err != nil {
 		helpers.RenderDBError(w, r, err)

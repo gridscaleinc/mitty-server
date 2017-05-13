@@ -232,7 +232,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 				helpers.RenderDBError(w, r, err)
 				return
 			}
-			activity.MainEventID = activityItem.EventID
+			activity.MainEventID = sql.NullInt64{Int64:activityItem.EventID, Valid:true}
 			if err := activity.Update(*tx); err != nil {
 				helpers.RenderDBError(w, r, err)
 				return
