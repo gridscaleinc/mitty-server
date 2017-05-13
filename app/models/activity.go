@@ -2,8 +2,7 @@ package models
 
 import (
 	"time"
-    sql  "database/sql"
-    pg "github.com/lib/pq"
+
 	gorp "gopkg.in/gorp.v1"
 )
 
@@ -11,7 +10,7 @@ import (
 type Activity struct {
 	ID          int64     `db:"id" json:"id"`
 	Title       string    `db:"title" json:"title"`
-	MainEventID sql.NullInt64     `db:"main_event_id" json:"main_event_id"`
+	MainEventID int64     `db:"main_event_id" json:"main_event_id"`
 	Memo        string    `db:"memo" json:"memo"`
 	OwnerID     int       `db:"owner_id" json:"owner_id"`
 	Created     time.Time `db:"created" json:"created"`
@@ -21,7 +20,7 @@ type Activity struct {
 // ActivityList ...
 type ActivityList struct {
 	ID            int        `db:"id" json:"id"`                       //  Activity のID
-	EventID   sql.NullInt64        `db:"eventId" json:"eventId"`             // ActivityのMainEventId
+	EventID       int        `db:"eventId" json:"eventId"`             // ActivityのMainEventId
 	Title         string     `db:"title" json:"title"`                 // ActivityのTitle
 	StartDateTime *time.Time `db:"startDateTime" json:"startDateTime"` // MainEventのstart_datetime
 	EventLogoURL  *string    `db:"eventLogoUrl" json:"eventLogoUrl"`   // MainEventのLogoIDから結びつけるContentsのLinkURL
@@ -30,17 +29,17 @@ type ActivityList struct {
 // ActivityDetail ...
 type ActivityDetail struct {
 	ID               int64     `db:"id" json:"id"`
-	MainEventID      sql.NullInt64     `db:"main_event_id" json:"main_event_id"`
+	MainEventID      int64     `db:"main_event_id" json:"main_event_id"`
 	Title            string    `db:"title" json:"title"`
 	Memo             string    `db:"memo" json:"memo"`
-	EventID          sql.NullInt64     `db:"eventId" json:"eventId"`
-	Notification     sql.NullBool      `db:"notification" json:"notification"`
-	NotificationTime pg.NullTime `db:"notificationTime" json:"notificationTime"`
+	EventID          int64     `db:"eventId" json:"eventId"`
+	Notification     bool      `db:"notification" json:"notification"`
+	NotificationTime time.Time `db:"notificationTime" json:"notificationTime"`
 	EventTitle       string    `db:"eventTitle" json:"eventTitle"`
-	StartDateTime    pg.NullTime `db:"startDateTime" json:"startDateTime"`
-	EndDateTime     pg.NullTime `db:"endDateTime" json:"endDateTime"`
-	AllDayFlag       sql.NullBool      `db:"allDayFlag" json:"allDayFlag"`
-	EventLogoURL     sql.NullString    `db:"eventLogoUrl" json:"eventLogoUrl"`
+	StartDateTime    time.Time `db:"startDateTime" json:"startDateTime"`
+	EndDateTime      time.Time `db:"endDateTime" json:"endDateTime"`
+	AllDayFlag       bool      `db:"allDayFlag" json:"allDayFlag"`
+	EventLogoURL     string    `db:"eventLogoUrl" json:"eventLogoUrl"`
 }
 
 // Insert ...
@@ -104,14 +103,14 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   a.id,
 		   a.title,
 		   a.memo,
-		   a.main_event_id,
-		   i.event_Id as eventId,
-		   i.notification,
+		   COALESCE(a.main_event_id,0) as main_event_id,
+		   COALESCE(i.event_Id,0) as eventId,
+		   COALESCE(i.notification, false) as notification,
 		   notificationdatetime as notificationTime,
 		   e.start_datetime as startDateTime,
 		   e.end_datetime as endDateTime,
 		   e.allday_flag as allDayFlag,
-		   c.link_url as eventLogoUrl
+		   COALESCE(c.link_url, '') as eventLogoUrl
 		from
 		   activity as a
 		   left join activity_item as i on a.id=i.activity_id
