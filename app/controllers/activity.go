@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"net/http"
-
+    "strconv"
+    
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
@@ -126,8 +127,9 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 		helpers.RenderDBError(w, r, err)
 		return
 	}
-
-	activity, err := models.GetActivityByID(tx, id)
+	
+    intId, err := strconv.	Atoi(id)
+	activity, err := models.GetActivityByID(tx, intId)
 	if err != nil {
 		helpers.RenderDBError(w, r, err)
 		return
