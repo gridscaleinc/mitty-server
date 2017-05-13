@@ -596,7 +596,7 @@ select
 from
    activity as a 
    left join activity_item as i on a.id=i.activity_id
-   inner join events as e on i.event_id=id
+   left join events as e on i.event_id=id
    left outer join contents as c on logo_id=c.id
 where 
    a.id=[id]
