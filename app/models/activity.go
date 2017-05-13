@@ -114,7 +114,7 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		from
 		   activity as a
 		   left join activity_item as i on a.id=i.activity_id
-		   left join events as e on i.event_id=e.id
+		   left outer join events as e on i.event_id=e.id
 		   left outer join contents as c on e.logo_id=c.id
 		where
 		   a.id=$1
