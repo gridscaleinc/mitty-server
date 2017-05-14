@@ -38,6 +38,9 @@ type ActivityDetail struct {
 	EndDateTime      time.Time `db:"endDateTime" json:"endDateTime"`
 	AllDayFlag       bool      `db:"allDayFlag" json:"allDayFlag"`
 	EventLogoURL     string    `db:"eventLogoUrl" json:"eventLogoUrl"`
+	IslandName     string    `db:"eventLogoUrl" json:"eventLogoUrl"`
+	IslandNickname    string    `db:"islandNickname" json:"islandNickname"`
+	IslandLogoUrl     string    `db:"islandLogoUrl" json:"islandLogoUrl"`
 }
 
 // Insert ...
@@ -103,15 +106,21 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   i.memo,
 		   i.notification,
 		   notificationdatetime as notificationTime,
+		   e.title as eventTitle,
 		   e.start_datetime as startDateTime,
 		   e.end_datetime as endDateTime,
 		   e.allday_flag as allDayFlag,
-		   COALESCE(c.link_url, '') as eventLogoUrl
+		   COALESCE(c.link_url, '') as eventLogoUrl,
+		   l.name as islandName,
+		   l.nickname as islandNickname,
+		   COALESCE(c2.link_url, '') as islandLogoUrl
 		from
 		   activity as a
 		   inner join activity_item as i on a.id=i.activity_id
 		   inner join events as e on i.event_id=e.id
+		   inner join island as l on e.islandid=l.id
 		   left outer join contents as c on e.logo_id=c.id
+		   left outer join contents as c2 on l.logo_id=c2.id
 		where
 		   a.id=$1
 		   and
