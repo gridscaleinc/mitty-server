@@ -38,7 +38,7 @@ type ActivityDetail struct {
 	EndDateTime      time.Time `db:"endDateTime" json:"endDateTime"`
 	AllDayFlag       bool      `db:"allDayFlag" json:"allDayFlag"`
 	EventLogoURL     string    `db:"eventLogoUrl" json:"eventLogoUrl"`
-	IslandName     string    `db:"eventLogoUrl" json:"eventLogoUrl"`
+	IslandName     string    `db:"islandName" json:"islandName"`
 	IslandNickname    string    `db:"islandNickname" json:"islandNickname"`
 	IslandLogoUrl     string    `db:"islandLogoUrl" json:"islandLogoUrl"`
 }
