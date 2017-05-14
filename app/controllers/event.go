@@ -266,14 +266,14 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	matchQuery1 := elastic.NewMatchQuery("action", queryParams)
 	//matchQuery1.Boost(4)
 	matchQuery2 := elastic.NewMatchQuery("description", queryParams)
-	matchQuery3 := elastic.NewMatchQuery("source_name", queryParams)
+	matchQuery3 := elastic.NewMatchQuery("sourceName", queryParams)
 	matchQuery4 := elastic.NewMatchQuery("category", queryParams)
 	matchQuery5 := elastic.NewMatchQuery("tag", queryParams)
 
 	query1 := elastic.NewBoolQuery()
 	query1.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
 	query := elastic.NewBoolQuery()
-	query.Must(query1, elastic.NewTermQuery("access_control", "public"))
+	query.Must(query1, elastic.NewTermQuery("accessControl", "public"))
 
 	src, err := query.Source()
 	if err != nil {
