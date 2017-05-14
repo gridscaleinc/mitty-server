@@ -18,8 +18,8 @@ type Event struct {
 	Tag                 string    `db:"tag" json:"tag"`
 	Title               string    `db:"title" json:"title"`
 	Action              string    `db:"action" json:"action"`
-	StartDate       time.Time `db:"start_datetime" json:"startDate"`
-	EndDate        time.Time `db:"end_datetime" json:"endDate"`
+	StartDatetime       time.Time `db:"start_datetime" json:"startDatetime"`
+	EndDatetime        time.Time `db:"end_datetime" json:"endDatetime"`
 	AlldayFlag          bool      `db:"allday_flag" json:"alldayFlag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
 	LogoID              int       `db:"logo_id" json:"logoId"`
