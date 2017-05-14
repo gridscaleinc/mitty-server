@@ -18,38 +18,38 @@ type Event struct {
 	Tag                 string    `db:"tag" json:"tag"`
 	Title               string    `db:"title" json:"title"`
 	Action              string    `db:"action" json:"action"`
-	StartDatetime       time.Time `db:"start_datetime" json:"start_datetime"`
-	EndDatetime         time.Time `db:"end_datetime" json:"end_datetime"`
-	AlldayFlag          bool      `db:"allday_flag" json:"allday_flag"`
+	StartDate       time.Time `db:"start_datetime" json:"startDate"`
+	EndDate        time.Time `db:"end_datetime" json:"endDate"`
+	AlldayFlag          bool      `db:"allday_flag" json:"alldayFlag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
-	LogoID              int       `db:"logo_id" json:"logo_id"`
-	GalleryID           int64     `db:"gallery_id" json:"gallery_id"`
-	MeetingID           int       `db:"meeting_id" json:"meeting_id"`
-	PriceName1          string    `db:"price_name1" json:"price_name1"`
+	LogoID              int       `db:"logo_id" json:"logoId"`
+	GalleryID           int64     `db:"gallery_id" json:"galleryId"`
+	MeetingID           int       `db:"meeting_id" json:"meetingId"`
+	PriceName1          string    `db:"price_name1" json:"priceName1"`
 	Price1              int       `db:"price1" json:"price1"`
-	PriceName2          string    `db:"price_name2" json:"price_name2"`
+	PriceName2          string    `db:"price_name2" json:"priceName2"`
 	Price2              int       `db:"price2" json:"price2"`
 	Currency            string    `db:"currency" json:"currency"`
-	PriceInfo           string    `db:"price_info" json:"price_info"`
+	PriceInfo           string    `db:"price_info" json:"priceInfo"`
 	Description         string    `db:"description" json:"description"`
-	ContactTel          string    `db:"contact_tel" json:"contact_tel"`
-	ContactFax          string    `db:"contact_fax" json:"contact_fax"`
-	ContactMail         string    `db:"contact_mail" json:"contact_mail"`
-	OfficialURL         string    `db:"official_url" json:"official_url"`
+	ContactTel          string    `db:"contact_tel" json:"contactTel"`
+	ContactFax          string    `db:"contact_fax" json:"contactFax"`
+	ContactMail         string    `db:"contact_mail" json:"contactMail"`
+	OfficialURL         string    `db:"official_url" json:"officialUrl"`
 	Organizer           string    `db:"organizer" json:"organizer"`
-	SourceName          string    `db:"source_name" json:"source_name"`
-	SourceURL           string    `db:"source_url" json:"source_url"`
-	NumberOfAnticipants int       `db:"number_of_anticipants" json:"number_of_anticipants"`
+	SourceName          string    `db:"source_name" json:"sourceName"`
+	SourceURL           string    `db:"source_url" json:"sourceUrl"`
+	NumberOfAnticipants int       `db:"number_of_anticipants" json:"numberOfAnticipants"`
 	Participation       string    `db:"participation" json:"participation"`
-	AccessControl       string    `db:"access_control" json:"access_control"`
+	AccessControl       string    `db:"access_control" json:"accessControl"`
 	Likes               int       `db:"likes" json:"likes"`
 	Status              string    `db:"status" json:"status"`
 	Language            string    `db:"language" json:"language"`
 	Created             time.Time `db:"created" json:"created"`
-	PublisherID         int       `db:"publisher_id" json:"publisher_id"`
-	OrgnizationID       int       `db:"orgnization_id" json:"orgnization_id"`
+	PublisherID         int       `db:"publisher_id" json:"publisherId"`
+	OrgnizationID       int       `db:"orgnization_id" json:"orgnizationId"`
 	Lastupdated         time.Time `db:"lastupdated" json:"lastupdated"`
-	AmenderID           int       `db:"amender_id" json:"amender_id"`
+	AmenderID           int       `db:"amender_id" json:"amenderId"`
 }
 
 // Save ...
