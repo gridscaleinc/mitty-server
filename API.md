@@ -3,7 +3,7 @@
 1. [Sign up](#1sign-up)
 2. [Sign in](#2sign-in)
 3. [Add content to gallery](#3add-content-to-gallery)
-4. [Add content for event logo](#4add-content-for-event-logo)
+4. [Add content](#4add-content)
 5. [Add content for island logo](#5add-content-for-island-logo)
 6. [Add content for profile icon](#6add-content-for-profile-icon)
 7. [Event Searching](#7event-searching)
@@ -15,6 +15,7 @@
 13. [Activity Details](#13activity-details)
 14. [Event Fetching](#14event-fetching)
 15. [Island Info](#15island-info)
+16. [My Contents List](#16my-contents-list)
 
 
 ### [Common Rules](id:common-rules)
@@ -129,22 +130,35 @@ ContentsテーブルはLogoや、アイコン、写真、ビデオなどのコ�
 
 ```
 
-### 4.[Add content for event logo](id:content-event-logo)
+### 4.[Add content](id:add-content)
 ```
-POST /api/event/logo
+POST /api/upload/content
+Header:
+   access-token: String
+   content-type: json/application
 ```
 *Input parameter*
 ```
-{}
-
+　{
+　　　　mime      : string      (O)     -- image/gif などMIME    
+　　　　name      : string      (O)     -- コンテンツの名称
+　　　　data      : byte array  (M)     -- バイナリデータ
+　　　　thumbnail : byte array  (O)     
+  }
+  
 ```
 *Output response*
 ```
-{}
+{
+   contentId: Int
+}
 ```
 *Description*
 ```
-JSON形式のパラメータを読み込み
+考え方：
+　　コンテンツにとりあえずアップロードして、後でevent logoやprofile iconにURL設定での下準備をする。
+　　owner_idにアプロードした人のuserIdを設定。
+　　
 ```
 
 ### 5.[Add content for island logo](id:content-island-logo)
@@ -208,8 +222,8 @@ event: {
         //  イベント情報
         title               // イベントタイトル
         action              // イベントの行い概要内容
-        startDate           // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
-        endDate             // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        startDatetime       // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        endDatetime         // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
         allDayFlag          // 時刻非表示フラグ。
         eventLogoUrl        // 該当イベントのLogoIdが指すContentsのLinkUrl
         imageUrl            // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
@@ -331,6 +345,7 @@ asMainEvent: bool       (O)　　　-- relatedActivityIdが指定された場合
 *変更履歴*
 ```
 4/26:  Price1 〜　PriceInfoまでの項目にデータ型を漏れてったので、追記しました。
+5/19:  meeting_idを自動採番
 ```
 *Description*
 ```
@@ -525,6 +540,8 @@ POST /api/new/island
 ```
 *Description*
 ```
+5/19 : meeting_idを自動採番
+
 島とは人が集まる場所。従来的な特定な住所にある組織が入居する建物がメインだが、飛行機、タクシーなど移動体も島として登録する場合がある。また仮想的な集会場、ライブ会場なども考えられる。ゲームの世界になると、空想的なUFOなども視野にある。
 こいった情報を登録するのがこの API.
 ```
@@ -627,8 +644,8 @@ event: {
         tag             // イベントについて利用者が入力したデータの分類識別。
         title           // イベントタイトル
         action          // イベントの行い概要内容
-        startDate       // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
-        endDate         // イベント終了日時
+        startDatetime   // イベント開始日時  ISO8601-YYYY-MM-DDTHH:mm:ssZ
+        endDatetime     // イベント終了日時
         allDayFlag      // 時刻非表示フラグ。
         islandId        // 島ID
         eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
@@ -653,6 +670,7 @@ event: {
         accessControl   // イベント情報のアクセス制御：　PUBLIC: 全公開、
                         // PRIVATE: 非公開、 SHARED:関係者のみ
         likes           // いいねの数
+        meetingId       // 会議室のID
         language　　     //(M) 言語情報　(Ja_JP, en_US, en_GB) elasticsearchに使用する。
 
         //  島情報
@@ -672,6 +690,8 @@ event: {
 
 *Description*
 ```
+5/19 : 会議室IDを取得。
+
 id=[id]によって、DB から該当eventを取得し、下記付加処理、情報をつけて、結果を返す。
 1. 閲覧可否のチェック
 　　AccessControl＝Privateのイベントは出力しない。
@@ -709,6 +729,7 @@ islands:[island,....]
   address3           : string      --(O)  住所行３
   latitude           : double      --(O)  地理位置の緯度
   longitude          : double      --(O)  地理位置の経度
+  meetingId　　　　　　: int         --(O)  会議室の番号
 }
 
 ```
@@ -725,3 +746,41 @@ islands:[island,....]
 ```
   island.sql
 ```
+### 16.[My Contents List](id:my-contents-list)
+```
+GET /api/mycontents/list
+```
+*Input Parameter*
+```
+なし
+```
+*Out put response*
+```
+{
+contents:[content,....]
+}
+
+{
+  id
+  mime
+  name
+  thumnailUrl
+  linkUrl
+}
+
+```
+*Description*
+
+```
+自分が所有するcontentsを取得する。
+
+sort 順：
+  create date 順
+
+```
+
+*See also*
+```
+  contents.sql
+```
+
