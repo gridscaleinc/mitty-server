@@ -15,6 +15,7 @@ type Contents struct {
 	Width   int       `db:"width" json:"width"`
 	Height  int       `db:"height" json:"height"`
 	Size    int       `db:"size" json:"size"`
+	OwnerID int       `db:"owner_id" json:"owner_id"`
 	Created time.Time `db:"created" json:"created"`
 	Updated time.Time `db:"updated" json:"updated"`
 }
@@ -32,4 +33,13 @@ func (s *Contents) Update(tx gorp.Transaction) error {
 	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
+}
+
+// GetContentsByUserID ...
+func GetContentsByUserID(tx *gorp.Transaction, userID int) ([]Contents, error) {
+	contents := []Contents{}
+	if _, err := tx.Select(&contents, "select * from contents where owner_id = $1", userID); err != nil {
+		return nil, err
+	}
+	return contents, nil
 }

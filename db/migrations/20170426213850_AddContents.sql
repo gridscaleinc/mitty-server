@@ -9,6 +9,7 @@ create table if not exists contents (
 	width		    int2,
 	height		  int2,
 	size		    int,
+  owner_id    int,
 	created     timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated	    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
