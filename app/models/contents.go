@@ -8,16 +8,17 @@ import (
 
 // Contents struct
 type Contents struct {
-	ID      int64     `db:"id" json:"id"`
-	Mime    string    `db:"mime" json:"mime"`
-	Name    string    `db:"name" json:"name"`
-	LinkURL string    `db:"link_url" json:"link_url"`
-	Width   int       `db:"width" json:"width"`
-	Height  int       `db:"height" json:"height"`
-	Size    int       `db:"size" json:"size"`
-	OwnerID int       `db:"owner_id" json:"owner_id"`
-	Created time.Time `db:"created" json:"created"`
-	Updated time.Time `db:"updated" json:"updated"`
+	ID           int64     `db:"id" json:"id"`
+	Mime         string    `db:"mime" json:"mime"`
+	Name         string    `db:"name" json:"name"`
+	LinkURL      string    `db:"link_url" json:"link_url"`
+	ThumbnailURL string    `db:"thumbnail_url" json:"thumbnail_url"`
+	Width        int       `db:"width" json:"width"`
+	Height       int       `db:"height" json:"height"`
+	Size         int       `db:"size" json:"size"`
+	OwnerID      int       `db:"owner_id" json:"owner_id"`
+	Created      time.Time `db:"created" json:"created"`
+	Updated      time.Time `db:"updated" json:"updated"`
 }
 
 // Insert ...

@@ -3,6 +3,8 @@ package models
 import (
 	"time"
 
+	"mitty.co/mitty-server/app/helpers"
+
 	goutils "github.com/dongri/goutils"
 	gorp "gopkg.in/gorp.v1"
 )
@@ -67,6 +69,16 @@ func GetAdminUsers(dbmap *gorp.DbMap) ([]User, error) {
 func GetUserByEmailToken(tx gorp.Transaction, token string) (*User, error) {
 	u := new(User)
 	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE mail_token = $1", token); err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+// GetUserByAccessToken ...
+func GetUserByAccessToken(token string) (*User, error) {
+	dbmap := helpers.GetPostgres()
+	u := new(User)
+	if err := dbmap.SelectOne(&u, "SELECT * FROM users WHERE access_token = $1", token); err != nil {
 		return nil, err
 	}
 	return u, nil

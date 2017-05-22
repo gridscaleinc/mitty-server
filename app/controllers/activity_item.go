@@ -74,7 +74,7 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityItemParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
@@ -86,19 +86,19 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	activityItem.Notification = p.Notification
 	activityItem.NotificationDateTime = p.NotificationDateTime
 	if err := activityItem.Insert(*tx); err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
 	if p.AsMainEvent == true {
 		activity, err := models.GetActivityByID(tx, p.ActivityID)
 		if err != nil && err != sql.ErrNoRows {
-			helpers.RenderDBError(w, r, err)
+			filters.RenderError(w, r, err)
 			return
 		}
 		activity.MainEventID = activityItem.EventID
 		if err := activity.Update(*tx); err != nil {
-			helpers.RenderDBError(w, r, err)
+			filters.RenderError(w, r, err)
 			return
 		}
 	}

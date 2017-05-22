@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"net/http"
-    "strconv"
-    
+	"strconv"
+
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
@@ -32,7 +32,7 @@ func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 	userID := 0
 	activities, err := models.GetActivityListByKey(tx, userID, key)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -85,7 +85,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
@@ -94,7 +94,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	activity.MainEventID = p.MainEventID
 	activity.Memo = p.Memo
 	if err := activity.Insert(*tx); err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -124,14 +124,14 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 	details, err := models.GetActivityDetailsByID(tx, userID, id)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
-	
-    intId, err := strconv.	Atoi(id)
+
+	intId, err := strconv.Atoi(id)
 	activity, err := models.GetActivityByID(tx, intId)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 

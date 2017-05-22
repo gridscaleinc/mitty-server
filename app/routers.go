@@ -47,7 +47,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
 	r.HandleFunc("/new/event", controllers.PostEventHandler).Methods("POST")
-	r.HandleFunc("/gallery/content", controllers.PostGalleryContentHandler).Methods("POST")
+	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 	r.HandleFunc("/new/activity", controllers.PostActivityHandler).Methods("POST")
 	r.HandleFunc("/new/activity/item", controllers.PostActivityItemHandler).Methods("POST")
@@ -57,8 +57,13 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/activity/details", controllers.GetActivityDetailHandler).Methods("GET")
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
 	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
+	r.Handle("/upload/content", apiAuth(controllers.GetMyContentsHandler)).Methods("POST")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {
 	return filters.BasicAuthHandler(handler)
+}
+
+func apiAuth(handler http.HandlerFunc) http.Handler {
+	return filters.APIAuthHandler(handler)
 }

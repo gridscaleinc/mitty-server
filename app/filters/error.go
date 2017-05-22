@@ -1,16 +1,14 @@
-package helpers
+package filters
 
 import (
 	"net/http"
 
 	"github.com/mholt/binding"
-
-	"mitty.co/mitty-server/app/filters"
 )
 
 // RenderInputError ...
 func RenderInputError(w http.ResponseWriter, r *http.Request, errs binding.Errors) {
-	render := filters.GetRenderer(r)
+	render := GetRenderer(r)
 	var errors []string
 	for _, e := range errs {
 		err := e.Fields()[0] + " " + e.Error()
@@ -21,9 +19,9 @@ func RenderInputError(w http.ResponseWriter, r *http.Request, errs binding.Error
 	})
 }
 
-// RenderDBError ...
-func RenderDBError(w http.ResponseWriter, r *http.Request, err error) {
-	render := filters.GetRenderer(r)
+// RenderError ...
+func RenderError(w http.ResponseWriter, r *http.Request, err error) {
+	render := GetRenderer(r)
 	render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 		"errors": []string{err.Error()},
 	})

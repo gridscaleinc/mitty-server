@@ -53,6 +53,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
+	currentUserID := filters.GetCurrentUserID(r)
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -82,6 +83,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	contents.Mime = p.Content.Mime
 	contents.Name = p.Content.Name
 	contents.LinkURL = filePath //p.Content.LinkURL
+	contents.OwnerID = currentUserID
 	if err = contents.Insert(*tx); err != nil {
 		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{

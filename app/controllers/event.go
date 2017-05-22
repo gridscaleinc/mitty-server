@@ -180,7 +180,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(EventParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
@@ -211,7 +211,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.AccessControl = p.AccessControl
 	e.Language = p.Language
 	if err := e.Save(*tx); err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -222,19 +222,19 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 		activityItem.Title = e.Title
 		activityItem.Notification = false
 		if err := activityItem.Insert(*tx); err != nil {
-			helpers.RenderDBError(w, r, err)
+			filters.RenderError(w, r, err)
 			return
 		}
 
 		if p.AsMainEvent == true {
 			activity, err := models.GetActivityByID(tx, p.RelatedActivityID)
 			if err != nil && err != sql.ErrNoRows {
-				helpers.RenderDBError(w, r, err)
+				filters.RenderError(w, r, err)
 				return
 			}
 			activity.MainEventID = activityItem.EventID
 			if err := activity.Update(*tx); err != nil {
-				helpers.RenderDBError(w, r, err)
+				filters.RenderError(w, r, err)
 				return
 			}
 		}
@@ -288,7 +288,7 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -299,7 +299,7 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 		if t, ok := item.(models.Event); ok {
 			eventDetail, err := models.GetEventDetailByID(tx, userID, int(t.ID))
 			if err != nil && err != sql.ErrNoRows {
-				helpers.RenderDBError(w, r, err)
+				filters.RenderError(w, r, err)
 				return
 			}
 			events = append(events, eventDetail)
@@ -328,12 +328,12 @@ func EventFetchingHandler(w http.ResponseWriter, r *http.Request) {
 	idParams := r.URL.Query().Get("id")
 	eventID, err := strconv.Atoi(idParams)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 	event, err := models.GetEventDetailByID(tx, 1, eventID)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 	render.JSON(w, http.StatusOK, map[string]interface{}{

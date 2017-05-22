@@ -202,7 +202,7 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(IslandParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
@@ -241,7 +241,7 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	island.Latitude = p.Latitude
 	island.Longitude = p.Longitude
 	if err := island.Insert(*tx); err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -268,7 +268,7 @@ func GetIslandHandler(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	islands, err := models.SearchIslandByName(tx, name)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{

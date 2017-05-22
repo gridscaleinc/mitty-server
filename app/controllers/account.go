@@ -59,18 +59,18 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(SignUpParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
 	u, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil && err != sql.ErrNoRows {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 	if u != nil {
 		err = errors.New("Username has already been taken")
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -78,7 +78,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	if p.MailAddress != "" {
 		email, e := mail.ParseAddress(p.MailAddress)
 		if e != nil {
-			helpers.RenderDBError(w, r, e)
+			filters.RenderError(w, r, e)
 			return
 		}
 		emailAddress = email.Address
@@ -97,7 +97,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	err = user.Insert(*tx)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
@@ -123,13 +123,13 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(SignUpParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		helpers.RenderInputError(w, r, errs)
+		filters.RenderInputError(w, r, errs)
 		return
 	}
 
 	user, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil {
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
@@ -137,7 +137,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 
 	if user.Password != hashedPassword {
 		err = errors.New("Password Error")
-		helpers.RenderDBError(w, r, err)
+		filters.RenderError(w, r, err)
 		return
 	}
 
