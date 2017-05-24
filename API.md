@@ -16,7 +16,9 @@
 14. [Event Fetching](#14event-fetching)
 15. [Island Info](#15island-info)
 16. [My Contents List](#16my-contents-list)
-
+17. [Register Request] todo
+18. [Register proposal] todo
+19. [Comment on request]
 
 ### [Common Rules](id:common-rules)
 *表記*
