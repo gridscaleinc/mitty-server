@@ -19,12 +19,12 @@ type Event struct {
 	Title               string    `db:"title" json:"title"`
 	Action              string    `db:"action" json:"action"`
 	StartDatetime       time.Time `db:"start_datetime" json:"startDatetime"`
-	EndDatetime        time.Time `db:"end_datetime" json:"endDatetime"`
+	EndDatetime         time.Time `db:"end_datetime" json:"endDatetime"`
 	AlldayFlag          bool      `db:"allday_flag" json:"alldayFlag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
 	LogoID              int       `db:"logo_id" json:"logoId"`
 	GalleryID           int64     `db:"gallery_id" json:"galleryId"`
-	MeetingID           int       `db:"meeting_id" json:"meetingId"`
+	MeetingID           int64     `db:"meeting_id" json:"meetingId"`
 	PriceName1          string    `db:"price_name1" json:"priceName1"`
 	Price1              int       `db:"price1" json:"price1"`
 	PriceName2          string    `db:"price_name2" json:"priceName2"`

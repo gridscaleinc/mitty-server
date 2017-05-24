@@ -20,7 +20,7 @@ type Island struct {
 	OwnerName     string    `db:"owner_name" json:"owner_name"`
 	OwnerID       int       `db:"owner_id" json:"owner_id"`
 	CreatorID     int       `db:"creator_id" json:"creator_id"`
-	MeetingID     int       `db:"meeting_id" json:"meeting_id"`
+	MeetingID     int64     `db:"meeting_id" json:"meeting_id"`
 	GalleryID     int64     `db:"gallery_id" json:"gallery_id"`
 	Tel           string    `db:"tel" json:"tel"`
 	Fax           string    `db:"fax" json:"fax"`

@@ -184,6 +184,14 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	m := new(models.Meeting)
+	m.Name = p.Title
+	m.Type = p.Type
+	if err := m.Insert(*tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
 	e := new(models.Event)
 	e.Type = p.Type
 	e.Tag = p.Tag
@@ -193,6 +201,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.EndDatetime = p.EndDatetime
 	e.AlldayFlag = p.AlldayFlag
 	e.IslandID = p.IslandID
+	e.MeetingID = m.ID
 	e.PriceName1 = p.PriceName1
 	e.Price1 = p.Price1
 	e.PriceName2 = p.PriceName2

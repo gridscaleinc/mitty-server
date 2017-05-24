@@ -206,6 +206,14 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	m := new(models.Meeting)
+	m.Name = p.Name
+	m.Type = p.RealityType
+	if err := m.Insert(*tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
 	island := new(models.Island)
 	island.Nickname = p.Nickname
 	island.Name = p.Name
@@ -218,7 +226,7 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	island.OwnerName = p.OwnerName
 	island.OwnerID = p.OwnerID
 	island.CreatorID = p.CreatorID
-	island.MeetingID = p.MeetingID
+	island.MeetingID = m.ID
 	island.GalleryID = p.GalleryID
 	island.Tel = p.Tel
 	island.Fax = p.Fax
