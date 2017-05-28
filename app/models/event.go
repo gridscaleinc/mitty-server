@@ -135,7 +135,7 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
     END as participation_status
 		from events
 		left join gallery on events.gallery_id=gallery.id
-		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=1
+		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
 		left join contents as c2 on events.logo_id=c2.id
 		inner join island on island.id = events.islandid
 		left join contents as c3 on c3.id = island.logo_id
