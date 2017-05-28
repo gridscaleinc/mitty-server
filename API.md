@@ -228,7 +228,7 @@ event: {
         endDatetime         // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
         allDayFlag          // 時刻非表示フラグ。
         eventLogoUrl        // 該当イベントのLogoIdが指すContentsのLinkUrl
-        imageUrl            // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
+        coverImageUrl      // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
                             // のLinkUrl
         priceName1          // 価格名称１
         price1              // 価格額１
@@ -650,6 +650,7 @@ event: {
         endDatetime     // イベント終了日時
         allDayFlag      // 時刻非表示フラグ。
         islandId        // 島ID
+        coverImageUrl   // 該当イベントのGallery一件めのContentsUrl
         eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
         galleryId       // Gallery Id   
         meetingId       // 会議番号
