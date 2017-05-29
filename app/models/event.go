@@ -115,6 +115,8 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		EventLogoUrl      *string `db:"event_logo_url" json:"eventLogoUrl"`
 		IsLandName          *string `db:"island_name" json:"isLandName"`
 		IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
+	    Latitude      float64   `db:"latitude" json:"latitude"`
+	    Longitude     float64   `db:"longitude" json:"longitude"`
 		PublisherName       *string `db:"publisher_name" json:"publisherName"`
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
@@ -127,6 +129,8 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 	    COALESCE(c2.link_url, '') as event_logo_url,
 		island.name as island_name,
 		COALESCE(c3.link_url, '') as island_logo_url,
+		COALESCE(island.latitude, 999) as latitude,
+		COALESCE(island.longitude, 999) as longitude,		
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,
