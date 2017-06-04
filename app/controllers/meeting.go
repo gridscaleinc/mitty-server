@@ -23,7 +23,7 @@ func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
-    userID := 0
+    var userID int64 = 0
 	meetingList, err := models.GetEventMeetingList(tx,userID)
 	if err != nil {
 		filters.RenderError(w, r, err)
