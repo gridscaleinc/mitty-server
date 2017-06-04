@@ -58,7 +58,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
 	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
 	r.Handle("/upload/content", apiAuth(controllers.GetMyContentsHandler)).Methods("POST")
-	r.Handle("/event/meeting", controllers.GetEventMeeting).Methods("GET")
+	r.HandleFunc("/event/meeting", controllers.GetEventMeeting).Methods("GET")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {
