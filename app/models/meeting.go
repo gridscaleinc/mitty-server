@@ -46,7 +46,7 @@ func GetEventMeetingList(tx *gorp.Transaction,  userID int64) ([]EventMeeting, e
 	select 
 	    meeting.*,
 	    events.title as event_title,
-	    contents.link_url as event_logo_url 
+	    COALESCE(contents.link_url, '') as event_logo_url
 	from 
 	    meeting inner join events on events.meeting_id=meeting.id 
 	    inner join activity_item on activity_item.event_id=events.id 
