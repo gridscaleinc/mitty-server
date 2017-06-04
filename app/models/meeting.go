@@ -29,12 +29,12 @@ func (s *Meeting) Update(tx gorp.Transaction) error {
 	_, err := tx.Update(s)
 	return err
 }
-type EventMeeting struct {
+type Meeting struct {
 	ID      int64     `db:"id" json:"id"`
 	Name    string    `db:"name" json:"name"`
 	Type    string    `db:"type" json:"type"`
-	EventTitle string `db:"event_title" json:"eventTitle"`
-	EventLogoUrl string `db:"event_logo_url" json:"eventLogoUrl"`
+	Title string `db:"title" json:"title"`
+	LogoUrl string `db:"logo_url" json:"logoUrl"`
 	Created time.Time `db:"created" json:"created"`
 	Updated time.Time `db:"updated" json:"updated"`
 }
@@ -45,8 +45,8 @@ func GetEventMeetingList(tx *gorp.Transaction,  userID int64) ([]EventMeeting, e
 	_, err := tx.Select(&eventMeeting, `
 	select 
 	    meeting.*,
-	    events.title as event_title,
-	    COALESCE(contents.link_url, '') as event_logo_url
+	    events.title as title,
+	    COALESCE(contents.link_url, '') as logo_url
 	from 
 	    meeting inner join events on events.meeting_id=meeting.id 
 	    inner join activity_item on activity_item.event_id=events.id 
