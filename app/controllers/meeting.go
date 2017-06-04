@@ -6,8 +6,6 @@ import (
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
-
-	"github.com/mholt/binding"
 )
 
 // FetchingConversation ...
@@ -31,7 +29,7 @@ func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
-	render.JSON(w, http.StatusOk, map[string]interface{}{
+	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"eventMeetingList": meetingList,
 	})
 }
