@@ -31,7 +31,7 @@ func (s *Conversation) Update(tx gorp.Transaction) error {
 }
 
 // Delete
-unc (s *Conversation) Delete(tx gorp.Transaction) error {
+func (s *Conversation) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
 	return err
 }
