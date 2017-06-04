@@ -45,6 +45,12 @@ status: 500
 }
 ```
 
-# ER
+# goose
 
-https://gridscalejp.slack.com/files/kaw/F5B11GNLF/____________________________2017-05-08_23.34.30.png
+```
+# migrationファイル作成
+$ goose -dir db/migrations create xxxx sql
+
+# migrationファイルをDBに反映
+$ goose -dir db/migrations postgres "postgres://root:mpNffadJrfnWpvZxnrZz2Zjz@dev.mitty.co:5432/mitty_db?sslmode=disable" up
+```
