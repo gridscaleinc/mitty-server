@@ -6,7 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"mitty.co/mitty-server/app/controllers"
 	"mitty.co/mitty-server/app/filters"
-	// "mitty.co/mitty-server/app/talk"
+    "mitty.co/mitty-server/app/talk"
 )
 
 // BuildRouter creates and returns a router which hold whole handler functions.
