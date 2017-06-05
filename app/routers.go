@@ -45,7 +45,7 @@ func webRoutes(r *mux.Router) {
 
 func publicRoutes(r *mux.Router) {
 		// Configure websocket route
-	r.Handle("/ws", apiAuth(talk.WebsocketHandler))
+	r.Handle("/ws/", apiAuth(talk.WebsocketHandler))
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
