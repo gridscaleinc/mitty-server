@@ -83,12 +83,12 @@ func FetchConversationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	conversations, err := models.GetLatestConversation(tx)
+	conversations, err := models.GetLatestConversation(tx, 90)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
-	render.JSON(w, http.StatusOk, map[string]interface{}{
+	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"conversations": conversations,
 	})
 
