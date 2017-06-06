@@ -2,8 +2,10 @@ package talk
 
 import (
 	"net/http"
+
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
+	"mitty.co/mitty-server/app/models"
 )
 
 var clients = make(map[*websocket.Conn]bool) // connected clients
@@ -23,8 +25,14 @@ type Message struct {
 	Message  string `json:"message"`
 }
 
-
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
+	accessToken := r.Header.Get("X-Mitty-AccessToken")
+	user, err := models.GetUserByAccessToken(accessToken)
+	if err != nil || user == nil {
+		w.WriteHeader(401)
+		w.Write([]byte("401 Unauthorized\n"))
+		return
+	}
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -35,7 +43,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Register our new client
 	clients[ws] = true
-    logrus.Printf("WebsocketHandler Start handling new client.")
+	logrus.Printf("WebsocketHandler Start handling new client.")
 	for {
 		var msg Message
 		// Read in a new message as JSON and map it to a Message object
