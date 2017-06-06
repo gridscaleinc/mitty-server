@@ -24,13 +24,13 @@ type Message struct {
 	MeetingID int64 `json:"meetingId"`
 	ReplyToID int64 `json:"replyToId"`
 	Speaking  string `json:"speaking"`
-	SpeakerID int64 `json:"speakerId"`
+	SpeakerID int `json:"speakerId"`
 	SpeakTime time.Time `json:"speakTime"`
 }
 
 // Websocket Client
 type Client struct {
-	UserID int64 `json:"userId"`
+	UserID int `json:"userId"`
 	UserName string `json:userName`
 	Connected bool `json:connected`
 }
