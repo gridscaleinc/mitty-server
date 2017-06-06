@@ -29,7 +29,7 @@ type Message struct {
 
 // Websocket Client
 type Client struct {
-	UserID string `json:"userId"`
+	UserID int64 `json:"userId"`
 	UserName string `json:userName`
 	Connected bool `json:connected`
 }
