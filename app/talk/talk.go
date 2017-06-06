@@ -8,7 +8,7 @@ import (
 	"mitty.co/mitty-server/app/models"
 )
 
-var clients = make(map[*websocket.Conn]bool) // connected clients
+var clients = make(map[*websocket.Conn]Client) // connected clients
 var broadcast = make(chan Message)           // broadcast channel
 
 // Configure the upgrader
@@ -20,9 +20,18 @@ var upgrader = websocket.Upgrader{
 
 // Define our message object
 type Message struct {
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Message  string `json:"message"`
+	MeetingID int64 `json:"meetingId"`
+	ReplyToID int64 `json:"replyToId"`
+	Speaking  string `json:"speaking"`
+	SpeakerID String `json:"speakerId"`
+	SpeakTime String `json:"speakTime"`
+}
+
+// Websocket Client
+type Client struct {
+	UserID string `json:"userId"`
+	UserName string `json:userName`
+	Connected bool `json:connected`
 }
 
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
@@ -42,7 +51,13 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer ws.Close()
 
 	// Register our new client
-	clients[ws] = true
+	var client := Client{
+		UserID: user.ID
+		UserName: user.Name
+		Connected: true
+	}
+	
+	clients[ws] = client
 	logrus.Printf("WebsocketHandler Start handling new client.")
 	for {
 		var msg Message
@@ -53,6 +68,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			delete(clients, ws)
 			break
 		}
+		msg.SpeakerID = client.UserID
 		// Send the newly received message to the broadcast channel
 		broadcast <- msg
 	}
