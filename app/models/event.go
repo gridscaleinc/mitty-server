@@ -111,8 +111,12 @@ func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
 func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, error) {
 	type result struct {
 		Event
+		CoverImageUrl    *string `db:"cover_img_url" json:"coverImageUrl"`
+		EventLogoUrl      *string `db:"event_logo_url" json:"eventLogoUrl"`
 		IsLandName          *string `db:"island_name" json:"isLandName"`
 		IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
+	    Latitude      float64   `db:"latitude" json:"latitude"`
+	    Longitude     float64   `db:"longitude" json:"longitude"`
 		PublisherName       *string `db:"publisher_name" json:"publisherName"`
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
@@ -121,8 +125,12 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 
 	eventDetail := new(result)
 	if err := tx.SelectOne(&eventDetail, `select events.*,
+	    COALESCE(c1.link_url, '') as cover_img_url,
+	    COALESCE(c2.link_url, '') as event_logo_url,
 		island.name as island_name,
-		contents.link_url as island_logo_url,
+		COALESCE(c3.link_url, '') as island_logo_url,
+		COALESCE(island.latitude, 999) as latitude,
+		COALESCE(island.longitude, 999) as longitude,		
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,
@@ -130,8 +138,11 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
       ELSE true
     END as participation_status
 		from events
-		left join island on island.id = events.islandid
-		left join contents on contents.id = events.logo_id
+		left join gallery on events.gallery_id=gallery.id
+		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
+		left join contents as c2 on events.logo_id=c2.id
+		inner join island on island.id = events.islandid
+		left join contents as c3 on c3.id = island.logo_id
 		left join users on users.id = events.publisher_id
 		left join activity_item on activity_item.event_id = events.id
 		left join activity on activity.id = activity_item.activity_id and activity.owner_id=$1

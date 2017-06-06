@@ -19,7 +19,10 @@
 17. [Register Request] todo
 18. [Register proposal] todo
 19. [Comment on request]
-
+20. [Event Meeting List]
+21. [Latest coversations]
+22. [Previous Cooversations]
+23. [Next Conversations]
 ### [Common Rules](id:common-rules)
 *表記*
 ```
@@ -228,7 +231,7 @@ event: {
         endDatetime         // イベント終了日時　ISO8601-YYYY-MM-DDTHH:mm:ssZ
         allDayFlag          // 時刻非表示フラグ。
         eventLogoUrl        // 該当イベントのLogoIdが指すContentsのLinkUrl
-        imageUrl            // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
+        coverImageUrl      // galleryId<>Nullの場合、該当GalleryId, Seq=1のコンテンツ
                             // のLinkUrl
         priceName1          // 価格名称１
         price1              // 価格額１
@@ -650,6 +653,7 @@ event: {
         endDatetime     // イベント終了日時
         allDayFlag      // 時刻非表示フラグ。
         islandId        // 島ID
+        coverImageUrl   // 該当イベントのGallery一件めのContentsUrl
         eventLogoUrl    // 該当イベントのLogoIdが指すContentsのLinkUrl
         galleryId       // Gallery Id   
         meetingId       // 会議番号

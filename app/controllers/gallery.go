@@ -106,36 +106,40 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	event, err := models.GetEventByID(tx, p.Gallery.EventID)
-	if err != nil {
-		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"errors": err,
-		})
-		return
-	}
-	event.GalleryID = gallery.ID
-	if err = event.Update(*tx); err != nil {
-		fmt.Println(err)
-		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"errors": err,
-		})
-		return
+	if p.Gallery.EventID != 0 {
+		event, err := models.GetEventByID(tx, p.Gallery.EventID)
+		if err != nil {
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
+		event.GalleryID = gallery.ID
+		if err = event.Update(*tx); err != nil {
+			fmt.Println(err)
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
 	}
 
-	island, err := models.GetIslandByID(tx, p.Gallery.IslandID)
-	if err != nil {
-		fmt.Println(err)
-		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"errors": err,
-		})
-		return
-	}
-	island.GalleryID = gallery.ID
-	if err := island.Update(*tx); err != nil {
-		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-			"errors": err,
-		})
-		return
+	if p.Gallery.IslandID != 0 {
+		island, err := models.GetIslandByID(tx, p.Gallery.IslandID)
+		if err != nil {
+			fmt.Println(err)
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
+		island.GalleryID = gallery.ID
+		if err := island.Update(*tx); err != nil {
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
 	}
 
 	output := map[string]interface{}{

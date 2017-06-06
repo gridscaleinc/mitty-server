@@ -6,6 +6,7 @@ import (
 	"github.com/gorilla/mux"
 	"mitty.co/mitty-server/app/controllers"
 	"mitty.co/mitty-server/app/filters"
+    //"mitty.co/mitty-server/app/talk"
 )
 
 // BuildRouter creates and returns a router which hold whole handler functions.
@@ -43,6 +44,8 @@ func webRoutes(r *mux.Router) {
 }
 
 func publicRoutes(r *mux.Router) {
+		// Configure websocket route
+	// r.Handle("/ws/", apiAuth(talk.WebsocketHandler))
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
@@ -58,6 +61,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
 	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
 	r.Handle("/upload/content", apiAuth(controllers.GetMyContentsHandler)).Methods("POST")
+	r.HandleFunc("/event/meeting", controllers.GetEventMeeting).Methods("GET")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {
