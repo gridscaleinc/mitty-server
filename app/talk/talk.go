@@ -56,8 +56,11 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	
 	clients[ws] = client
 	logrus.Printf("WebsocketHandler Start handling new client.")
+	
+	dbmap := helpers.GetPostgres()
+	
 	for {
-		var msg Message
+		var msg models.Conversation
 		// Read in a new message as JSON and map it to a Message object
 		err := ws.ReadJSON(&msg)
 		if err != nil {
@@ -68,6 +71,21 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		msg.SpeakerID = client.UserID
 		// Send the newly received message to the broadcast channel
 		broadcast <- msg
+		tx, err := dbmap.Begin()
+        if err != nil {
+		    logrus.Printf("error: %v", err)
+	    }
+	    defer func() {
+		    if err != nil {
+			    tx.Rollback()
+			    return
+		    }
+		    err = tx.Commit()
+	    }()
+	    
+	    if err := msg.Insert(*tx); err != nil {
+		    logrus.Printf("error: %v", err)
+	    }
 	}
 }
 
