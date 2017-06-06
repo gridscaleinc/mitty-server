@@ -7,10 +7,11 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"mitty.co/mitty-server/app/models"
+	"mitty.co/mitty-server/app/helpers"
 )
 
 var clients = make(map[*websocket.Conn]Client) // connected clients
-var broadcast = make(chan Message)           // broadcast channel
+var broadcast = make(chan models.Conversation)           // broadcast channel
 
 // Configure the upgrader
 var upgrader = websocket.Upgrader{
@@ -68,7 +69,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			delete(clients, ws)
 			break
 		}
-		msg.SpeakerID = client.UserID
+		msg.SpeakerID = int64(client.UserID)
 		// Send the newly received message to the broadcast channel
 		broadcast <- msg
 		tx, err := dbmap.Begin()
