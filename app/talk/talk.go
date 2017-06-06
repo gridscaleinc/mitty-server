@@ -76,16 +76,12 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
         if err != nil {
 		    logrus.Printf("error: %v", err)
 	    }
-	    defer func() {
-		    if err != nil {
-			    tx.Rollback()
-			    return
-		    }
-		    err = tx.Commit()
-	    }()
 	    
 	    if err := msg.Insert(*tx); err != nil {
 		    logrus.Printf("error: %v", err)
+		    tx.Rollback()
+	    } else {
+	    	tx.Commit()
 	    }
 	}
 }
