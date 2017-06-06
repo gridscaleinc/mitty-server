@@ -52,8 +52,8 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Register our new client
    client := Client{
-		UserID: user.ID
-		UserName: user.Name
+		UserID: user.ID,
+		UserName: user.Name,
 		Connected: true
 	}
 	
