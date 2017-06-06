@@ -2,6 +2,7 @@ package talk
 
 import (
 	"net/http"
+    "time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
@@ -23,8 +24,8 @@ type Message struct {
 	MeetingID int64 `json:"meetingId"`
 	ReplyToID int64 `json:"replyToId"`
 	Speaking  string `json:"speaking"`
-	SpeakerID String `json:"speakerId"`
-	SpeakTime String `json:"speakTime"`
+	SpeakerID int64 `json:"speakerId"`
+	SpeakTime time.Time `json:"speakTime"`
 }
 
 // Websocket Client
