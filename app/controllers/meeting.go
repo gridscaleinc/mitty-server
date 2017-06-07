@@ -80,6 +80,6 @@ func GetLatestConversation(w http.ResponseWriter, r *http.Request) {
 	count := len(talks)
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"count":      count,
-		"conversatons": talks,
+		"conversations": talks,
 	})
 }
