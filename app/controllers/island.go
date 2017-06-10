@@ -208,7 +208,7 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 
 	m := new(models.Meeting)
 	m.Name = p.Name
-	m.Type = p.RealityType
+	m.Type = "ISLAND"
 	if err := m.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
