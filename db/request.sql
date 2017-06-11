@@ -21,5 +21,6 @@ create table island (
         meeting_id                                 int8,
         owner_id                                    int8,
 	    created    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-	    updated	timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+	    updated   timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 )
+;
