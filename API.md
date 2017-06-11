@@ -16,8 +16,8 @@
 14. [Event Fetching](#14event-fetching)
 15. [Island Info](#15island-info)
 16. [My Contents List](#16my-contents-list)
-17. [Register Request] todo
-18. [Register proposal] todo
+17. [Register Request](#17register-request)
+18. [Register proposal](#18register-proposal)
 19. [Comment on request]
 20. [Event Meeting List]
 21. [Latest coversations]
@@ -789,4 +789,77 @@ sort 順：
 ```
   contents.sql
 ```
+### 17.[Register Request](id:register-request)
+```
+GET /api/new/request
+```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
+*Input Parameter*
+```
+{
+ title              : String         --(M)  タイトル
+ tag                : String         --(M)  タグ
+ description        : String         --(M)  詳細
+ forActivityId      : integer        --(O)  関連活動ID
+ preferredDatetime1 : datetime       --(O)  希望日時１
+ preferredDatetime2 : datetime       --(O)  希望日時２
+ preferredPrice1    : integer        --(O)  希望価格１
+ preferredPrice2    : integer        --(O)  希望価格２
+ startPlace         : string         --(O)  開始場所名
+ terminatePlace     : string         --(O)  終了場所名
+ oneway             : bool           --(O)  片道フラグ
+ status             : String         --(O)  ステータス
+ expiryDate         : date           --(O)  締め切り日
+ numOfPerson        : integer        --(O)  人数
+ numOfChildren      : integer        --(O)  子供人数
+}
+```
+*Out put response*
+```
+{
+id:request id
+}
+```
+*Description*
+
+```
+行いことをリクエストとして登録する処理。
+その情報をパラメータから取得し、requestテーブルに登録する。
+```
+
+*Description*
+```
+meeting_idについて、 event登録時と同じく、自動採番してMeetingテーブルに登録する。
+　　Type=[REQUEST]
+　　
+owner_idについて、登録を要求したユーザーID
+
+```
+*meeting_idについて*
+```
+event登録時と同じく、自動採番してMeetingテーブルに登録する。
+　　Type=[REQUEST]
+```
+
+*owner_idについて、について*
+```
+登録を要求したユーザーIDのIDを取得して、設定する。
+
+```
+
+*elasticSearchについて、について*
+```
+requestはelasticSearchの対象です。Indexの自動作成を連動的に行う。
+
+```
+
+*See also*
+```
+  request.sql
+```
+
 

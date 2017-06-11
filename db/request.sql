@@ -1,5 +1,5 @@
-drop table island cascade ;
-create table island (
+drop table request cascade ;
+create table request (
         id			                                     serial8	    PRIMARY KEY,
         title			                                 varchar(100),
         tag			                                 varchar(20),
