@@ -13,4 +13,5 @@ func AddTableWithName(dbmap *gorp.DbMap) {
 	dbmap.AddTableWithName(ActivityItem{}, "activity_item").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Meeting{}, "meeting").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Conversation{}, "conversation").SetKeys(true, "ID")
+	dbmap.AddTableWithName(Request{}, "request").SetKeys(true, "ID")
 }

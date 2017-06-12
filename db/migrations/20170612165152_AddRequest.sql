@@ -12,7 +12,7 @@ create table request (
         preferred_price1                       integer,
         preferred_price2                       integer,
         start_place                                varchar(100),
-        terminate_place                        integer,
+        terminate_place                        varchar(100),
         oneway                                     bool,
         status                                        varchar(20),
         expiry_date                                 date,
