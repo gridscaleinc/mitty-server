@@ -143,7 +143,7 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetDestinationListlHandler ...
-func GetDestinationListlHandler(w http.ResponseWriter, r *http.Request) {
+func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()
