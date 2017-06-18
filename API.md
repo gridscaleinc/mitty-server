@@ -23,6 +23,7 @@
 21. [Latest coversations]
 22. [Previous Cooversations]
 23. [Next Conversations]
+24. [Destination List](#24destination-list)
 ### [Common Rules](id:common-rules)
 *表記*
 ```
@@ -881,5 +882,67 @@ requestはelasticSearchの対象です。Indexの自動作成を連動的に行�
 ```
   request.sql
 ```
+### 24.[Destination List](id:destination-list)
+```
+GET /api/destination/list
+```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
+*Input Parameter*
+```
+なし
+```
+*Out put response*
+```
+{
+destinations:[destination, destination.....]
+}
+
+destination:{
+     islandId              : int         -- island.id as island_id
+     islandNickName        : string      -- island.nickname as island_nickname,
+     islandName            : string      -- island.name as island_name,
+     latitude              : double      -- island.latitude,
+     longtitude            : double      -- island.longitude,
+     islandLogo            : string      -- contents.link_url as island_logo,
+     eventId               : int         -- events.id as event_id,
+     eventTitle            : string      -- events.title as event_title,
+     eventTime             : datetime    -- events.start_datetime as eventTime 
+}
+```
+*Description*
+
+```
+行き先の一覧を取得する。行き先とは地理的な場所とそこに予定されているイベントの内容のこと。
+この機能の目的は行き先一覧を取得して、地図上に表示して、一日中にいく場所を概覧し、
+目的地までの距離、必要の時間を表示すること。
+
+取得対象はログインユーザーの参加しているイベントとその場所。
+
+```
+*See also（SQL)*
+```
+  select 
+      island.id as island_id,
+      island.nickname as island_nickname,
+      island.name as island_name,
+      island.latitude,
+      island.longitude,
+      contents.link_url as island_logo, 
+      events.id as event_id,
+      events.title as event_title,
+      events.start_datetime as event_time 
+  from island 
+      left join contents on island.logo_id=contents.id 
+      inner join events on island.id=events.islandid 
+      inner join activity_item on activity_item.event_id=events.id 
+      inner join activity on activity.id=activity_item.activity_id 
+  where activity.owner_id=[loginuser'id] 
+  order by events.start_datetime;
+```
+
 
 
