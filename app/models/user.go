@@ -25,6 +25,15 @@ type User struct {
 	Updated       time.Time `db:"updated" json:"updated"`
 }
 
+type UserInfo struct {
+	ID            int       `db:"id" json:"id"`
+	Name          string    `db:"name" json:"name"`
+	UserName      string    `db:"user_name" json:"user_name"`
+	MailAddress   string    `db:"mail_address" json:"mail_address"`
+	Status        string    `db:"status" json:"status"`
+	Icon          string    `db:"icon" json:"icon"`
+}
+
 // Insert ...
 func (u *User) Insert(tx gorp.Transaction) error {
 	random := new(goutils.Random)
@@ -69,6 +78,16 @@ func GetAdminUsers(dbmap *gorp.DbMap) ([]User, error) {
 func GetUserByEmailToken(tx gorp.Transaction, token string) (*User, error) {
 	u := new(User)
 	if err := tx.SelectOne(&u, "SELECT * FROM users WHERE mail_token = $1", token); err != nil {
+		return nil, err
+	}
+	return u, nil
+}
+
+// GetUserInfo...
+func GetUserInfo(id string) (*UserInfo, error) {
+	dbmap := helpers.GetPostgres()
+	u := new(UserInfo)
+	if err := dbmap.SelectOne(&u, "SELECT id,name, user_name,mail_address,status,icon FROM users WHERE id = $1", id); err != nil {
 		return nil, err
 	}
 	return u, nil

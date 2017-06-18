@@ -24,6 +24,10 @@
 22. [Previous Cooversations]
 23. [Next Conversations]
 24. [Destination List](#24destination-list)
+25. [User Info](#25user-info)
+26. [Register profile](#26register-profile)
+27. [User profile](#27user-profile)
+
 ### [Common Rules](id:common-rules)
 *表記*
 ```
