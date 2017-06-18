@@ -913,7 +913,7 @@ destination:{
      longtitude            : double      -- island.longitude,
      islandLogo            : string      -- contents.link_url as island_logo,
      eventId               : int         -- events.id as event_id,
-     eventTitle            : string      -- events.title as event_title,
+	  eventTitle            : string      -- events.title as event_title,
      eventTime             : datetime    -- events.start_datetime as eventTime 
 }
 ```

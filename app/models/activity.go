@@ -152,7 +152,7 @@ func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error)
       island.name as island_name,
       island.latitude,
       island.longitude,
-      contents.link_url as island_logo, 
+      COALESCE(contents.link_url, '') as island_logo, 
       events.id as event_id,
       events.title as event_title,
       events.start_datetime as event_time 
