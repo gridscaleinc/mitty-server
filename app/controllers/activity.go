@@ -15,6 +15,7 @@ import (
 func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -29,8 +30,7 @@ func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 
 	key := r.URL.Query().Get("key")
 
-	userID := 0
-	activities, err := models.GetActivityListByKey(tx, userID, key)
+	activities, err := models.GetActivityListByKey(tx, currentUserID, key)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -72,6 +72,7 @@ func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -93,6 +94,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	activity.Title = p.Title
 	activity.MainEventID = p.MainEventID
 	activity.Memo = p.Memo
+	activity.OwnerID = currentUserID
 	if err := activity.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -107,6 +109,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -120,16 +123,19 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	id := r.URL.Query().Get("id")
-	userID := 0
 
-	details, err := models.GetActivityDetailsByID(tx, userID, id)
+	details, err := models.GetActivityDetailsByID(tx, currentUserID, id)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
 
-	intId, err := strconv.Atoi(id)
-	activity, err := models.GetActivityByID(tx, intId)
+	intID, err := strconv.Atoi(id)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+	activity, err := models.GetActivityByID(tx, intID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -142,7 +148,7 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// GetDestinationListlHandler ...
+// GetDestinationListHandler ...
 func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
@@ -171,4 +177,3 @@ func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
-
