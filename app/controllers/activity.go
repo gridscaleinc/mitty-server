@@ -152,6 +152,7 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -164,9 +165,7 @@ func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	userID := filters.GetCurrentUserID(r)
-
-	destinations, err := models.GetDestinationList(tx, userID)
+	destinations, err := models.GetDestinationList(tx, currentUserID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
