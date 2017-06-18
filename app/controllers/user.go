@@ -32,8 +32,8 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, http.StatusCreated, map[string]interface{}{
-		"userInfo":      userInfo
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"userInfo":      userInfo,
 	})
 }
 
