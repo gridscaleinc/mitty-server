@@ -164,6 +164,6 @@ func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error)
   where activity.owner_id=$1 
   order by events.start_datetime;
 		`, userID)
-	return details, err
+	return destinations, err
 }
 
