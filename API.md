@@ -374,6 +374,11 @@ sourceName
 GET /api/activity/list
 
 ```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
 *Input parameter*
 ```
 {
@@ -423,6 +428,11 @@ where
 POST /api/new/activity
 
 ```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
 *Input parameter*
 ```
 {
@@ -458,6 +468,11 @@ POST /api/new/activity
 POST /api/new/activity/item
 
 ```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
 *Input parameter*
 ```
 {
@@ -561,6 +576,11 @@ POST /api/new/island
 GET /api/activity/details
 
 ```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
 *Input parameter*
 ```
 {
