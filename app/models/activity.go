@@ -43,6 +43,18 @@ type ActivityDetail struct {
 	IslandLogoUrl     string    `db:"islandLogoUrl" json:"islandLogoUrl"`
 }
 
+type Destination struct {
+     IslandId              int         `db:"island_id" json:"islandId"`
+     IslandNickName  string      `db:"island_nickname" json:"IslandNickName"`
+     IslandName        string      `db:"island_name" json:"islandName"`
+     Latitude              float64     `db:"latitude" json:"latitude"`
+     Longtitude           float64     `db:"longtitude" json:"longtitude"`
+     IslandLogo           string      `db:"island_logo" json:"islandLogo"`
+     EventId               int         `db:"event_id" json:"eventId"`
+     EventTitle            string      `db:"event_title" json:"eventTitle"`
+     EventTime             time.Time    `db:"event_time" json:"eventTime"`
+}
+
 // Insert ...
 func (s *Activity) Insert(tx gorp.Transaction) error {
 	s.Created = time.Now().UTC()
@@ -129,3 +141,29 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 	return details, err
 
 }
+
+// GetDestinationList ...
+func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error) {
+	destinations := []Destination{}
+	_, err := tx.Select(&destinations, `
+		select 
+      island.id as island_id,
+      island.nickname as island_nickname,
+      island.name as island_name,
+      island.latitude,
+      island.longitude,
+      contents.link_url as island_logo, 
+      events.id as event_id,
+      events.title as event_title,
+      events.start_datetime as event_time 
+  from island 
+      left join contents on island.logo_id=contents.id 
+      inner join events on island.id=events.islandid 
+      inner join activity_item on activity_item.event_id=events.id 
+      inner join activity on activity.id=activity_item.activity_id 
+  where activity.owner_id=$1 
+  order by events.start_datetime;
+		`, userID)
+	return details, err
+}
+

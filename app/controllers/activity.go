@@ -141,3 +141,34 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 	})
 
 }
+
+// GetDestinationListlHandler ...
+func GetDestinationListlHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	userID := filters.GetCurrentUserID(r)
+
+	destinations, err := models.GetDestinationList(tx, userID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"destinations": destinations,
+	})
+
+}
+
