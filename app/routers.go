@@ -61,7 +61,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
 	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
 	r.Handle("/upload/content", apiAuth(controllers.GetMyContentsHandler)).Methods("POST")
-	r.HandleFunc("/event/meeting", controllers.GetEventMeeting).Methods("GET")
+	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
 	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
 	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
