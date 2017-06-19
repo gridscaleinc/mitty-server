@@ -6,14 +6,13 @@ import (
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
-	
+
 	"github.com/mholt/binding"
-	
 )
 
 // EventParams ...
 type MeetingParams struct {
-	MeetingID              int64    `json:"meetingId"`
+	MeetingID int64 `json:"meetingId"`
 }
 
 func (p *MeetingParams) FieldMap(r *http.Request) binding.FieldMap {
@@ -24,10 +23,12 @@ func (p *MeetingParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 	}
 }
+
 // FetchingConversation ...
 func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -39,8 +40,7 @@ func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
-    var userID int64 = 0
-	meetingList, err := models.GetEventMeetingList(tx,userID)
+	meetingList, err := models.GetEventMeetingList(tx, currentUserID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -65,12 +65,12 @@ func GetLatestConversation(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-    p := new(MeetingParams)
+	p := new(MeetingParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputError(w, r, errs)
 		return
 	}
-	
+
 	talks, err := models.GetLatestConversation(tx, p.MeetingID)
 	if err != nil {
 		filters.RenderError(w, r, err)
@@ -79,7 +79,7 @@ func GetLatestConversation(w http.ResponseWriter, r *http.Request) {
 
 	count := len(talks)
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"count":      count,
+		"count":         count,
 		"conversations": talks,
 	})
 }
