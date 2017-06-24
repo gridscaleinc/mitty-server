@@ -27,7 +27,7 @@ type Message struct {
 	MessageType string `json:"messageType"`
 	Topic string `json:"topic"`
 	Command string `json:"command"`
-	Conversation models.Conversation `json:"Conversation"`
+	Conversation models.Conversation `json:"conversation"`
 }
 
 // Websocket Client
