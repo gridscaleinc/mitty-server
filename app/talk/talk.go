@@ -75,13 +75,13 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
             pubsub.subscribe(ws, client, msg.Topic)
         }  else if (msg.Command == "talk") {
 		    // Send the newly received message to the broadcast channel
+  		    msg.Conversation.SpeakerID = int64(client.UserID)
 		    pubsub.publish(msg)
 		     tx, err := dbmap.Begin()
             if err != nil {
 		        logrus.Printf("error: %v", err)
 	        }
 	        conversaton := msg.Conversation
-  		    conversaton.SpeakerID = int64(client.UserID)
             if err := conversaton.Insert(*tx); err != nil {
 		        logrus.Printf("error: %v", err)
 		        tx.Rollback()
