@@ -2,8 +2,7 @@ package talk
 
 import (
 	"net/http"
-    "time"
-
+	
 	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"mitty.co/mitty-server/app/models"
@@ -71,9 +70,9 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		
-	    log.Println("http connection :来た")
+	    logrusPrintln("http connection :来た")
         if (msg.Command == "subscribe") {
-            pubsub.subscribe(ws, msg.Topic)
+            pubsub.subscribe(ws, client, msg.Topic)
         }  else if (msg.Command == "talk") {
 		    // Send the newly received message to the broadcast channel
 		    pubsub.publish(msg)
@@ -102,52 +101,52 @@ func MessageHandler() {
 }
 
 type PubSub struct {
-      topicsMap  map[int]map[*websocket.Conn]bool
+      topicsMap  map[int]map[*websocket.Conn]Client
 	  reverseTopicMap map[*websocket.Conn]int
 }
 
-func (pubsub *PubSub) subscribe(ws *websocket.Conn, meeting int) {
-     clients,ok := pubsub.topicsMap[meeting] 	
+func (pubsub *PubSub) subscribe(ws *websocket.Conn, client *Client, topic int) {
+     clients,ok := pubsub.topicsMap[topic] 	
      if !ok {
-     	   log.Println("first client of meeting")
-           clients := make(map[*websocket.Conn]bool)
+     	   logrusPrintln("first client of meeting")
+           clients := make(map[*websocket.Conn]Client)
            pubsub.topicsMap[meeting] = clients
-           clients[ws] = true
+           clients[ws] = client
            pubsub.reverseTopicMap[ws]=meeting
           return 
      } else {
-     	   clients[ws] = true
+     	   clients[ws] = client
            pubsub.reverseTopicMap[ws]=meeting
      }
 }
 
 func (pubsub *PubSub) publish(msg Message) {
-	  clients,ok := pubsub.topicsMap[msg.MeetingId] 
+	  clients,ok := pubsub.topicsMap[msg.Topic] 
 	  if (!ok) {
 	      return
 	  }
 	  
-	  for client := range clients {
-	  	    err := client.WriteJSON(msg)
+	  for websocket := range clients {
+	  	    err := websocket.WriteJSON(msg)
 	  	    if err != nil {
-				log.Printf("error: %v", err)
+				logrusPrintf("error: %v", err)
 				client.Close()
-				delete(clients, client)
+				delete(clients, websocket)
 				if (len(clients) == 0) {
-				    delete(pubsub.topicsMap, msg.MeetingId)
+				    delete(pubsub.topicsMap, msg.Topic)
 				}
 			}
 	  }
 }
 
 func (pubsub *PubSub) unsubscribe(ws *websocket.Conn) {
-	meeting,ok := pubsub.reverseTopicMap[ws]
+	topic,ok := pubsub.reverseTopicMap[ws]
 	if !ok {
 		return 
 	}
 	
 	delete (pubsub.reverseTopicMap, ws)
-	clients,ok := pubsub.topicsMap[meeting]
+	clients,ok := pubsub.topicsMap[topic]
 	if (!ok) {
 	    return 
 	}
