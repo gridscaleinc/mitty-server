@@ -12,7 +12,7 @@ import (
 var broadcast = make(chan Message)           // broadcast channel
 var pubsub = PubSub {
 		 topicsMap : make(map[string]map[*websocket.Conn]Client),
-	     reverseTopicMap : make(map[*websocket.Conn]int),
+	     reverseTopicMap : make(map[*websocket.Conn]string),
 }
 
 // Configure the upgrader
