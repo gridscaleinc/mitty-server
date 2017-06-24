@@ -107,6 +107,7 @@ type PubSub struct {
 
 func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic string) {
      clients,ok := pubsub.topicsMap[topic] 	
+     logrus.Println(topic)
      if !ok {
      	   logrus.Println("first client of meeting")
            clients := make(map[*websocket.Conn]Client)
@@ -121,6 +122,7 @@ func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic string)
 }
 
 func (pubsub *PubSub) publish(msg Message) {
+	  logrus.Println(msg.Topic)
 	  clients,ok := pubsub.topicsMap[msg.Topic] 
 	  if (!ok) {
 	      return
