@@ -10,8 +10,11 @@ import (
 	"mitty.co/mitty-server/app/helpers"
 )
 
-var clients = make(map[*websocket.Conn]Client) // connected clients
-var broadcast = make(chan models.Conversation)           // broadcast channel
+var broadcast = make(chan Message)           // broadcast channel
+var pubsub = PubSub {
+		 topicsMap : make(map[string]map[*websocket.Conn]Client),
+	     reverseTopicMap : make(map[*websocket.Conn]int),
+}
 
 // Configure the upgrader
 var upgrader = websocket.Upgrader{
@@ -22,11 +25,10 @@ var upgrader = websocket.Upgrader{
 
 // Define our message object
 type Message struct {
-	MeetingID int64 `json:"meetingId"`
-	ReplyToID int64 `json:"replyToId"`
-	Speaking  string `json:"speaking"`
-	SpeakerID int `json:"speakerId"`
-	SpeakTime time.Time `json:"speakTime"`
+	MessageType string `json:"messageType"`
+	Topic int `json:"topic"`
+	Command string `json:"command"`
+	Conversation models.Conversation `json:"Conversation"`
 }
 
 // Websocket Client
@@ -55,34 +57,39 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	// Register our new client
    client := Client{UserID: user.ID,UserName: user.Name,Connected: true}
 	
-	clients[ws] = client
 	logrus.Printf("WebsocketHandler Start handling new client.")
 	
 	dbmap := helpers.GetPostgres()
 	
 	for {
-		var msg models.Conversation
+		var msg Message
 		// Read in a new message as JSON and map it to a Message object
 		err := ws.ReadJSON(&msg)
 		if err != nil {
 			logrus.Printf("error: %v", err)
-			delete(clients, ws)
+			pubsub.unsubscribe(ws)
 			break
 		}
-		msg.SpeakerID = int64(client.UserID)
-		// Send the newly received message to the broadcast channel
-		broadcast <- msg
-		tx, err := dbmap.Begin()
-        if err != nil {
-		    logrus.Printf("error: %v", err)
-	    }
-	    
-	    if err := msg.Insert(*tx); err != nil {
-		    logrus.Printf("error: %v", err)
-		    tx.Rollback()
-	    } else {
-	    	tx.Commit()
-	    }
+		
+	    log.Println("http connection :来た")
+        if (msg.Command == "subscribe") {
+            pubsub.subscribe(ws, msg.Topic)
+        }  else if (msg.Command == "talk") {
+		    // Send the newly received message to the broadcast channel
+		    pubsub.publish(msg)
+		     tx, err := dbmap.Begin()
+            if err != nil {
+		        logrus.Printf("error: %v", err)
+	        }
+	        conversaton := msg.Conversation
+  		    conversaton.SpeakerID = int64(client.UserID)
+            if err := conversaton.Insert(*tx); err != nil {
+		        logrus.Printf("error: %v", err)
+		        tx.Rollback()
+	        } else {
+	    	    tx.Commit()
+	        }
+		}
 	}
 }
 
@@ -90,15 +97,61 @@ func MessageHandler() {
 	for {
 		// Grab the next message from the broadcast channel
 		msg := <-broadcast
-		logrus.Printf("New message:%v", msg)
-		// Send it out to every client that is currently connected
-		for client := range clients {
-			err := client.WriteJSON(msg)
-			if err != nil {
-				logrus.Printf("error: %v", err)
-				client.Close()
-				delete(clients, client)
-			}
-		}
+        pubsub.publish(msg)
 	}
 }
+
+type PubSub struct {
+      topicsMap  map[int]map[*websocket.Conn]bool
+	  reverseTopicMap map[*websocket.Conn]int
+}
+
+func (pubsub *PubSub) subscribe(ws *websocket.Conn, meeting int) {
+     clients,ok := pubsub.topicsMap[meeting] 	
+     if !ok {
+     	   log.Println("first client of meeting")
+           clients := make(map[*websocket.Conn]bool)
+           pubsub.topicsMap[meeting] = clients
+           clients[ws] = true
+           pubsub.reverseTopicMap[ws]=meeting
+          return 
+     } else {
+     	   clients[ws] = true
+           pubsub.reverseTopicMap[ws]=meeting
+     }
+}
+
+func (pubsub *PubSub) publish(msg Message) {
+	  clients,ok := pubsub.topicsMap[msg.MeetingId] 
+	  if (!ok) {
+	      return
+	  }
+	  
+	  for client := range clients {
+	  	    err := client.WriteJSON(msg)
+	  	    if err != nil {
+				log.Printf("error: %v", err)
+				client.Close()
+				delete(clients, client)
+				if (len(clients) == 0) {
+				    delete(pubsub.topicsMap, msg.MeetingId)
+				}
+			}
+	  }
+}
+
+func (pubsub *PubSub) unsubscribe(ws *websocket.Conn) {
+	meeting,ok := pubsub.reverseTopicMap[ws]
+	if !ok {
+		return 
+	}
+	
+	delete (pubsub.reverseTopicMap, ws)
+	clients,ok := pubsub.topicsMap[meeting]
+	if (!ok) {
+	    return 
+	}
+	
+	delete(clients,ws)
+}
+
