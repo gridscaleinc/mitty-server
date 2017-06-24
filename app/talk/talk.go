@@ -11,7 +11,7 @@ import (
 
 var broadcast = make(chan Message)           // broadcast channel
 var pubsub = PubSub {
-		 topicsMap : make(map[string]map[*websocket.Conn]*Client),
+		 topicsMap : make(map[string]map[*websocket.Conn]Client),
 	     reverseTopicMap : make(map[*websocket.Conn]int),
 }
 
@@ -101,15 +101,15 @@ func MessageHandler() {
 }
 
 type PubSub struct {
-      topicsMap  map[int]map[*websocket.Conn]*Client
+      topicsMap  map[int]map[*websocket.Conn]Client
 	  reverseTopicMap map[*websocket.Conn]int
 }
 
-func (pubsub *PubSub) subscribe(ws *websocket.Conn, client *Client, topic int) {
+func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic int) {
      clients,ok := pubsub.topicsMap[topic] 	
      if !ok {
      	   logrus.Println("first client of meeting")
-           clients := make(map[*websocket.Conn]*Client)
+           clients := make(map[*websocket.Conn]Client)
            pubsub.topicsMap[topic] = clients
            clients[ws] = client
            pubsub.reverseTopicMap[ws]=topic
@@ -129,7 +129,7 @@ func (pubsub *PubSub) publish(msg Message) {
 	  for websocket := range clients {
 	  	    err := websocket.WriteJSON(msg)
 	  	    if err != nil {
-				logrusPrintf("error: %v", err)
+				logrus.Printf("error: %v", err)
 				websocket.Close()
 				delete(clients, websocket)
 				if (len(clients) == 0) {
