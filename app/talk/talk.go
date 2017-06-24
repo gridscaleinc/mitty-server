@@ -101,11 +101,11 @@ func MessageHandler() {
 }
 
 type PubSub struct {
-      topicsMap  map[int]map[*websocket.Conn]Client
+      topicsMap  map[string]map[*websocket.Conn]Client
 	  reverseTopicMap map[*websocket.Conn]int
 }
 
-func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic int) {
+func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic string) {
      clients,ok := pubsub.topicsMap[topic] 	
      if !ok {
      	   logrus.Println("first client of meeting")
