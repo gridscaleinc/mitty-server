@@ -25,7 +25,7 @@ var upgrader = websocket.Upgrader{
 // Define our message object
 type Message struct {
 	MessageType string `json:"messageType"`
-	Topic int `json:"topic"`
+	Topic string `json:"topic"`
 	Command string `json:"command"`
 	Conversation models.Conversation `json:"Conversation"`
 }
@@ -102,7 +102,7 @@ func MessageHandler() {
 
 type PubSub struct {
       topicsMap  map[string]map[*websocket.Conn]Client
-	  reverseTopicMap map[*websocket.Conn]int
+	  reverseTopicMap map[*websocket.Conn]string
 }
 
 func (pubsub *PubSub) subscribe(ws *websocket.Conn, client Client, topic string) {
