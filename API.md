@@ -27,6 +27,7 @@
 25. [User Info](#25user-info)
 26. [Register profile](#26register-profile)
 27. [User profile](#27user-profile)
+28. [Request Searching](#28request-searching)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -946,6 +947,48 @@ destination:{
       inner join activity on activity.id=activity_item.activity_id 
   where activity.owner_id=[loginuser'id] 
   order by events.start_datetime;
+```
+### 28.[Request Searching](id:request-searching)
+```
+GET /api/search/request?q=
+
+```
+*Input parameter*
+```
+{
+ q:   String   
+}
+
+```
+*Output response*
+```
+{ requests]  [
+    req1, req2,....
+  ]
+}
+
+req: {
+        request.*,  -- request テーブルの全項目
+        num_of_likes,  -- いいねの件数。(０件固定、いいねテーブルができてから実装追加。）
+        num_of_proposal, -- 提案件数 (０件固定、提案テーブルができてから実装追加。）
+        owner_name, -- owner userネーム
+        owner_icon_url -- owner のアイコンURL
+ }
+```
+
+
+*Description*
+```
+q=keysによって、Ealstic Search から該当requestの候補を取得し、下記付加処理、情報をつけて、結果を返す。
+1. いいねの件数
+　　(０件固定、いいねテーブルができてから実装追加。）
+　　
+2. 提案件数
+　　(０件固定、提案テーブルができてから実装追加。）
+　　
+3. 投稿者情報
+   投稿者なお名前, iconのURL。 
+
 ```
 
 
