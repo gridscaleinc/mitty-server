@@ -39,6 +39,6 @@ func (s *Conversation) Delete(tx gorp.Transaction) error {
 // Get Latest Conversation ...
 func GetLatestConversation(tx *gorp.Transaction,  meetingID int64) ([]Conversation, error) {
 	conversations := []Conversation{}
-	_, err := tx.Select(&conversations, `select * from conversation where meeting_id=$1 order by speak_time desc;`, meetingID)
+	_, err := tx.Select(&conversations, `select * from conversation where meeting_id=$1 order by speak_time;`, meetingID)
 	return conversations, err
 }
