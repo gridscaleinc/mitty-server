@@ -67,7 +67,7 @@ func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 // SetUserIcon ...
 func SetUserIcon(tx gorp.Transaction, userId int,  contentId int64) error {
 	u := new(User)
-	if err := tx.Exec("Update Users set icon=(select link_url from contents WHERE contents.id = $2) Where  Users.id=$2", contentId, userId); err != nil {
+	if err := tx.Exec("Update Users set icon=(select link_url from contents WHERE contents.id = $1) Where  Users.id=$2", contentId, userId); err != nil {
 		return err
 	}
 	return nil
