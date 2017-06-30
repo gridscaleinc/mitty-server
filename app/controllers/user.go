@@ -2,7 +2,8 @@ package controllers
 
 import (
 	"net/http"
-	
+	"strconv"
+
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
@@ -23,18 +24,17 @@ func UpdateUserIconHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
-	
+
 	currentUserID := filters.GetCurrentUserID(r)
-	contentId := r.URL.Query().Get("contentId")
-	
-	userInfo, err := models.SetUserIcon(tx, currentUserID, contentId)
-	if err != nil {
+	contentID, _ := strconv.Atoi(r.URL.Query().Get("contentId"))
+
+	if err := models.SetUserIcon(*tx, currentUserID, contentID); err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"ok":      true,
+		"ok": true,
 	})
 
 }
@@ -54,9 +54,9 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
-	
+
 	id := r.URL.Query().Get("id")
-	
+
 	userInfo, err := models.GetUserInfo(id)
 	if err != nil {
 		filters.RenderError(w, r, err)
@@ -64,7 +64,6 @@ func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"userInfo":      userInfo,
+		"userInfo": userInfo,
 	})
 }
-

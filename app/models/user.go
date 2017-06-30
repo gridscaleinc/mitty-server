@@ -26,12 +26,12 @@ type User struct {
 }
 
 type UserInfo struct {
-	ID            int       `db:"id" json:"id"`
-	Name          string    `db:"name" json:"name"`
-	UserName      string    `db:"user_name" json:"user_name"`
-	MailAddress   string    `db:"mail_address" json:"mail_address"`
-	Status        string    `db:"status" json:"status"`
-	Icon          string    `db:"icon" json:"icon"`
+	ID          int    `db:"id" json:"id"`
+	Name        string `db:"name" json:"name"`
+	UserName    string `db:"user_name" json:"user_name"`
+	MailAddress string `db:"mail_address" json:"mail_address"`
+	Status      string `db:"status" json:"status"`
+	Icon        string `db:"icon" json:"icon"`
 }
 
 // Insert ...
@@ -65,9 +65,8 @@ func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 }
 
 // SetUserIcon ...
-func SetUserIcon(tx gorp.Transaction, userId int,  contentId int64) error {
-	u := new(User)
-	if err := tx.Exec("Update Users set icon=(select link_url from contents WHERE contents.id = $1) Where  Users.id=$2", contentId, userId); err != nil {
+func SetUserIcon(tx gorp.Transaction, userID int, contentID int) error {
+	if _, err := tx.Exec("Update Users set icon=(select link_url from contents WHERE contents.id = $1) Where  Users.id=$2", contentID, userID); err != nil {
 		return err
 	}
 	return nil
