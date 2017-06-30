@@ -45,27 +45,37 @@ func webRoutes(r *mux.Router) {
 
 func publicRoutes(r *mux.Router) {
 	// Configure websocket route
-	// r.Handle("/ws/", apiAuth(talk.WebsocketHandler))
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
-	r.HandleFunc("/new/event", controllers.PostEventHandler).Methods("POST")
-	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
-	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
+	
+	// 
+	// INSERT
+	r.Handle("/new/event", apiAuth(controllers.PostEventHandler)).Methods("POST")
 	r.Handle("/new/activity", apiAuth(controllers.PostActivityHandler)).Methods("POST")
-	r.HandleFunc("/new/activity/item", controllers.PostActivityItemHandler).Methods("POST")
-	r.HandleFunc("/new/island", controllers.PostIslandHandler).Methods("POST")
+	r.Handle("/new/activity/item", apiAuth(controllers.PostActivityItemHandler)).Methods("POST")
+	r.Handle("/new/island", apiAuth(controllers.PostIslandHandler)).Methods("POST")
+	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
+	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
+	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
+	
+	// UPDATE
+	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
+	
+	// SELECT
+	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 	r.HandleFunc("/event/of", controllers.EventFetchingHandler).Methods("GET")
 	r.Handle("/activity/list", apiAuth(controllers.GetActivityListHandler)).Methods("GET")
 	r.Handle("/activity/details", apiAuth(controllers.GetActivityDetailHandler)).Methods("GET")
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
 	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
-	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
 	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
 	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
-	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
+	
+	// DELETE
+	
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

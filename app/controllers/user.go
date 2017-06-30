@@ -8,6 +8,37 @@ import (
 	"mitty.co/mitty-server/app/models"
 )
 
+// update user icon
+func UpdateUserIconHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	
+	currentUserID := filters.GetCurrentUserID(r)
+	contentId := r.URL.Query().Get("contentId")
+	
+	userInfo, err := models.SetUserIcon(tx, currentUserID, contentId)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"ok":      true,
+	})
+
+}
+
 // SignUpHandler ...
 func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)

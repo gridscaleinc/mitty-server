@@ -64,6 +64,15 @@ func GetUserByUserName(tx gorp.Transaction, userName string) (*User, error) {
 	return u, nil
 }
 
+// SetUserIcon ...
+func SetUserIcon(tx gorp.Transaction, userId int,  conentId int64) error {
+	u := new(User)
+	if err := tx.Exec("Update Users set icon=(select link_url from contents WHERE contents.id = $2) Where  Users.id=$2", contentId, userId); err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetAdminUsers ...
 func GetAdminUsers(dbmap *gorp.DbMap) ([]User, error) {
 	users := []User{}
