@@ -1,0 +1,20 @@
+drop table profile cascade;
+create table profile (
+  id    serial8  PRIMARY KEY,
+  mitty_id  int,    
+  gender    varchar  (10),
+  one_word_speech    varchar  (200),
+  constellation    varchar  (20),
+  home_island_id    int8  ,
+  birth_island_id    int8  ,
+  age_group    varchar  (20),
+  appearance_tag    varchar  (20),
+  occupation_tag1    varchar  (20),
+  occupation_tag2    varchar  (20),
+  occupation_tag3    varchar  (20),
+  hobby_tag1    varchar  (20),
+  hobby_tag2    varchar  (20),
+  hobby_tag3    varchar  (20),
+  hobby_tag4    varchar  (20),
+  hobby_tag5    varchar  (20),
+);
