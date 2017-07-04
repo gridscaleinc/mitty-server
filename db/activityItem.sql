@@ -6,7 +6,7 @@ create table activity_item (
         title	                            varchar(200),
         memo		                          text,
         notification                      bool,
-        notificationDateTime              date,
+        notificationDateTime              timestamp,
         created                           timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         updated	                          timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
         PRIMARY KEY(activity_id, event_id)

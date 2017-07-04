@@ -7,8 +7,8 @@ create table events (
         tag                                            varchar(50),
         title			                                 varchar(100),
         action		                                 text,
-        start_datetime	 	                     date,
-        end_datetime		                     date,
+        start_datetime	 	                     timestamp,
+        end_datetime		                     timestamp,
         allday_flag		                         bool,
         islandId		                             int4,
         logo_id                                     int4,
@@ -37,6 +37,6 @@ create table events (
         created                                     date,
         publisher_id                             int4,
         orgnization_id                          int4,
-        lastupdated                              date,
+        lastupdated                              timestamp,
         amender_id                             int4
         );

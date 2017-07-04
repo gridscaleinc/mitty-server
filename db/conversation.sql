@@ -5,5 +5,5 @@ create table conversation (
         reply_to_id                               int8,
         speaking                                  text,
         speaker_id                               int8,
-        speak_time                              date 
+        speak_time                              time 
 )

@@ -5,6 +5,6 @@ create table activity (
        main_event_id		int8,
       memo		           text,
       owner_id		        int8,
-      created		           timestampe NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      updated		           timestampe NOT NULL DEFAULT CURRENT_TIMESTAMP
+      created		           timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated		           timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
