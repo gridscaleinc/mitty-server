@@ -48,8 +48,8 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
 	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
 	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
-	
-	// 
+
+	//
 	// INSERT
 	r.Handle("/new/event", apiAuth(controllers.PostEventHandler)).Methods("POST")
 	r.Handle("/new/activity", apiAuth(controllers.PostActivityHandler)).Methods("POST")
@@ -58,10 +58,10 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
 	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
-	
+
 	// UPDATE
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
-	
+
 	// SELECT
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 	r.HandleFunc("/event/of", controllers.EventFetchingHandler).Methods("GET")
@@ -73,9 +73,11 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
-	
+
+	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+
 	// DELETE
-	
+
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

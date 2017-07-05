@@ -1,8 +1,14 @@
 package controllers
 
 import (
+	"database/sql"
+	"encoding/json"
+	"fmt"
 	"net/http"
+	"reflect"
 	"time"
+
+	elastic "gopkg.in/olivere/elastic.v5"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -151,5 +157,66 @@ func PostRequestHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"id": m.ID,
+	})
+}
+
+// GetSearchRequestHandler ...
+func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	queryParams := r.URL.Query().Get("q")
+
+	matchQuery1 := elastic.NewMatchQuery("title", queryParams)
+	matchQuery2 := elastic.NewMatchQuery("tag", queryParams)
+	matchQuery3 := elastic.NewMatchQuery("description", queryParams)
+	matchQuery4 := elastic.NewMatchQuery("start_place", queryParams)
+	matchQuery5 := elastic.NewMatchQuery("terminate_place", queryParams)
+
+	query := elastic.NewBoolQuery()
+	query.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
+
+	src, err := query.Source()
+	if err != nil {
+		panic(err)
+	}
+	data, err := json.Marshal(src)
+	if err != nil {
+		panic(err)
+	}
+	s := string(data)
+	fmt.Println(s)
+
+	searchResult, err := helpers.ESSearchBoolQuery("mitty", "request", "id", 0, 100, query)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	var requests []interface{}
+	var request models.Request
+	for _, item := range searchResult.Each(reflect.TypeOf(request)) {
+		if t, ok := item.(models.Request); ok {
+			requestDetail, err := models.GetRequestDetailByID(tx, int(t.ID))
+			if err != nil && err != sql.ErrNoRows {
+				filters.RenderError(w, r, err)
+				return
+			}
+			requests = append(requests, requestDetail)
+		}
+	}
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"requests": requests,
 	})
 }
