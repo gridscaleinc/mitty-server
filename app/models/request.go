@@ -89,7 +89,7 @@ func GetRequestDetailByID(tx *gorp.Transaction, ID int) (interface{}, error) {
 		users.icon as owner_icon_url
 		from request
 		join users on users.id = request.owner_id
-		where events.id = $1;
+		where request.id = $1;
 		`, ID); err != nil {
 		return nil, err
 	}
