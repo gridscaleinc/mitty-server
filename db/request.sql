@@ -16,6 +16,7 @@ create table request (
         expiry_date                                 date,
         num_of_person                          integer,
         num_of_children                        integer,
+        gallery_id		                              int8	,
         accepted_proposal_id               int8,
         accepted_date                           timestamp,
         meeting_id                                 int8,

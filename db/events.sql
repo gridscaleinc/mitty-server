@@ -11,6 +11,7 @@ create table events (
         end_datetime		                     timestamp,
         allday_flag		                         bool,
         islandId		                             int4,
+        islandId2		                             int4,
         logo_id                                     int4,
         gallery_id                                 int4,
         meeting_id                               int4,
