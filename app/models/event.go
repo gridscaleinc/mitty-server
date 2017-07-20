@@ -22,6 +22,7 @@ type Event struct {
 	EndDatetime         time.Time `db:"end_datetime" json:"endDatetime"`
 	AlldayFlag          bool      `db:"allday_flag" json:"alldayFlag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
+	IslandID2            int       `db:"islandId2" json:"islandId2"`
 	LogoID              int       `db:"logo_id" json:"logoId"`
 	GalleryID           int64     `db:"gallery_id" json:"galleryId"`
 	MeetingID           int64     `db:"meeting_id" json:"meetingId"`
