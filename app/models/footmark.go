@@ -26,7 +26,6 @@ func (s *Footmark) Insert(tx gorp.Transaction) error {
 
 // Update ...
 func (s *Footmark) Update(tx gorp.Transaction) error {
-	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
 }

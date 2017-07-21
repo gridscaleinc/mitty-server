@@ -43,7 +43,6 @@ func (s *Proposal) Insert(tx gorp.Transaction) error {
 
 // Update ...
 func (s *Proposal) Update(tx gorp.Transaction) error {
-	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
 }
