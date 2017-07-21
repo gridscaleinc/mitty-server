@@ -15,6 +15,8 @@ type ActivityItem struct {
 	Memo                 string    `db:"memo" json:"memo"`
 	Notification         bool      `db:"notification" json:"notification"`
 	NotificationDateTime time.Time `db:"notificationDateTime" json:"notificationDateTime"`
+	Participation		   string    `db:"participation" json:"participation"`
+    CalendarUrl		   string    `db:"calendar_url" json:"calendar_url"`
 	Created              time.Time `db:"created" json:"created"`
 	Updated              time.Time `db:"updated" json:"updated"`
 }
