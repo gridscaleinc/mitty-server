@@ -1,8 +1,6 @@
 package models
     
 import (
-    	"time"
-    
     	gorp "gopkg.in/gorp.v1"
 )
     
