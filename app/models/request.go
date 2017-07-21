@@ -25,6 +25,7 @@ type Request struct {
 	Oneway             bool      `db:"oneway" json:"oneway"`
 	Status             string    `db:"status" json:"status"`
 	ExpiryDate         time.Time `db:"expiry_date" json:"expiry_date"`
+	GalleryID          int64     `db:"gallery_id" json:"gallery_id"`
 	NumOfPerson        int       `db:"num_of_person" json:"num_of_person"`
 	NumOfChildren      int       `db:"num_of_children" json:"num_of_children"`
 	AcceptedProposalID int       `db:"accepted_proposal_id" json:"accepted_proposal_id"`

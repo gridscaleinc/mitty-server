@@ -887,6 +887,66 @@ requestはelasticSearchの対象です。Indexの自動作成を連動的に行�
 ```
   request.sql
 ```
+
+### 18.[Register Proposal](id:register-proposal)
+```
+GET /api/new/proposal
+```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
+*Input Parameter*
+```
+{
+ 
+ }
+```
+*Out put response*
+```
+{
+id:request id
+}
+```
+*Description*
+
+```
+行いことをリクエストとして登録する処理。
+その情報をパラメータから取得し、requestテーブルに登録する。
+```
+
+*Description*
+```
+meeting_idについて、 event登録時と同じく、自動採番してMeetingテーブルに登録する。
+　　Type=[REQUEST]
+　　
+owner_idについて、登録を要求したユーザーID
+
+```
+*meeting_idについて*
+```
+event登録時と同じく、自動採番してMeetingテーブルに登録する。
+　　Type=[REQUEST]
+```
+
+*owner_idについて、について*
+```
+登録を要求したユーザーIDのIDを取得して、設定する。
+
+```
+
+*elasticSearchについて、について*
+```
+requestはelasticSearchの対象です。Indexの自動作成を連動的に行う。
+
+```
+
+*See also*
+```
+  request.sql
+```
+
 ### 24.[Destination List](id:destination-list)
 ```
 GET /api/destination/list
