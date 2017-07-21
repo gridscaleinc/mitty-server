@@ -1,10 +1,7 @@
 package models
     
 import (
-    	"strconv"
     	"time"
-    
-    	"mitty.co/mitty-server/app/helpers"
     
     	gorp "gopkg.in/gorp.v1"
 )
@@ -14,7 +11,7 @@ type Footmark struct {
     ID    int64     `db:"id" json:"id"`
 	EventID	int64	 `db:"event_id" json:"event_id"`
 	IslandID		int64  `db:"island_id" json:"island_id"`
-	MittyID		integer	 `db:"mitty_id" json:"mitty_id"`
+	MittyID		int	  `db:"mitty_id" json:"mitty_id"`
 	NameCardID	 	int64  `db:"name_card_id" json:"name_card_id"`
 	PictureID		int64  `db:"picture_id" json:"picture_id"`
 	SeatOrRoomInfo		string `db:"seat_or_room_info" json:"seat_or_room_info"`

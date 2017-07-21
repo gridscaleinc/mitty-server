@@ -1,10 +1,7 @@
 package models
     
 import (
-    	"strconv"
     	"time"
-    
-    	"mitty.co/mitty-server/app/helpers"
     
     	gorp "gopkg.in/gorp.v1"
 )
