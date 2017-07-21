@@ -16,9 +16,9 @@ type Proposal struct {
     Proposed_island_id2		int64     `db:"proposed_island_id2" json:"proposed_island_id2"`
     Gallery_id		int64     `db:"gallery_id" json:"gallery_id"`
     PriceName1		string     `db:"priceName1" json:"priceName1"`
-    Price1		integer     `db:"price1" json:"price1"`
+    Price1		int     `db:"price1" json:"price1"`
     PriceName2		string     `db:"priceName2" json:"priceName2"`
-    Price2		integer     `db:"price2" json:"price2"`
+    Price2		int     `db:"price2" json:"price2"`
     PriceCurrency		string     `db:"price_currency" json:"price_currency"`
     PriceInfo		string     `db:"price_info" json:"price_info"`
     ProposedDatetime1		time.Time `db:"proposed_datetime1" json:"proposed_datetime1"`
