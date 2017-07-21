@@ -9,7 +9,7 @@ import (
 // Likes struct
 type Likes struct {
     ID    int64     `db:"id" json:"id"`
-    MittyID    integer   `db:"mitty_id" json:"mitty_id"`
+    MittyID    int   `db:"mitty_id" json:"mitty_id"`
     EntityType    string `db:"entity_type" json:"entity_type"`
     EntityID    int64     `db:"entity_id" json:"entity_id"`  
 }	
