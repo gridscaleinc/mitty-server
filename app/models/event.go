@@ -121,7 +121,7 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		PublisherName       *string `db:"publisher_name" json:"publisherName"`
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
-		ParticipationStatus bool    `db:"participation_status" json:"participationStatus"`
+		ParticipationStatus string    `db:"participation_status" json:"participationStatus"`
 	}
 
 	eventDetail := new(result)
