@@ -121,7 +121,7 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		PublisherName       *string `db:"publisher_name" json:"publisherName"`
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
-		ParticipationStatus bool    `db:"participation_status" json:"participationStatus"`
+		ParticipationStatus bool    `db:"participation" json:"participationStatus"`
 	}
 
 	eventDetail := new(result)
@@ -135,10 +135,8 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,
-		CASE WHEN activity.owner_id is null THEN false
-      ELSE true
-    END as participation_status
-		from events
+		activity_item.participation
+	from events
 		left join gallery on events.gallery_id=gallery.id
 		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
 		left join contents as c2 on events.logo_id=c2.id
