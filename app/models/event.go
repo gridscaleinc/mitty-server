@@ -135,7 +135,7 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,
-		COALESCE(activity_item.participation, 'NOT') as participation_status
+		COALESCE(actitem.participation, 'NOT') as participation_status
 	from events
 		left join gallery on events.gallery_id=gallery.id
 		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
@@ -143,8 +143,9 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		inner join island on island.id = events.islandid
 		left join contents as c3 on c3.id = island.logo_id
 		left join users on users.id = events.publisher_id
-		left join activity_item on activity_item.event_id = events.id
-		left join activity on activity.id = activity_item.activity_id and activity.owner_id=$1
+		left join (select item.event_id, item.participation from activity, activity_item as item
+		    where item.activity_id=activity.id and activity.owner_id=$1 ) as actitem
+		   on actitem.event_id = events.id
 		where events.id = $2;
 		`, userID, ID); err != nil {
 		return nil, err
