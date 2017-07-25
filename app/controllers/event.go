@@ -167,6 +167,7 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
 	tx, err := dbmap.Begin()
 	if err != nil {
 		return
@@ -219,6 +220,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.Participation = p.Participation
 	e.AccessControl = p.AccessControl
 	e.Language = p.Language
+	e.PublisherID = currentUserID
 	if err := e.Save(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
