@@ -7,11 +7,14 @@ import (
 	"net/http"
 	"strconv"
 
+	goutils "github.com/dongri/goutils"
+
 	"github.com/mholt/binding"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
+	"mitty.co/mitty-server/config"
 )
 
 // UpdateUserIconHandler ...
@@ -115,7 +118,7 @@ func ResetPasswordSendHandler(w http.ResponseWriter, r *http.Request) {
 	err = helpers.SendEmail("noreply@mitty.co", user.MailAddress, "Reset Password", `
 		Reset your password?
 	  If you requested a password reset, click the button below. If you didn't make this request, ignore this email.
-	  `+"http://dev.mitty.co/reset_password?token="+resetPassword.Token)
+	  `+"http://dev.mitty.co/api/reset_password/verify?token="+resetPassword.Token)
 	fmt.Println(err)
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
@@ -178,7 +181,7 @@ func ResetPasswordResetHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
-	hashedPassword := helpers.PasswordHashed(form.Password)
+	hashedPassword := goutils.Sha256Sum256(form.Password + config.CurrentSet.PasswordSalt())
 	user.Password = hashedPassword
 
 	tx, err := dbmap.Begin()
