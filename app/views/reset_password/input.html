@@ -8,7 +8,7 @@
   <h5>Reset your password</h5>
   <div class="submit-form">
     <p>Strong passwords include numbers, letters, and punctuation marks.</p>
-    <form action="/reset_password/reset" method="post">
+    <form action="/api/reset_password/reset" method="post">
       <input type="hidden" name="token" value="{{ token }}">
       <input type="password" name="password" placeholder="New Password" value="" required>
       <button class="btn blue" type="submit" name="action">Submit</button>
