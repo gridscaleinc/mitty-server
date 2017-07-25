@@ -18,7 +18,7 @@ type ActivityItemParams struct {
 	EventID              int64     `json:"eventId"`
 	Title                string    `json:"title"`
 	Memo                 string    `json:"memo"`
-	Notification         bool      `json:"notification"`
+	Notification         string      `json:"notification"`
 	NotificationDateTime time.Time `json:"notificationDateTime"`
 	AsMainEvent          bool      `json:"asMainEvent"`
 }
@@ -83,7 +83,11 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	activityItem.EventID = p.EventID
 	activityItem.Title = p.Title
 	activityItem.Memo = p.Memo
-	activityItem.Notification = p.Notification
+	if (p.Notification == "true") {
+	    activityItem.Notification = true
+	} else {
+		activityItem.Notification = false
+	}
 	activityItem.NotificationDateTime = p.NotificationDateTime
 	if err := activityItem.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
