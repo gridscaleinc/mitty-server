@@ -110,3 +110,12 @@ func GetUserByAccessToken(token string) (*User, error) {
 	}
 	return u, nil
 }
+
+// GetUserByEmail ...
+func GetUserByEmail(dbmap *gorp.DbMap, email string) (*User, error) {
+	u := new(User)
+	if err := dbmap.SelectOne(&u, "SELECT * FROM users WHERE mail_address = $1", email); err != nil {
+		return nil, err
+	}
+	return u, nil
+}
