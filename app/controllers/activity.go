@@ -104,6 +104,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	if (p.MainEventID != 0) {
 	    activityItem := new(models.ActivityItem)
 	    activityItem.ActivityID = activity.ID
+	    activityItem.Title = "UNTITLED"
 	    activityItem.EventID = p.MainEventID
 	    activityItem.Participation = "PARTICIPATING"
 	    activityItem.Notification = false
