@@ -149,7 +149,7 @@ func GetActivityDetailHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
-	activity, err := models.GetActivityByID(tx, intID)
+	activity, err := models.GetActivityByID(tx, int64(intID))
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
