@@ -342,7 +342,9 @@ func EventFetchingHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
-	event, err := models.GetEventDetailByID(tx, 1, eventID)
+	currentUserID := filters.GetCurrentUserID(r)
+	
+	event, err := models.GetEventDetailByID(tx, currentUserID, eventID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
