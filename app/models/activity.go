@@ -81,7 +81,7 @@ func GetActivityByMainEventID(tx *gorp.Transaction, ID int) (*Activity, error) {
 }
 
 // GetActivityByID ...
-func GetActivityByID(tx *gorp.Transaction, ID int) (*Activity, error) {
+func GetActivityByID(tx *gorp.Transaction, ID int64) (*Activity, error) {
 	activity := new(Activity)
 	if err := tx.SelectOne(&activity, "select * from activity where id = $1", ID); err != nil {
 		return nil, err
