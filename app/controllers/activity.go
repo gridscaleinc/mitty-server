@@ -99,6 +99,19 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
+	
+	// Insert Activity Item also if mainEventId was set
+	if (p.MainEventID != 0) {
+	    activityItem := new(models.ActivityItem)
+	    activityItem.ActivityID = activity.ID
+	    activityItem.EventID = p.MainEventID
+	    activityItem.Participation = "PARTICIPATING"
+	    activityItem.Notification = false
+	    if err := activityItem.Insert(*tx); err != nil {
+		    filters.RenderError(w, r, err)
+		    return
+	    }
+	}
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"activityId": activity.ID,
