@@ -45,7 +45,7 @@ type EventParams struct {
 	Participation     string    `json:"participation"`
 	AccessControl     string    `json:"accessControl"`
 	Language          string    `json:"language"`
-	RelatedActivityID int       `json:"relatedActivityId"`
+	RelatedActivityID int64       `json:"relatedActivityId"`
 	AsMainEvent       bool      `json:"asMainEvent"`
 }
 

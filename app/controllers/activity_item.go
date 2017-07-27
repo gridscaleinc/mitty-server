@@ -14,7 +14,7 @@ import (
 
 // ActivityItemParams ...
 type ActivityItemParams struct {
-	ActivityID           int       `json:"activityId"`
+	ActivityID           int64       `json:"activityId"`
 	EventID              int64     `json:"eventId"`
 	Title                string    `json:"title"`
 	Memo                 string    `json:"memo"`
