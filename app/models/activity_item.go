@@ -9,7 +9,7 @@ import (
 // ActivityItem struct
 type ActivityItem struct {
 	ID                   int64     `db:"id" json:"id"`
-	ActivityID           int       `db:"activity_id" json:"activity_id"`
+	ActivityID           int64       `db:"activity_id" json:"activity_id"`
 	EventID              int64     `db:"event_id" json:"event_id"`
 	Title                string    `db:"title" json:"title"`
 	Memo                 string    `db:"memo" json:"memo"`
