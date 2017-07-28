@@ -1,7 +1,6 @@
 package filters
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/mholt/binding"
@@ -12,11 +11,10 @@ func RenderInputError(w http.ResponseWriter, r *http.Request, errs binding.Error
 	render := GetRenderer(r)
 	var errors []string
 	for _, e := range errs {
-		fmt.Println("---------------")
-		fmt.Println(e.Fields())
-		fmt.Println("---------------")
-		err := e.Fields()[0] + " " + e.Error()
-		errors = append(errors, err)
+		if len(e.Fields()) > 0 {
+			err := e.Fields()[0] + " " + e.Error()
+			errors = append(errors, err)
+		}
 	}
 	render.JSON(w, http.StatusBadRequest, map[string]interface{}{
 		"errors": errors,
