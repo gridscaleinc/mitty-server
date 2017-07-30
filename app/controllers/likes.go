@@ -60,7 +60,7 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    likes := models.Likes()
+    likes := new(models.Likes)
     likes.MittyID = currentUserID
     likes.EntityType = p.Type
     likes.EntityID = p.ID
@@ -74,7 +74,6 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 		"ok": true,
 	})
 }
-
 
 // RemoveLikeHandler ...
 func RemoveLikeHandler(w http.ResponseWriter, r *http.Request) {
@@ -103,7 +102,7 @@ func RemoveLikeHandler(w http.ResponseWriter, r *http.Request) {
     entityType := p.Type
     entityID := p.ID
    
-    err := models.RemoveLikesByID(tx, currentUserID, entityType, entityID)
+    err = models.RemoveLikesByID(tx, currentUserID, entityType, entityID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
