@@ -62,6 +62,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
 	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
+	r.Handle("/send/like", apiAuth(controllers.SendLikeHandler)).Methods("POST")
 
 	// UPDATE
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
@@ -81,7 +82,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
 
 	// DELETE
-
+	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

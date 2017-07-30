@@ -29,3 +29,11 @@ func (s *Likes) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
 	return err
 }
+
+// RemoveLikesByID ...
+func RemoveLikesByID(tx *gorp.Transaction, userId int, entityType string, entityID int64)  error  {
+	if _, err := tx.Exec("Delete from Likes  WHERE mitty_id = $1 and entity_tyep=$2 and entity_id = $3", userId, entityType, entityID); err != nil {
+		return err
+	}
+	return nil
+}

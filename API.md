@@ -28,6 +28,7 @@
 26. [Register profile](#26register-profile)
 27. [User profile](#27user-profile)
 28. [Request Searching](#28request-searching)
+29. [Like](#29like)
 
 ### [Common Rules](id:common-rules)
 *表記*
@@ -1049,6 +1050,43 @@ q=keysによって、Ealstic Search から該当requestの候補を取得し、�
 3. 投稿者情報
    投稿者なお名前, iconのURL。 
 
+```
+### 29.[Like](id:like)
+```
+GET /api/send/like
+
+```
+*Request*
+```
+X-Mitty-Access-Token: String   (M)        Access Token for Authentication
+```
+
+*Input parameter*
+```
+{
+ type:   String   
+ id: int64
+}
+
+```
+*Output response*
+```
+ なし
+```
+
+
+*Description*
+```
+各種エンティティに対して、like(いいね）を示す。
+type: EVENT/REQUEST/PROPOSAL/ISLAND/
+id: それぞれのID
+
+処理：
+　　insert into likes values(
+　　   mitty_id=   api認証で取得したユーザーID
+　　   entity_type= input parameter. type
+　　   entity_id = input parameter. id
+　　 )
 ```
 
 
