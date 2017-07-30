@@ -1,20 +1,19 @@
 package controllers
 
 import (
-	"database/sql"
-	"errors"
-	"fmt"
+// 	"database/sql"
+// 	"errors"
+// 	"fmt"
 	"net/http"
-	"strconv"
 
-	goutils "github.com/dongri/goutils"
+// 	goutils "github.com/dongri/goutils"
 
 	"github.com/mholt/binding"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
-	"mitty.co/mitty-server/config"
+// 	"mitty.co/mitty-server/config"
 )
 
 // ResetPasswordForm ...
@@ -62,8 +61,8 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
     likes := models.Likes()
-    likes.MittyId = currentUserID
-    likes.Type = p.Type
+    likes.MittyID = currentUserID
+    likes.EntityType = p.Type
     likes.EntityID = p.ID
    
 	if err := likes.Insert(*tx); err != nil {
@@ -101,11 +100,10 @@ func RemoveLikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-    likes := models.Likes()
     entityType := p.Type
     entityID := p.ID
    
-   event, err := models.RemoveLikesByID(tx, currentUserID, entityType, entityID)
+    err := models.RemoveLikesByID(tx, currentUserID, entityType, entityID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
