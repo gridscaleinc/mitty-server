@@ -122,6 +122,7 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
 		ParticipationStatus string    `db:"participation_status" json:"participationStatus"`
+		NumberOfLikes int `db:"num_of_likes" json:"numberOfLikes"`
 	}
 
 	eventDetail := new(result)
@@ -135,7 +136,8 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,
-		COALESCE(actitem.participation, 'NOT') as participation_status
+		COALESCE(actitem.participation, 'NOT') as participation_status,
+		(select count(id) from likes where entity_type='EVENT' and entity_id=$2) as num_of_likes
 	from events
 		left join gallery on events.gallery_id=gallery.id
 		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
