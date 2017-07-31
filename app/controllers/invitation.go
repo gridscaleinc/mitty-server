@@ -75,7 +75,7 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
     invitation.ForType = p.ForType
     invitation.IDOfType = p.IDOfType
     invitation.Message = p.Message
-    invitation.TimeOfInvitation = time.now().UTC()
+    invitation.TimeOfInvitation = time.Now().UTC()
    
 	if err := invitation.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
@@ -83,7 +83,7 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// insert into isvitees for every invitee that invited.
-    for index, inviteeID : range invitation.invitees {
+    for index, inviteeID := range invitation.invitees {
          invitee := new(models.Invitee)
          invitee.InvitationID = invitation.ID
          invitee.inviteeId = inviteeID
