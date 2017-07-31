@@ -70,7 +70,7 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, http.StatusOK, map[string]interface{}{
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"ok": true,
 	})
 }
@@ -108,7 +108,7 @@ func RemoveLikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	render.JSON(w, http.StatusOK, map[string]interface{}{
+	render.JSON(w, http.StatusDelete, map[string]interface{}{
 		"ok": true,
 	})
 }

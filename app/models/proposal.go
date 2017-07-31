@@ -12,9 +12,9 @@ type Proposal struct {
     ReplyToRequestID		int64     `db:"reply_to_request_id" json:"reply_to_request_id"`
     ContactTel		string     `db:"contact_tel" json:"contact_tel"`
     ContactEmail		string     `db:"contact_email" json:"contact_email"`
-    Proposed_island_id		int64     `db:"proposed_island_id" json:"proposed_island_id"`
-    Proposed_island_id2		int64     `db:"proposed_island_id2" json:"proposed_island_id2"`
-    Gallery_id		int64     `db:"gallery_id" json:"gallery_id"`
+    ProposedIslandID		int64     `db:"proposed_island_id" json:"proposed_island_id"`
+    ProposedIslandID2		int64     `db:"proposed_island_id2" json:"proposed_island_id2"`
+    GalleryID		int64     `db:"gallery_id" json:"gallery_id"`
     PriceName1		string     `db:"priceName1" json:"priceName1"`
     Price1		int     `db:"price1" json:"price1"`
     PriceName2		string     `db:"priceName2" json:"priceName2"`

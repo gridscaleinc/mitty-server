@@ -96,3 +96,15 @@ func GetRequestDetailByID(tx *gorp.Transaction, ID int) (interface{}, error) {
 	}
 	return requestDetail, nil
 }
+
+// GetRequestByUserId ...
+func GetRequestByUserId(tx *gorp.Transaction, userID int, key string) ([]Request, error) {
+	requests := []Request{}
+	_, err := tx.Select(&requests, `
+		select
+      *
+      from request
+      where owner_id=$1 and title like '%$2' or action like '%$2'
+		`, userID, key)
+	return activities, err
+}
