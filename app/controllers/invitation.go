@@ -18,10 +18,10 @@ import (
 )
 
 type	InvitationParams struct {
-    ForType    string 'json: "forType"'
-    IDOfType  int64 'json: "idOfType"'
-    Message    string  'json: "message"'
-    Invitees   []int  'json: "invitees"'
+    ForType    string `json: "forType"`
+    IDOfType  int64 `json: "idOfType"`
+    Message    string  `json: "message"`
+    Invitees   []int  `json: "invitees"`
 } 
 	
 // FieldMap ...
