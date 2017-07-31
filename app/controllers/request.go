@@ -221,7 +221,7 @@ func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-/ GetMyRequestHandler ...
+// GetMyRequestHandler ...
 func GetMyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
