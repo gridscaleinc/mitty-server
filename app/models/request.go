@@ -73,7 +73,7 @@ func (s *Request) Delete(tx gorp.Transaction) error {
 }
 
 // GetRequestDetailByID ...
-func GetRequestDetailByID(tx *gorp.Transaction, ID int) (interface{}, error) {
+func GetRequestByUserID(tx *gorp.Transaction, ID int) (interface{}, error) {
 	type result struct {
 		Request
 		NumOfLinks    int     `db:"num_of_likes" json:"num_of_likes"`

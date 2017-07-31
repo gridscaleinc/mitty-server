@@ -156,7 +156,7 @@ func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
     m.AdditionalInfo  = p.AdditionalInfo	
     m.ProposerID = currentUserID
     m.ProposerInfo = p.ProposerInfo	
-    m.ProposedDateTime = time.Now().UTC()
+    m.ProposedDatetime = time.Now().UTC()
     m.	AcceptStatus = "NONE"
     m.ConfirmTel = p.ConfirmTel
     m.ConfirmEmail = p.ConfirmEmail

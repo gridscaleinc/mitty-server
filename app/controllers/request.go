@@ -240,7 +240,7 @@ func GetMyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query().Get("q")
    currentUserID := filters.GetCurrentUserID(r)
    
-	requests , err:= models.GetRequestByUserID(tx, int(t.ID), queryParams)
+	requests , err:= models.GetRequestByUserID(tx, currentUserID, queryParams)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return

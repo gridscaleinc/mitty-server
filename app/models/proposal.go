@@ -24,7 +24,7 @@ type Proposal struct {
     ProposedDatetime1		time.Time `db:"proposed_datetime1" json:"proposed_datetime1"`
     ProposedDatetime2		time.Time `db:"proposed_datetime2" json:"proposed_datetime2"`
     AdditionalInfo		string     `db:"additional_info" json:"additional_info"`
-    ProposerID		int64     `db:"proposer_id" json:"proposer_id"`
+    ProposerID		int     `db:"proposer_id" json:"proposer_id"`
     ProposerInfo		string     `db:"proposer_info" json:"proposer_info"`
     ProposedDatetime		time.Time `db:"proposed_datetime" json:"proposed_datetime"`
     AcceptStatus		string     `db:"accept_status" json:"accept_status"`

@@ -83,8 +83,8 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	
 	// insert into isvitees for every invitee that invited.
-    for index, inviteeID := range invitation.invitees {
-         invitee := new(models.Invitee)
+    for index, inviteeID := range p.invitees {
+         invitee := new(models.Invitees)
          invitee.InvitationID = invitation.ID
          invitee.inviteeId = inviteeID
          invitee.ReplyStatus = "NONE"
