@@ -9,9 +9,9 @@ import (
 type Invitees struct {
     ID    int64     `db:"id" json:"id"`
     InvitationID    int64   `db:"invitation_id" json:"invitation_id"`
-    inviteeId    int `db:"invitee_id" json:"invitee_id"`
-    ReplyStatus    int64     `db:"reply_status" json:"reply_status"`  
-    reply_time    time.Time `db:"timestamp" json:"timestamp"`
+    InviteeId    int `db:"invitee_id" json:"invitee_id"`
+    ReplyStatus    string     `db:"reply_status" json:"reply_status"`  
+    ReplyTime    time.Time `db:"reply_time" json:"reply_time"`
 }	
 
 // Insert ...
