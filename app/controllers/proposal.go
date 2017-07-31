@@ -1,14 +1,12 @@
 package controllers
 
 import (
-	"database/sql"
-	"encoding/json"
-	"fmt"
+// 	"database/sql"
+// 	"encoding/json"
+// 	"fmt"
 	"net/http"
-	"reflect"
+// 	"reflect"
 	"time"
-
-	elastic "gopkg.in/olivere/elastic.v5"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
