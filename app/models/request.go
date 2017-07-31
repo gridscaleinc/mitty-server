@@ -106,5 +106,5 @@ func GetRequestByUserId(tx *gorp.Transaction, userID int, key string) ([]Request
       from request
       where owner_id=$1 and title like '%$2' or action like '%$2'
 		`, userID, key)
-	return activities, err
+	return requests, err
 }
