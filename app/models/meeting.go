@@ -30,17 +30,18 @@ func (s *Meeting) Update(tx gorp.Transaction) error {
 	return err
 }
 
+// MeetingInfo ...
 type MeetingInfo struct {
 	ID      int64     `db:"id" json:"id"`
 	Name    string    `db:"name" json:"name"`
 	Type    string    `db:"type" json:"type"`
 	Title   string    `db:"title" json:"title"`
-	LogoUrl string    `db:"logo_url" json:"logoUrl"`
+	LogoURL string    `db:"logo_url" json:"logoUrl"`
 	Created time.Time `db:"created" json:"created"`
 	Updated time.Time `db:"updated" json:"updated"`
 }
 
-// Get Latest Conversation ...
+// GetEventMeetingList ...
 func GetEventMeetingList(tx *gorp.Transaction, userID int) ([]MeetingInfo, error) {
 	eventMeeting := []MeetingInfo{}
 	_, err := tx.Select(&eventMeeting, `

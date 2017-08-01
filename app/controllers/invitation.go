@@ -87,7 +87,7 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 	for _, inviteeID := range p.Invitees {
 		invitee := new(models.Invitees)
 		invitee.InvitationID = invitation.ID
-		invitee.InviteeId = inviteeID
+		invitee.InviteeID = inviteeID
 		invitee.ReplyStatus = "NONE"
 
 		if err := invitee.Insert(*tx); err != nil {

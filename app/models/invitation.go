@@ -1,20 +1,20 @@
 package models
-    
+
 import (
-	    "time"
-	    
-    	gorp "gopkg.in/gorp.v1"
+	"time"
+
+	gorp "gopkg.in/gorp.v1"
 )
-    
-// Likes struct
+
+// Invitation ...
 type Invitation struct {
-    ID    int64     `db:"id" json:"id"`
-    InvitaterID    int   `db:"invitater_id" json:"invitater_id"`
-    ForType       string `db:"for_type" json:"for_type"`
-    IDOfType    int64     `db:"entity_id" json:"id_of_type"`  
-    Message    string `db:"message" json:"message"`
-    TimeOfInvitation    time.Time `db:"time_of_invitation" json:"time_of_invitation"`
-}	
+	ID               int64     `db:"id" json:"id"`
+	InvitaterID      int       `db:"invitater_id" json:"invitater_id"`
+	ForType          string    `db:"for_type" json:"for_type"`
+	IDOfType         int64     `db:"entity_id" json:"id_of_type"`
+	Message          string    `db:"message" json:"message"`
+	TimeOfInvitation time.Time `db:"time_of_invitation" json:"time_of_invitation"`
+}
 
 // Insert ...
 func (s *Invitation) Insert(tx gorp.Transaction) error {

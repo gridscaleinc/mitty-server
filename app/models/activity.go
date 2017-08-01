@@ -168,9 +168,9 @@ func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error)
 	return destinations, err
 }
 
-// SaveActivity ...
-func (a *Activity) Save(tx *gorp.Transaction) error {
-	if _, err := tx.Exec("Update Activity set title=$3, memo=$4 WHERE owner_id = $2 and id=$1", a.ID, a.OwnerID, a.Title, a.Memo); err != nil {
+// Save ...
+func (s *Activity) Save(tx *gorp.Transaction) error {
+	if _, err := tx.Exec("Update Activity set title=$3, memo=$4 WHERE owner_id = $2 and id=$1", s.ID, s.OwnerID, s.Title, s.Memo); err != nil {
 		return err
 	}
 	return nil

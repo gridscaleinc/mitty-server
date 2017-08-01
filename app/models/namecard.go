@@ -6,7 +6,7 @@ import (
 	gorp "gopkg.in/gorp.v1"
 )
 
-// Likes struct
+// Namecard ...
 type Namecard struct {
 	ID              int64     `db:"id" json:"id"`
 	MittyID         int       `db:"mitty_id" json:"mitty_id"`

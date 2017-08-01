@@ -9,7 +9,7 @@ import (
 	gorp "gopkg.in/gorp.v1"
 )
 
-// Event struct
+// Event ...
 type Event struct {
 	ID                  int64     `db:"id" json:"id"`
 	Type                string    `db:"type" json:"type"`
@@ -22,7 +22,7 @@ type Event struct {
 	EndDatetime         time.Time `db:"end_datetime" json:"endDatetime"`
 	AlldayFlag          bool      `db:"allday_flag" json:"alldayFlag"`
 	IslandID            int       `db:"islandId" json:"islandId"`
-	IslandID2            int       `db:"islandId2" json:"islandId2"`
+	IslandID2           int       `db:"islandId2" json:"islandId2"`
 	LogoID              int       `db:"logo_id" json:"logoId"`
 	GalleryID           int64     `db:"gallery_id" json:"galleryId"`
 	MeetingID           int64     `db:"meeting_id" json:"meetingId"`
@@ -112,27 +112,27 @@ func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
 func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, error) {
 	type result struct {
 		Event
-		CoverImageUrl    *string `db:"cover_img_url" json:"coverImageUrl"`
-		EventLogoUrl      *string `db:"event_logo_url" json:"eventLogoUrl"`
+		CoverImageURL       *string `db:"cover_img_url" json:"coverImageUrl"`
+		EventLogoURL        *string `db:"event_logo_url" json:"eventLogoUrl"`
 		IsLandName          *string `db:"island_name" json:"isLandName"`
 		IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
-	    Latitude      float64   `db:"latitude" json:"latitude"`
-	    Longitude     float64   `db:"longitude" json:"longitude"`
+		Latitude            float64 `db:"latitude" json:"latitude"`
+		Longitude           float64 `db:"longitude" json:"longitude"`
 		PublisherName       *string `db:"publisher_name" json:"publisherName"`
 		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
 		PublishedDays       int     `db:"published_days" json:"publishedDays"`
-		ParticipationStatus string    `db:"participation_status" json:"participationStatus"`
-		NumberOfLikes int `db:"num_of_likes" json:"numberOfLikes"`
+		ParticipationStatus string  `db:"participation_status" json:"participationStatus"`
+		NumberOfLikes       int     `db:"num_of_likes" json:"numberOfLikes"`
 	}
 
 	eventDetail := new(result)
 	if err := tx.SelectOne(&eventDetail, `select events.*,
-	    COALESCE(c1.link_url, '') as cover_img_url,
-	    COALESCE(c2.link_url, '') as event_logo_url,
+	  COALESCE(c1.link_url, '') as cover_img_url,
+	  COALESCE(c2.link_url, '') as event_logo_url,
 		island.name as island_name,
 		COALESCE(c3.link_url, '') as island_logo_url,
 		COALESCE(island.latitude, 999) as latitude,
-		COALESCE(island.longitude, 999) as longitude,		
+		COALESCE(island.longitude, 999) as longitude,
 		users.name as publisher_name,
 		users.icon as publisher_icon_url,
 		DATE 'now' - events.created as published_days,

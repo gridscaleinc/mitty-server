@@ -1,16 +1,16 @@
 package models
-    
+
 import (
-    	gorp "gopkg.in/gorp.v1"
+	gorp "gopkg.in/gorp.v1"
 )
-    
-// Likes struct
+
+// Likes ...
 type Likes struct {
-    ID    int64     `db:"id" json:"id"`
-    MittyID    int   `db:"mitty_id" json:"mitty_id"`
-    EntityType    string `db:"entity_type" json:"entity_type"`
-    EntityID    int64     `db:"entity_id" json:"entity_id"`  
-}	
+	ID         int64  `db:"id" json:"id"`
+	MittyID    int    `db:"mitty_id" json:"mitty_id"`
+	EntityType string `db:"entity_type" json:"entity_type"`
+	EntityID   int64  `db:"entity_id" json:"entity_id"`
+}
 
 // Insert ...
 func (s *Likes) Insert(tx gorp.Transaction) error {
@@ -31,8 +31,8 @@ func (s *Likes) Delete(tx gorp.Transaction) error {
 }
 
 // RemoveLikesByID ...
-func RemoveLikesByID(tx *gorp.Transaction, userId int, entityType string, entityID int64)  error  {
-	if _, err := tx.Exec("Delete from Likes  WHERE mitty_id = $1 and entity_tyep=$2 and entity_id = $3", userId, entityType, entityID); err != nil {
+func RemoveLikesByID(tx *gorp.Transaction, userID int, entityType string, entityID int64) error {
+	if _, err := tx.Exec("Delete from Likes  WHERE mitty_id = $1 and entity_tyep=$2 and entity_id = $3", userID, entityType, entityID); err != nil {
 		return err
 	}
 	return nil

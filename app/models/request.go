@@ -9,7 +9,7 @@ import (
 	gorp "gopkg.in/gorp.v1"
 )
 
-// Request struct
+// Request ...
 type Request struct {
 	ID                 int64     `db:"id" json:"id"`
 	Title              string    `db:"title" json:"title"`
@@ -97,7 +97,7 @@ func GetRequestDetailByID(tx *gorp.Transaction, ID int) (interface{}, error) {
 	return requestDetail, nil
 }
 
-// GetRequestByUserId ...
+// GetRequestByUserID ...
 func GetRequestByUserID(tx *gorp.Transaction, userID int, key string) ([]Request, error) {
 	requests := []Request{}
 	_, err := tx.Select(&requests, `

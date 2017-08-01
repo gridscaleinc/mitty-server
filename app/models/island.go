@@ -74,7 +74,7 @@ func GetIslandByID(tx *gorp.Transaction, ID int) (*Island, error) {
 func SearchIslandByName(tx *gorp.Transaction, name string) (interface{}, error) {
 	// Island struct
 	type island struct {
-		Id              int64     `db:"id" json:"id"`
+		ID        int64  `db:"id" json:"id"`
 		Nickname  string `db:"nickname" json:"nickname"`
 		Name      string `db:"name" json:"name"`
 		LogoURL   string `db:"logo_url" json:"logoUrl"`

@@ -25,6 +25,7 @@ type User struct {
 	Updated       time.Time `db:"updated" json:"updated"`
 }
 
+// UserInfo ...
 type UserInfo struct {
 	ID          int    `db:"id" json:"id"`
 	Name        string `db:"name" json:"name"`
@@ -91,7 +92,7 @@ func GetUserByEmailToken(tx gorp.Transaction, token string) (*User, error) {
 	return u, nil
 }
 
-// GetUserInfo...
+// GetUserInfo ...
 func GetUserInfo(id string) (*UserInfo, error) {
 	dbmap := helpers.GetPostgres()
 	u := new(UserInfo)

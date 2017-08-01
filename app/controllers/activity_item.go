@@ -14,11 +14,12 @@ import (
 
 // ActivityItemParams ...
 type ActivityItemParams struct {
-	ActivityID           int64       `json:"activityId"`
+	ID                   int64     `json:"id"`
+	ActivityID           int64     `json:"activityId"`
 	EventID              int64     `json:"eventId"`
 	Title                string    `json:"title"`
 	Memo                 string    `json:"memo"`
-	Notification         string      `json:"notification"`
+	Notification         string    `json:"notification"`
 	NotificationDateTime time.Time `json:"notificationDateTime"`
 	AsMainEvent          bool      `json:"asMainEvent"`
 }
@@ -26,6 +27,7 @@ type ActivityItemParams struct {
 // FieldMap defines parameter requirements
 func (p *ActivityItemParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
+		&p.ID: "id",
 		&p.ActivityID: binding.Field{
 			Form:     "activityId",
 			Required: true,
@@ -83,13 +85,67 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	activityItem.EventID = p.EventID
 	activityItem.Title = p.Title
 	activityItem.Memo = p.Memo
-	if (p.Notification == "true") {
-	    activityItem.Notification = true
+	if p.Notification == "true" {
+		activityItem.Notification = true
 	} else {
 		activityItem.Notification = false
 	}
 	activityItem.NotificationDateTime = p.NotificationDateTime
 	if err := activityItem.Insert(*tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	if p.AsMainEvent == true {
+		activity, err := models.GetActivityByID(tx, p.ActivityID)
+		if err != nil && err != sql.ErrNoRows {
+			filters.RenderError(w, r, err)
+			return
+		}
+		activity.MainEventID = activityItem.EventID
+		if err := activity.Update(*tx); err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{})
+}
+
+// UpdateActivityItemHandler ...
+func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	p := new(ActivityItemParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputError(w, r, errs)
+		return
+	}
+
+	activityItem := new(models.ActivityItem)
+	activityItem.ID = p.ID
+	activityItem.ActivityID = p.ActivityID
+	activityItem.EventID = p.EventID
+	activityItem.Title = p.Title
+	activityItem.Memo = p.Memo
+	if p.Notification == "true" {
+		activityItem.Notification = true
+	} else {
+		activityItem.Notification = false
+	}
+	activityItem.NotificationDateTime = p.NotificationDateTime
+	if err := activityItem.Update(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
