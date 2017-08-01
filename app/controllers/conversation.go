@@ -10,11 +10,11 @@ import (
 	"github.com/mholt/binding"
 )
 
-// Conversation Parameters ...
+// ConversationParam ...
 type ConversationParam struct {
-	MeetingID      int64  `json:"meetingId"`
-	ReplyToID      int64  `json:"replyToId"`
-	Speaking        string `json:"speaking"`
+	MeetingID int64  `json:"meetingId"`
+	ReplyToID int64  `json:"replyToId"`
+	Speaking  string `json:"speaking"`
 }
 
 // FieldMap defines parameter requirements
@@ -35,12 +35,12 @@ func (p *ConversationParam) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
-// Conversation Parameters ...
+// ConvFetchParams ...
 type ConvFetchParams struct {
-	MeetingID      int64  `json:"meetingId"`
-	StartID           int64  `json:"startId"`
-	Direction        int `json:"direction"`
-	NumberLimit  int `json:"numberLimit"`
+	MeetingID   int64 `json:"meetingId"`
+	StartID     int64 `json:"startId"`
+	Direction   int   `json:"direction"`
+	NumberLimit int   `json:"numberLimit"`
 }
 
 // FieldMap defines parameter requirements
@@ -61,7 +61,7 @@ func (p *ConvFetchParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
-// FetchingConversation ...
+// FetchConversationHandler ...
 func FetchConversationHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
@@ -76,7 +76,7 @@ func FetchConversationHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		err = tx.Commit()
 	}()
-	
+
 	p := new(ConvFetchParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputError(w, r, errs)

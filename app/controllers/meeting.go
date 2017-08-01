@@ -10,11 +10,12 @@ import (
 	"github.com/mholt/binding"
 )
 
-// EventParams ...
+// MeetingParams ...
 type MeetingParams struct {
 	MeetingID int64 `json:"meetingId"`
 }
 
+// FieldMap ... Mapping input value to MeetingParams
 func (p *MeetingParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&p.MeetingID: binding.Field{
@@ -24,7 +25,7 @@ func (p *MeetingParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
-// FetchingConversation ...
+// GetEventMeeting ...
 func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
@@ -50,6 +51,7 @@ func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetLatestConversation ...
 func GetLatestConversation(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
