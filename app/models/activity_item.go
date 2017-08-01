@@ -35,3 +35,11 @@ func (s *ActivityItem) Update(tx gorp.Transaction) error {
 	_, err := tx.Update(s)
 	return err
 }
+
+// Load ...
+func (s *ActivityItem) Load(tx gorp.Transaction) error {
+	if err := tx.SelectOne(&s, "SELECT * FROM Activity_Item WHERE id = $1", s.ID); err != nil {
+		return err
+	}
+	return nil
+}

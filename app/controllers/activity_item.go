@@ -135,8 +135,10 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 
 	activityItem := new(models.ActivityItem)
 	activityItem.ID = p.ID
-	activityItem.ActivityID = p.ActivityID
-	activityItem.EventID = p.EventID
+	if err := activityItem.Load(*tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
 	activityItem.Title = p.Title
 	activityItem.Memo = p.Memo
 	if p.Notification == "true" {
@@ -148,19 +150,6 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	if err := activityItem.Update(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
-	}
-
-	if p.AsMainEvent == true {
-		activity, err := models.GetActivityByID(tx, p.ActivityID)
-		if err != nil && err != sql.ErrNoRows {
-			filters.RenderError(w, r, err)
-			return
-		}
-		activity.MainEventID = activityItem.EventID
-		if err := activity.Update(*tx); err != nil {
-			filters.RenderError(w, r, err)
-			return
-		}
 	}
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{})
