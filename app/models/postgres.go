@@ -18,4 +18,6 @@ func AddTableWithName(dbmap *gorp.DbMap) {
 	dbmap.AddTableWithName(Likes{}, "likes").SetKeys(true, "ID")
 	dbmap.AddTableWithName(Footmark{}, "footmark").SetKeys(true, "ID")
 	dbmap.AddTableWithName(ResetPassword{}, "reset_passwords").SetKeys(true, "ID")
+	dbmap.AddTableWithName(Invitation{}, "invitation").SetKeys(true, "ID")
+	dbmap.AddTableWithName(Invitees{}, "invitees").SetKeys(true, "ID")
 }
