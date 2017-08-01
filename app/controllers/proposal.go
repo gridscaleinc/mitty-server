@@ -15,7 +15,7 @@ import (
 	"github.com/mholt/binding"
 )
 
-// RequestParams ...
+// ProposalParams ...
 type ProposalParams struct {
 	ReplyToRequestID  int64     `json:"reply_to_request_id"`
 	ContactTel        string    `json:"contact_tel"`

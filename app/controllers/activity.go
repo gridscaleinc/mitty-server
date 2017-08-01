@@ -45,6 +45,7 @@ func GetActivityListHandler(w http.ResponseWriter, r *http.Request) {
 
 // ActivityParams ...
 type ActivityParams struct {
+	ActivityID  int64  `json:"activityId"`
 	Title       string `json:"title"`
 	MainEventID int64  `json:"mainEventId"`
 	Memo        string `json:"memo"`
@@ -53,6 +54,7 @@ type ActivityParams struct {
 // FieldMap defines parameter requirements
 func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
+		&p.ActivityID: "activityId",
 		&p.Title: binding.Field{
 			Form:     "title",
 			Required: true,
@@ -99,19 +101,19 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
-	
+
 	// Insert Activity Item also if mainEventId was set
-	if (p.MainEventID != 0) {
-	    activityItem := new(models.ActivityItem)
-	    activityItem.ActivityID = activity.ID
-	    activityItem.Title = "UNTITLED"
-	    activityItem.EventID = p.MainEventID
-	    activityItem.Participation = "PARTICIPATING"
-	    activityItem.Notification = false
-	    if err := activityItem.Insert(*tx); err != nil {
-		    filters.RenderError(w, r, err)
-		    return
-	    }
+	if p.MainEventID != 0 {
+		activityItem := new(models.ActivityItem)
+		activityItem.ActivityID = activity.ID
+		activityItem.Title = "UNTITLED"
+		activityItem.EventID = p.MainEventID
+		activityItem.Participation = "PARTICIPATING"
+		activityItem.Notification = false
+		if err := activityItem.Insert(*tx); err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
 	}
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
@@ -189,4 +191,41 @@ func GetDestinationListHandler(w http.ResponseWriter, r *http.Request) {
 		"destinations": destinations,
 	})
 
+}
+
+// UpdateActivityHandler ...
+func UpdateActivityHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	p := new(ActivityParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputError(w, r, errs)
+		return
+	}
+
+	activity := new(models.Activity)
+	activity.ID = p.ActivityID
+	activity.Title = p.Title
+	activity.Memo = p.Memo
+	activity.OwnerID = currentUserID
+	if err := activity.Save(tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"activityId": activity.ID,
+	})
 }
