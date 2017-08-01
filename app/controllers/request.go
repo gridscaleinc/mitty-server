@@ -2,10 +2,9 @@ package controllers
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"reflect"
+	"strconv"
 	"time"
 
 	elastic "gopkg.in/olivere/elastic.v5"
@@ -177,6 +176,16 @@ func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	queryParams := r.URL.Query().Get("q")
+	offsetParams := r.URL.Query().Get("offset")
+	limitParams := r.URL.Query().Get("limit")
+	offset := 0
+	limit := 30
+	if offsetParams != "" {
+		offset, _ = strconv.Atoi(offsetParams)
+	}
+	if limitParams != "" {
+		limit, _ = strconv.Atoi(limitParams)
+	}
 
 	matchQuery1 := elastic.NewMatchQuery("title", queryParams)
 	matchQuery2 := elastic.NewMatchQuery("tag", queryParams)
@@ -187,18 +196,19 @@ func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
 	query := elastic.NewBoolQuery()
 	query.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
 
-	src, err := query.Source()
-	if err != nil {
-		panic(err)
-	}
-	data, err := json.Marshal(src)
-	if err != nil {
-		panic(err)
-	}
-	s := string(data)
-	fmt.Println(s)
+	// Debug
+	// src, err := query.Source()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// data, err := json.Marshal(src)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// s := string(data)
+	// fmt.Println(s)
 
-	searchResult, err := helpers.ESSearchBoolQuery("mitty", "request", "id", 0, 100, query)
+	searchResult, err := helpers.ESSearchBoolQuery("mitty", "request", "id", offset, limit, query)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -238,14 +248,14 @@ func GetMyRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	queryParams := r.URL.Query().Get("q")
-   currentUserID := filters.GetCurrentUserID(r)
-   
-	requests , err:= models.GetRequestByUserID(tx, currentUserID, queryParams)
+	currentUserID := filters.GetCurrentUserID(r)
+
+	requests, err := models.GetRequestByUserID(tx, currentUserID, queryParams)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
-	
+
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"requests": requests,
 	})

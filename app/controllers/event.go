@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -45,7 +43,7 @@ type EventParams struct {
 	Participation     string    `json:"participation"`
 	AccessControl     string    `json:"accessControl"`
 	Language          string    `json:"language"`
-	RelatedActivityID int64       `json:"relatedActivityId"`
+	RelatedActivityID int64     `json:"relatedActivityId"`
 	AsMainEvent       bool      `json:"asMainEvent"`
 }
 
@@ -273,6 +271,16 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 
 	queryParams := r.URL.Query().Get("q")
+	offsetParams := r.URL.Query().Get("offset")
+	limitParams := r.URL.Query().Get("limit")
+	offset := 0
+	limit := 30
+	if offsetParams != "" {
+		offset, _ = strconv.Atoi(offsetParams)
+	}
+	if limitParams != "" {
+		limit, _ = strconv.Atoi(limitParams)
+	}
 
 	matchQuery1 := elastic.NewMatchQuery("action", queryParams)
 	//matchQuery1.Boost(4)
@@ -286,18 +294,19 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	query := elastic.NewBoolQuery()
 	query.Must(query1, elastic.NewTermQuery("accessControl", "public"))
 
-	src, err := query.Source()
-	if err != nil {
-		panic(err)
-	}
-	data, err := json.Marshal(src)
-	if err != nil {
-		panic(err)
-	}
-	s := string(data)
-	fmt.Println(s)
+	// Debug
+	// src, err := query.Source()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// data, err := json.Marshal(src)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// s := string(data)
+	// fmt.Println(s)
 
-	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", 0, 100, query)
+	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", offset, limit, query)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -343,7 +352,7 @@ func EventFetchingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	currentUserID := filters.GetCurrentUserID(r)
-	
+
 	event, err := models.GetEventDetailByID(tx, currentUserID, eventID)
 	if err != nil {
 		filters.RenderError(w, r, err)
