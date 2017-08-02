@@ -34,6 +34,7 @@ type Request struct {
 	OwnerID            int       `db:"owner_id" json:"owner_id"`
 	Created            time.Time `db:"created" json:"created"`
 	Updated            time.Time `db:"updated" json:"updated"`
+	Currency           *string   `db:"currency" json:"currency"`
 }
 
 // Save ...
