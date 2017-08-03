@@ -2,6 +2,8 @@ package models
 
 import (
 	"time"
+
+	gorp "gopkg.in/gorp.v1"
 )
 
 // Presence ...
@@ -19,4 +21,22 @@ type Presence struct {
 	CheckinTime    time.Time `db:"checkin_time" json:"checkin_time"`
 	CheckinEventID int       `db:"checkin_event_id" json:"checkin_event_id"`
 	CheckinImage   int8      `db:"checkin_image_id" json:"checkin_image_id"`
+}
+
+// Insert ...
+func (s *Presence) Insert(tx gorp.Transaction) error {
+	err := tx.Insert(s)
+	return err
+}
+
+// Update ...
+func (s *Presence) Update(tx gorp.Transaction) error {
+	_, err := tx.Update(s)
+	return err
+}
+
+// Delete ...
+func (s *Presence) Delete(tx gorp.Transaction) error {
+	_, err := tx.Delete(s)
+	return err
 }
