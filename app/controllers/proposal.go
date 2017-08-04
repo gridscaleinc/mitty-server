@@ -157,10 +157,10 @@ func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
 	m.ProposerID = currentUserID
 	m.ProposerInfo = p.ProposerInfo
 	m.ProposedDatetime = time.Now().UTC()
-	m.AcceptStatus = "NONE"
+	m.AcceptStatus = models.None
 	m.ConfirmTel = p.ConfirmTel
 	m.ConfirmEmail = p.ConfirmEmail
-	m.ApprovalStatus = "NONE"
+	m.ApprovalStatus = models.None
 
 	if err := m.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)

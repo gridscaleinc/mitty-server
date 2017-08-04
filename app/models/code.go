@@ -1,0 +1,36 @@
+package models
+
+const (
+	// AppName ...
+	AppName = "mitty api server"
+
+	// None ...
+	None = "NONE"
+
+	// Participating ...
+	Participating = "PARTICIPATING"
+
+	// Requested ...
+	Requested = "REQUESTED"
+
+	// Resolved ...
+	Resolved = "RESOLVED"
+
+	// Expired ...
+	Expired = "EXPIRED"
+
+	// Proposed ...
+	Proposed = "PROPOSED"
+
+	// Accepted ...
+	Accepted = "ACCEPTED"
+
+	// Approved ...
+	Approved = "APPROVED"
+
+	// Public ...
+	Public = "PUBLIC"
+
+	// Private ...
+	Private = "PRIVATE"
+)

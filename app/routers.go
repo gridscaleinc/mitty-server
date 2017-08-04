@@ -82,6 +82,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
 
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")
