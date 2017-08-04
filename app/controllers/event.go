@@ -185,7 +185,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	m := new(models.Meeting)
 	m.Name = p.Title
-	m.Type = "EVENT"
+	m.Type = models.EventType
 	if err := m.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return

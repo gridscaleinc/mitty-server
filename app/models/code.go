@@ -33,4 +33,16 @@ const (
 
 	// Private ...
 	Private = "PRIVATE"
+
+	// EventType ... Type of events
+	EventType = "EVENT"
+
+	// RequestType ... Type of requests
+	RequestType = "REQUEST"
+
+	// ProposalType ... Type of Proposal
+	ProposalType = "PROPOSAL"
+
+	// IslandType ... Type of Island
+	IslandType = "ISLAND"
 )
