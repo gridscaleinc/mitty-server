@@ -29,7 +29,7 @@ type ActivityList struct {
 // ActivityDetail ...
 type ActivityDetail struct {
 	ID               int64     `db:"id" json:"id"`
-	ActivityID       int64     `db:"activity_id" json:"activity_id"`
+	ActivityID       int64     `db:"activity_id" json:"activityId"`
 	Title            string    `db:"title" json:"title"`
 	Memo             string    `db:"memo" json:"memo"`
 	EventID          int64     `db:"eventId" json:"eventId"`
