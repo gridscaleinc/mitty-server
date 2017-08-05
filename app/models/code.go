@@ -1,9 +1,6 @@
 package models
 
 const (
-	// AppName ...
-	AppName = "mitty api server"
-
 	// None ...
 	None = "NONE"
 

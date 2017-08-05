@@ -143,14 +143,18 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	activityItem.Memo = p.Memo
 	if p.Notification == "true" {
 		activityItem.Notification = true
+		activityItem.NotificationDateTime = p.NotificationDateTime
 	} else {
 		activityItem.Notification = false
 	}
-	activityItem.NotificationDateTime = p.NotificationDateTime
+
 	if err := activityItem.Update(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
 
-	render.JSON(w, http.StatusCreated, map[string]interface{}{})
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"id":         activityItem.ID,
+		"activityId": activityItem.ActivityID,
+	})
 }
