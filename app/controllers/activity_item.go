@@ -149,7 +149,11 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := activityItem.Update(*tx); err != nil {
-		filters.RenderError(w, r, err)
+		render.JSON(w, http.StatusServiceUnavailable, map[string]interface{}{
+			"parameters": p,
+			"error":      err,
+		})
+
 		return
 	}
 
