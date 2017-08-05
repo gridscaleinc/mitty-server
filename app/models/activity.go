@@ -28,6 +28,8 @@ type ActivityList struct {
 
 // ActivityDetail ...
 type ActivityDetail struct {
+	ID               int64     `db:"id" json:"id"`
+	ActivityID       int64     `db:"activity_id" json:"activity_id"`
 	Title            string    `db:"title" json:"title"`
 	Memo             string    `db:"memo" json:"memo"`
 	EventID          int64     `db:"eventId" json:"eventId"`
@@ -114,6 +116,8 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 	details := []ActivityDetail{}
 	_, err := tx.Select(&details, `
 		select
+		   i.id as id,
+			 i.activity_id,
 		   i.event_Id as eventId,
 		   i.title,
 		   i.memo,
