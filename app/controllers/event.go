@@ -21,6 +21,7 @@ type EventParams struct {
 	Type              string    `json:"type"`
 	Tag               string    `json:"tag"`
 	Title             string    `json:"title"`
+	LogoID            int       `json:"logoId"`
 	Action            string    `json:"action"`
 	StartDatetime     time.Time `json:"startDate"`
 	EndDatetime       time.Time `json:"endDate"`
@@ -61,6 +62,10 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 		&p.Title: binding.Field{
 			Form:     "title",
 			Required: true,
+		},
+		&p.LogoID: binding.Field{
+			Form:     "logoId",
+			Required: false,
 		},
 		&p.Action: binding.Field{
 			Form:     "action",
@@ -195,6 +200,7 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	e.Type = p.Type
 	e.Tag = p.Tag
 	e.Title = p.Title
+	e.LogoID = p.LogoID
 	e.Action = p.Action
 	e.StartDatetime = p.StartDatetime
 	e.EndDatetime = p.EndDatetime
