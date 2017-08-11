@@ -1,5 +1,7 @@
 package models
 
+import gorp "gopkg.in/gorp.v1"
+
 // Profile ...
 type Profile struct {
 	ID             int64  `db:"id" json:"id"`
@@ -19,4 +21,22 @@ type Profile struct {
 	HobbyTag3      string `db:"hobby_tag3" json:"hobby_tag3"`
 	HobbyTag4      string `db:"hobby_tag4" json:"hobby_tag4"`
 	HobbyTag5      string `db:"hobby_tag5" json:"hobby_tag5"`
+}
+
+// Insert ...
+func (s *Profile) Insert(tx gorp.Transaction) error {
+	err := tx.Insert(s)
+	return err
+}
+
+// Update ...
+func (s *Profile) Update(tx gorp.Transaction) error {
+	_, err := tx.Update(s)
+	return err
+}
+
+// Delete ...
+func (s *Profile) Delete(tx gorp.Transaction) error {
+	_, err := tx.Delete(s)
+	return err
 }

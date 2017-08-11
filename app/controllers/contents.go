@@ -29,7 +29,7 @@ func GetMyContentsHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	userID := 0
+	userID := filters.GetCurrentUserID(r)
 	contents, err := models.GetContentsByUserID(tx, userID)
 	if err != nil {
 		filters.RenderError(w, r, err)

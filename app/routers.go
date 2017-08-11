@@ -75,13 +75,14 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/activity/list", apiAuth(controllers.GetActivityListHandler)).Methods("GET")
 	r.Handle("/activity/details", apiAuth(controllers.GetActivityDetailHandler)).Methods("GET")
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
-	r.HandleFunc("/mycontents/list", controllers.GetMyContentsHandler).Methods("GET")
+	r.Handle("/mycontents/list", apiAuth(controllers.GetMyContentsHandler)).Methods("GET")
 	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
 	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
 
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")

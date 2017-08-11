@@ -47,7 +47,7 @@ func UpdateUserIconHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-// SignUpHandler ...
+// GetUserInfo ...
 func GetUserInfo(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
@@ -91,6 +91,7 @@ func (s *EmailForm) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
+// ResetPasswordSendHandler ...
 func ResetPasswordSendHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
@@ -111,7 +112,7 @@ func ResetPasswordSendHandler(w http.ResponseWriter, r *http.Request) {
 	resetPassword := new(models.ResetPassword)
 	resetPassword.Email = user.MailAddress
 	resetPassword.Token = helpers.GenerateTokenWithSalt(user.MailAddress)
-	if err := resetPassword.Save(dbmap); err != nil {
+	if err = resetPassword.Save(dbmap); err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
