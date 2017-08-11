@@ -71,7 +71,7 @@ func publicRoutes(r *mux.Router) {
 
 	// SELECT
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
-	r.HandleFunc("/event/of", controllers.EventFetchingHandler).Methods("GET")
+	r.Handle("/event/of", apiAuth(controllers.EventFetchingHandler)).Methods("GET")
 	r.Handle("/activity/list", apiAuth(controllers.GetActivityListHandler)).Methods("GET")
 	r.Handle("/activity/details", apiAuth(controllers.GetActivityDetailHandler)).Methods("GET")
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
