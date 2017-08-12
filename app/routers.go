@@ -60,6 +60,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/new/activity/item", apiAuth(controllers.PostActivityItemHandler)).Methods("POST")
 	r.Handle("/new/island", apiAuth(controllers.PostIslandHandler)).Methods("POST")
 	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
+	r.Handle("/new/proposal", apiAuth(controllers.PostProposalHandler)).Methods("POST")
 	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
 	r.Handle("/send/like", apiAuth(controllers.SendLikeHandler)).Methods("POST")
