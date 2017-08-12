@@ -50,7 +50,7 @@ func (p *ProposalParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.ContactEmail: binding.Field{
 			Form:     "contact_email",
-			Required: true,
+			Required: false,
 		},
 		&p.ProposedIslandID: binding.Field{
 			Form:     "proposed_island_id",
@@ -58,35 +58,35 @@ func (p *ProposalParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.ProposedIslandID2: binding.Field{
 			Form:     "proposed_island_id2",
-			Required: true,
+			Required: false,
 		},
 		&p.GalleryID: binding.Field{
 			Form:     "gallery_id",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceName1: binding.Field{
 			Form:     "priceName1",
-			Required: true,
+			Required: false,
 		},
 		&p.Price1: binding.Field{
 			Form:     "price1",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceName2: binding.Field{
 			Form:     "priceName2",
-			Required: true,
+			Required: false,
 		},
 		&p.Price2: binding.Field{
 			Form:     "price2",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceCurrency: binding.Field{
 			Form:     "price_currency",
-			Required: true,
+			Required: false,
 		},
 		&p.PriceInfo: binding.Field{
 			Form:     "price_info",
-			Required: true,
+			Required: false,
 		},
 		&p.ProposedDatetime1: binding.Field{
 			Form:     "proposed_datetime1",
@@ -102,15 +102,15 @@ func (p *ProposalParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.ProposerInfo: binding.Field{
 			Form:     "proposer_info",
-			Required: true,
+			Required: false,
 		},
 		&p.ConfirmTel: binding.Field{
 			Form:     "confirm_tel",
-			Required: true,
+			Required: false,
 		},
 		&p.ConfirmEmail: binding.Field{
 			Form:     "confirm_email",
-			Required: true,
+			Required: false,
 		},
 	}
 }
