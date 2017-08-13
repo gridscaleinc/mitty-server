@@ -123,7 +123,7 @@ func PostProfileHandler(w http.ResponseWriter, r *http.Request) {
 	m := new(models.Profile)
 
 	m.ID = p.ID
-	m.MittyID = p.MittyID
+	m.MittyID = currentUserID
 	m.Gender = p.Gender
 	m.OneWordSpeech = p.OneWordSpeech
 	m.Constellation = p.Constellation
