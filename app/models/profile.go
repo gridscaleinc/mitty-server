@@ -1,6 +1,8 @@
 package models
 
-import gorp "gopkg.in/gorp.v1"
+import (
+	gorp "gopkg.in/gorp.v1"
+)
 
 // Profile ...
 type Profile struct {
@@ -9,8 +11,8 @@ type Profile struct {
 	Gender         string `db:"gender" json:"gender"`
 	OneWordSpeech  string `db:"one_word_speech" json:"one_word_speech"`
 	Constellation  string `db:"constellation" json:"constellation"`
-	HomeIslandID   int8   `db:"home_island_id" json:"home_island_id"`
-	BirthIslandID  int8   `db:"birth_island_id" json:"birth_island_id"`
+	HomeIslandID   int64  `db:"home_island_id" json:"home_island_id"`
+	BirthIslandID  int64  `db:"birth_island_id" json:"birth_island_id"`
 	AgeGroup       string `db:"age_group" json:"age_group"`
 	AppearanceTag  string `db:"appearance_tag" json:"appearance_tag"`
 	OccupationTag1 string `db:"occupation_tag1" json:"occupation_tag1"`
@@ -21,6 +23,16 @@ type Profile struct {
 	HobbyTag3      string `db:"hobby_tag3" json:"hobby_tag3"`
 	HobbyTag4      string `db:"hobby_tag4" json:"hobby_tag4"`
 	HobbyTag5      string `db:"hobby_tag5" json:"hobby_tag5"`
+}
+
+// Save ...
+func (s *Profile) Save(tx gorp.Transaction) error {
+	if s.ID != 0 {
+		err := s.Insert(tx)
+		return err
+	}
+	err := s.Update(tx)
+	return err
 }
 
 // Insert ...
@@ -39,4 +51,16 @@ func (s *Profile) Update(tx gorp.Transaction) error {
 func (s *Profile) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
 	return err
+}
+
+// GetProfileByUserID ...
+func GetProfileByUserID(tx *gorp.Transaction, ID int) (*Profile, error) {
+	result := new(Profile)
+	if err := tx.SelectOne(&result, `select *
+		from Profile
+		where mitty_id = $1;
+		`, ID); err != nil {
+		return nil, err
+	}
+	return result, nil
 }

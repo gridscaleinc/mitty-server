@@ -1,7 +1,7 @@
 drop table profile cascade;
 create table profile (
   id    serial8  PRIMARY KEY,
-  mitty_id  int,    
+  mitty_id  int,
   gender    varchar  (10),
   one_word_speech    varchar  (200),
   constellation    varchar  (20),
