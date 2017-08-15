@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"database/sql"
 	"net/http"
 
 	"mitty.co/mitty-server/app/filters"
@@ -168,13 +169,18 @@ func GetMyProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 	currentUserID := filters.GetCurrentUserID(r)
 
-	requests, err := models.GetProfileByUserID(tx, currentUserID)
+	profile, err := models.GetProfileByUserID(tx, currentUserID)
 	if err != nil {
-		filters.RenderError(w, r, err)
-		return
+		if err == sql.ErrNoRows {
+			profile = new(models.Profile)
+			profile.MittyID = currentUserID
+		} else {
+			filters.RenderError(w, r, err)
+			return
+		}
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"requests": requests,
+		"profile": profile,
 	})
 }

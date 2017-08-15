@@ -60,6 +60,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/new/activity/item", apiAuth(controllers.PostActivityItemHandler)).Methods("POST")
 	r.Handle("/new/island", apiAuth(controllers.PostIslandHandler)).Methods("POST")
 	r.Handle("/new/request", apiAuth(controllers.PostRequestHandler)).Methods("POST")
+	r.Handle("/save/profile", apiAuth(controllers.PostProfileHandler)).Methods("POST")
 	r.Handle("/new/proposal", apiAuth(controllers.PostProposalHandler)).Methods("POST")
 	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
@@ -84,6 +85,7 @@ func publicRoutes(r *mux.Router) {
 
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
 	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
+	r.Handle("/myprofile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")

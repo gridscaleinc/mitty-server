@@ -42,4 +42,16 @@ const (
 
 	// IslandType ... Type of Island
 	IslandType = "ISLAND"
+
+	// Secret ... Type as scret
+	Secret = "SECRET"
+
+	// Man ... Type as a man
+	Man = "MAN"
+
+	// Woman ... Type as a Woman
+	Woman = "WOMAN"
+
+	// NotSet ... Type as not set value
+	NotSet = "NOTSET"
 )
