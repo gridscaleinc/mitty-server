@@ -27,7 +27,7 @@ type Profile struct {
 
 // Save ...
 func (s *Profile) Save(tx gorp.Transaction) error {
-	if s.ID != 0 {
+	if s.ID == 0 {
 		err := s.Insert(tx)
 		return err
 	}
