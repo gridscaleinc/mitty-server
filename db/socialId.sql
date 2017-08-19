@@ -3,5 +3,5 @@ create table socialId (
    id  serail8  PRIMARY KEY,
    contactee_id    int  ,
    realm    varchar  (50),
-   social_id    int8
+   sns_id varchar(50)
 )
