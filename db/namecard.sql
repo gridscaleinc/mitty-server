@@ -1,7 +1,8 @@
 drop table namecard cascade;
 create table namecard (
     id    serial8  PRIMARY KEY,
-    mitty_id    int
+    mitty_id    int,
+    name        varchar(200),
     business_logo_id int8,
     business_name    varchar(200),
     business_sub_name    varchar(200),
