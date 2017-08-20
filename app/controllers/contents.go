@@ -134,6 +134,7 @@ func UploadContentsHandler(w http.ResponseWriter, r *http.Request) {
 
 	output := map[string]interface{}{
 		"contentId": contents.ID,
+		"linkUrl":   filePath,
 	}
 
 	render.JSON(w, http.StatusCreated, output)
