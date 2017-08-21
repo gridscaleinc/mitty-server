@@ -26,9 +26,10 @@ type Namecard struct {
 	Updated         time.Time `db:"updated" json:"updated"`
 }
 
+// NamecardInfo ...
 type NamecardInfo struct {
 	CardInfo        Namecard `json:"cardInfo"`
-	BusinessLogoUrl string   `db:"business_logo_url" json:"businessLogoUrl"`
+	BusinessLogoURL string   `db:"business_logo_url" json:"business_logo_url"`
 }
 
 // Save ...
@@ -63,10 +64,10 @@ func (s *Namecard) Delete(tx gorp.Transaction) error {
 }
 
 // GetNamecardsByUserID ...
-func GetNamecardsByUserID(tx *gorp.Transaction, ID int) (*[]NamecardInfo, error) {
+func GetNamecardsByUserID(tx *gorp.Transaction, ID int) ([]NamecardInfo, error) {
 	results := []NamecardInfo{}
 
-	if err := tx.SelectOne(&results, `select *,
+	if _, err := tx.Select(&results, `select *,
 		COALESCE(contents.link_url, '') as business_logo_url
 		from Namecard
 		 left join Contents on Namecard.business_logo_id=Contents.id
@@ -75,5 +76,5 @@ func GetNamecardsByUserID(tx *gorp.Transaction, ID int) (*[]NamecardInfo, error)
 		return nil, err
 	}
 
-	return &results, nil
+	return results, nil
 }
