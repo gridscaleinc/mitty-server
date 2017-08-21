@@ -10,9 +10,9 @@ import (
 type Namecard struct {
 	ID              int64     `db:"id" json:"id"`
 	MittyID         int       `db:"mitty_id" json:"mitty_id"`
-	Name            string    `json:"name"`
+	Name            string    `db:"name" json:"name"`
 	BusinessName    string    `db:"business_name" json:"business_name"`
-	BusinessLogoID  int64     `json:"business_logo_id"`
+	BusinessLogoID  int64     `db:"business_logo_id" json:"business_logo_id"`
 	BusinessSubName string    `db:"business_sub_name" json:"business_sub_name"`
 	BusinessTitle   string    `db:"business_title" json:"business_title"`
 	AddressLine1    string    `db:"address_line1" json:"address_line1"`
