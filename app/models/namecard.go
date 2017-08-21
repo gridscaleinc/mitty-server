@@ -67,7 +67,7 @@ func (s *Namecard) Delete(tx gorp.Transaction) error {
 func GetNamecardsByUserID(tx *gorp.Transaction, ID int) ([]NamecardInfo, error) {
 	results := []NamecardInfo{}
 
-	if _, err := tx.Select(&results, `select *,
+	if _, err := tx.Select(&results, `select Namecard.*,
 		COALESCE(contents.link_url, '') as business_logo_url
 		from Namecard
 		 left join Contents on Namecard.business_logo_id=Contents.id
