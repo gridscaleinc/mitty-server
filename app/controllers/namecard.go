@@ -142,3 +142,32 @@ func PostNameCardHandler(w http.ResponseWriter, r *http.Request) {
 		"id": m.ID,
 	})
 }
+
+// GetMyNamecardsHandler ...
+func GetMyNamecardsHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	currentUserID := filters.GetCurrentUserID(r)
+
+	namecards, err := models.GetNamecardsByUserID(tx, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"namecards": namecards,
+	})
+}
