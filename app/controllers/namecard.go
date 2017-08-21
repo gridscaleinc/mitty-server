@@ -119,7 +119,7 @@ func PostNameCardHandler(w http.ResponseWriter, r *http.Request) {
 	m := new(models.Namecard)
 
 	m.ID = p.ID
-	m.MittyID = p.MittyID
+	m.MittyID = currentUserID
 	m.Name = p.Name
 	m.BusinessName = p.BusinessName
 	m.BusinessLogoID = p.BusinessLogoID
