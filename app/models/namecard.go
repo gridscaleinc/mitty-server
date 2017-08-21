@@ -10,7 +10,9 @@ import (
 type Namecard struct {
 	ID              int64     `db:"id" json:"id"`
 	MittyID         int       `db:"mitty_id" json:"mitty_id"`
-	BusinessNae     string    `db:"business_name" json:"business_name"`
+	Name            string    `json:"name"`
+	BusinessName    string    `db:"business_name" json:"business_name"`
+	BusinessLogoID  int64     `json:"business_logo_id"`
 	BusinessSubName string    `db:"business_sub_name" json:"business_sub_name"`
 	BusinessTitle   string    `db:"business_title" json:"business_title"`
 	AddressLine1    string    `db:"address_line1" json:"address_line1"`
@@ -24,14 +26,27 @@ type Namecard struct {
 	Updated         time.Time `db:"updated" json:"updated"`
 }
 
+// Save ...
+func (s *Namecard) Save(tx gorp.Transaction) error {
+	if s.ID == 0 {
+		err := s.Insert(tx)
+		return err
+	}
+	err := s.Update(tx)
+	return err
+}
+
 // Insert ...
 func (s *Namecard) Insert(tx gorp.Transaction) error {
+	s.Created = time.Now().UTC()
+	s.Updated = time.Now().UTC()
 	err := tx.Insert(s)
 	return err
 }
 
 // Update ...
 func (s *Namecard) Update(tx gorp.Transaction) error {
+	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
 }
