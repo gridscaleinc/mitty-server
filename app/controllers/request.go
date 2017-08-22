@@ -277,16 +277,19 @@ func GetProposalsHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	requestId := r.URL.Query().Get("requestId")
-	currentUserID := filters.GetCurrentUserID(r)
+	requestID, err := strconv.ParseInt(r.URL.Query().Get("requestId"), 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
 
-	requests, err := models.GetProposalsOf(tx, requestId)
+	proposals, err := models.GetProposalsOf(tx, requestID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"requests": requests,
+		"proposals": proposals,
 	})
 }

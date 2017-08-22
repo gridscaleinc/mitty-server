@@ -60,7 +60,7 @@ func (s *Proposal) Delete(tx gorp.Transaction) error {
 }
 
 // GetProposalsOf ...
-func GetProposalsOf(tx gorp.Transaction, requestID int64) ([]ProposalInfo, error) {
+func GetProposalsOf(tx *gorp.Transaction, requestID int64) ([]ProposalInfo, error) {
 	proposals := []ProposalInfo{}
 	_, err := tx.Select(&proposals, `
     select
