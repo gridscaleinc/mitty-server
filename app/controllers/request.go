@@ -260,3 +260,33 @@ func GetMyRequestHandler(w http.ResponseWriter, r *http.Request) {
 		"requests": requests,
 	})
 }
+
+// GetProposalsHandler ...
+func GetProposalsHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	requestId := r.URL.Query().Get("requestId")
+	currentUserID := filters.GetCurrentUserID(r)
+
+	requests, err := models.GetProposalsOf(tx, requestId)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"requests": requests,
+	})
+}

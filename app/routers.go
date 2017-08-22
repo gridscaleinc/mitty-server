@@ -83,6 +83,7 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
+	r.HandleFunc("/proposals/of", controllers.GetProposalsHandler).Methods("GET")
 
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
 	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
