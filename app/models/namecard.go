@@ -28,8 +28,8 @@ type Namecard struct {
 
 // NamecardInfo ...
 type NamecardInfo struct {
-	CardInfo        Namecard `json:"cardInfo"`
-	BusinessLogoURL string   `db:"business_logo_url" json:"business_logo_url"`
+	Namecard
+	BusinessLogoURL string `db:"business_logo_url" json:"business_logo_url"`
 }
 
 // Save ...
