@@ -38,7 +38,10 @@ type Proposal struct {
 // ProposalInfo ...
 type ProposalInfo struct {
 	Proposal
-	IslandName string `db:"island_name" json:"island_name"`
+	NumberOfLikes   int    `db:"num_of_likes" json:"num_of_likes"`
+	IslandName      string `db:"island_name" json:"island_name"`
+	ProposerName    string `db:"proposer_name" json:"proposer_name"`
+	ProposerIconURL string `db:"proposer_icon_url" json:"proposer_icon_url"`
 }
 
 // Insert ...
@@ -64,9 +67,14 @@ func GetProposalsOf(tx *gorp.Transaction, requestID int64) ([]ProposalInfo, erro
 	proposals := []ProposalInfo{}
 	_, err := tx.Select(&proposals, `
     select
-      proposal.*, island.Name as island_name
+      proposal.*,
+      island.Name as island_name,
+      (select count(id) from likes where entity_type='REQUEST' and entity_id=$1) as num_of_likes,
+  		users.name as proposer_name,
+  		users.icon as proposer_icon_url
       from proposal
       inner join island on island.id=proposal.proposed_island_id
+      join users on users.id = proposal.proposer_id
       where reply_to_request_id=$1
     `, requestID)
 	return proposals, err
