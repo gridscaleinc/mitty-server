@@ -37,6 +37,15 @@ type Request struct {
 	Currency           *string   `db:"currency" json:"currency"`
 }
 
+//RequestInfo ...
+type RequestInfo struct {
+	Request
+	NumOfLikes    int     `db:"num_of_likes" json:"num_of_likes"`
+	NumOfProposal int     `db:"num_of_proposal" json:"num_of_proposal"`
+	OwnerName     *string `db:"owner_name" json:"owner_name"`
+	OwnerIconURL  *string `db:"owner_icon_url" json:"owner_icon_url"`
+}
+
 // Save ...
 func (s *Request) Save(tx gorp.Transaction) error {
 	s.Created = time.Now().UTC()
@@ -74,19 +83,12 @@ func (s *Request) Delete(tx gorp.Transaction) error {
 }
 
 // GetRequestDetailByID ...
-func GetRequestDetailByID(tx *gorp.Transaction, ID int) (interface{}, error) {
-	type result struct {
-		Request
-		NumOfLinks    int     `db:"num_of_likes" json:"num_of_likes"`
-		NumOfProposal int     `db:"num_of_proposal" json:"num_of_proposal"`
-		OwnerName     *string `db:"owner_name" json:"owner_name"`
-		OwnerIconURL  *string `db:"owner_icon_url" json:"owner_icon_url"`
-	}
+func GetRequestDetailByID(tx *gorp.Transaction, ID int64) (*RequestInfo, error) {
 
-	requestDetail := new(result)
+	requestDetail := new(RequestInfo)
 	if err := tx.SelectOne(&requestDetail, `select request.*,
-		0 as num_of_likes,
-		0 as num_of_proposal,
+		(select count(id) from likes where entity_type='REQUEST' and entity_id=$2) as num_of_likes,
+		(select count(id) from Proposal where reply_to_request_id=$2) as as num_of_proposal,
 		users.name as owner_name,
 		users.icon as owner_icon_url
 		from request

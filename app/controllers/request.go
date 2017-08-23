@@ -218,7 +218,7 @@ func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
 	var request models.Request
 	for _, item := range searchResult.Each(reflect.TypeOf(request)) {
 		if t, ok := item.(models.Request); ok {
-			requestDetail, err := models.GetRequestDetailByID(tx, int(t.ID))
+			requestDetail, err := models.GetRequestDetailByID(tx, t.ID)
 			if err != nil && err != sql.ErrNoRows {
 				filters.RenderError(w, r, err)
 				return
@@ -228,6 +228,40 @@ func GetSearchRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"requests": requests,
+	})
+}
+
+// GetRequestDetailsHandler ...
+func GetRequestDetailsHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	reqID, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	request, err := models.GetRequestDetailByID(tx, reqID)
+
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"request": request,
 	})
 }
 
