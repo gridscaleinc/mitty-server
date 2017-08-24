@@ -89,7 +89,7 @@ func GetRequestDetailByID(tx *gorp.Transaction, ID int64) (*RequestInfo, error) 
 	if err := tx.SelectOne(&requestDetail, `select request.*,
 		(select count(id) from likes where entity_type='REQUEST' and entity_id=$1) as num_of_likes,
 		(select count(id) from Proposal where reply_to_request_id=$1) as num_of_proposal,
-		users.name as owner_name,
+		users.user_name as owner_name,
 		users.icon as owner_icon_url
 		from request
 		join users on users.id = request.owner_id

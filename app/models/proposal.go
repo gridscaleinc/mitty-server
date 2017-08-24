@@ -70,7 +70,7 @@ func GetProposalsOf(tx *gorp.Transaction, requestID int64) ([]ProposalInfo, erro
       proposal.*,
       island.Name as island_name,
       (select count(id) from likes where entity_type='REQUEST' and entity_id=$1) as num_of_likes,
-  		users.name as proposer_name,
+  		users.user_name as proposer_name,
   		users.icon as proposer_icon_url
       from proposal
       inner join island on island.id=proposal.proposed_island_id
