@@ -46,6 +46,7 @@ type ProposalInfo struct {
 
 // Insert ...
 func (s *Proposal) Insert(tx gorp.Transaction) error {
+	s.ProposedDatetime = time.Now().UTC()
 	err := tx.Insert(s)
 	return err
 }
@@ -60,6 +61,15 @@ func (s *Proposal) Update(tx gorp.Transaction) error {
 func (s *Proposal) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
 	return err
+}
+
+// GetProposalByID ...
+func GetProposalByID(tx gorp.Transaction, ID int64) (*Proposal, error) {
+	p := new(Proposal)
+	if err := tx.SelectOne(&p, "SELECT * FROM proposal WHERE id = $1", ID); err != nil {
+		return nil, err
+	}
+	return p, nil
 }
 
 // GetProposalsOf ...

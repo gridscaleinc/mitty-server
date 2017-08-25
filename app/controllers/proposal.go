@@ -115,6 +115,36 @@ func (p *ProposalParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// ProposalStatusParams ...
+type ProposalStatusParams struct {
+	ProposalID   int64  `json:"proposal_id"`
+	ConfirmTel   string `json:"confirm_tel"`
+	ConfirmEmail string `json:"confirm_email"`
+	Status       string `json:"status"`
+}
+
+// FieldMap defines parameter requirements
+func (p *ProposalStatusParams) FieldMap(r *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&p.ProposalID: binding.Field{
+			Form:     "proposal_id",
+			Required: true,
+		},
+		&p.ConfirmTel: binding.Field{
+			Form:     "confirm_tel",
+			Required: false,
+		},
+		&p.ConfirmEmail: binding.Field{
+			Form:     "confirm_email",
+			Required: false,
+		},
+		&p.Status: binding.Field{
+			Form:     "status",
+			Required: true,
+		},
+	}
+}
+
 // PostProposalHandler ...
 func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -169,5 +199,102 @@ func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"id": m.ID,
+	})
+}
+
+// PostAcceptProposalHandler ...
+func PostAcceptProposalHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	currentUserID := filters.GetCurrentUserID(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	p := new(ProposalStatusParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputError(w, r, errs)
+		return
+	}
+
+	proposal, err := models.GetProposalByID(*tx, p.ProposalID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	// check status and ownership
+	request, err := models.GetRequestDetailByID(tx, proposal.ReplyToRequestID)
+	if request.OwnerID != currentUserID {
+		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
+			"error": "Only Requester user can accept a proposal!",
+		})
+		return
+	}
+
+	proposal.ConfirmEmail = p.ConfirmEmail
+	proposal.ConfirmTel = p.ConfirmTel
+	proposal.AcceptStatus = p.Status
+	proposal.AcceptDatetime = time.Now().UTC()
+
+	proposal.Update(*tx)
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"id": proposal.ID,
+	})
+}
+
+// PostApproveProposalHandler ...
+func PostApproveProposalHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	currentUserID := filters.GetCurrentUserID(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	p := new(ProposalStatusParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputError(w, r, errs)
+		return
+	}
+
+	proposal, err := models.GetProposalByID(*tx, p.ProposalID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	// check status and ownership
+	if proposal.ProposerID != currentUserID {
+		render.JSON(w, http.StatusBadRequest, map[string]interface{}{
+			"error": "Only Proposed user can approve a proposal!",
+		})
+		return
+	}
+
+	proposal.AcceptStatus = p.Status
+	proposal.ApprovalDate = time.Now().UTC()
+
+	proposal.Update(*tx)
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"id": proposal.ID,
 	})
 }
