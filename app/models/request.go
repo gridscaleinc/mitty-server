@@ -107,7 +107,7 @@ func GetRequestByUserID(tx *gorp.Transaction, userID int, key string) ([]Request
 		select
       *
       from request
-      where owner_id=$1 and title like '%$2' or action like '%$2'
+      where owner_id=$1 and title like '%$2' or description like '%$2'
 		`, userID, key)
 	return requests, err
 }

@@ -43,7 +43,7 @@ func (p *ProfileParams) FieldMap(r *http.Request) binding.FieldMap {
 		},
 		&p.OneWordSpeech: binding.Field{
 			Form:     "one_word_speech",
-			Required: true,
+			Required: false,
 		},
 		&p.Constellation: binding.Field{
 			Form:     "constellation",
