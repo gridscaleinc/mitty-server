@@ -25,6 +25,12 @@ type Profile struct {
 	HobbyTag5      string `db:"hobby_tag5" json:"hobby_tag5"`
 }
 
+// Contactee ...
+type Contactee struct {
+	ContacteeName string `db:"contactee_name" json:"contactee_name"`
+	Profile
+}
+
 // Save ...
 func (s *Profile) Save(tx gorp.Transaction) error {
 	if s.ID == 0 {
@@ -63,4 +69,24 @@ func GetProfileByUserID(tx *gorp.Transaction, ID int) (*Profile, error) {
 		return nil, err
 	}
 	return result, nil
+}
+
+// GetContacteeListByUserID ...
+func GetContacteeListByUserID(tx *gorp.Transaction, userID int) ([]Contactee, error) {
+	contacteeList := []Contactee{}
+	_, err := tx.Select(&contacteeList, `
+		select
+		   users.user_name as contactee_name,
+			 profile.*
+		from
+			 users
+			 inner join profile on users.id=profile.mitty_id
+		where
+			 users.id in (
+				 select namecard.mitty_id
+				 from contact
+				 inner join namecard on namecard.id=contact.name_card_id
+				 where contact.mitty_id=14);
+		`, userID)
+	return contacteeList, err
 }

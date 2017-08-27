@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"net/http"
+	"strconv"
 
 	"mitty.co/mitty-server/app/filters"
 	"mitty.co/mitty-server/app/helpers"
@@ -153,6 +154,23 @@ func PostProfileHandler(w http.ResponseWriter, r *http.Request) {
 
 // GetMyProfileHandler ...
 func GetMyProfileHandler(w http.ResponseWriter, r *http.Request) {
+	currentUserID := filters.GetCurrentUserID(r)
+	fetchProfile(w, r, currentUserID)
+}
+
+// GetUserProfileHandler ...
+func GetUserProfileHandler(w http.ResponseWriter, r *http.Request) {
+	forUserID, err := strconv.Atoi(r.URL.Query().Get("mitty_id"))
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	fetchProfile(w, r, forUserID)
+}
+
+// fetchProfile ...
+func fetchProfile(w http.ResponseWriter, r *http.Request, userID int) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()

@@ -86,11 +86,13 @@ func publicRoutes(r *mux.Router) {
 	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
 	r.HandleFunc("/proposals/of", controllers.GetProposalsHandler).Methods("GET")
+	r.HandleFunc("/contact/list", controllers.GetContateeListHandler).Methods("GET")
 
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
 	r.HandleFunc("/request/details", controllers.GetRequestDetailsHandler).Methods("GET")
 	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
 	r.Handle("/myprofile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
+	r.Handle("/user/profile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
 	r.Handle("/mynamecards", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
 
 	// DELETE
