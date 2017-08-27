@@ -32,6 +32,15 @@ type NamecardInfo struct {
 	BusinessLogoURL string `db:"business_logo_url" json:"business_logo_url"`
 }
 
+// ContacteeNamecard ...
+type ContacteeNamecard struct {
+	NamecardID     int64     `db:"name_card_id" json:"name_card_id"`
+	ContactID      int64     `db:"contact_id" json:"contact_id"`
+	BusinessName   string    `db:"business_name" json:"business_name"`
+	RelatedEventID int64     `db:"related_event_id" json:"related_event_id"`
+	ContctedDate   time.Time `contacted_date:"id" json:"contacted_date"`
+}
+
 // Save ...
 func (s *Namecard) Save(tx gorp.Transaction) error {
 	if s.ID == 0 {
@@ -57,6 +66,23 @@ func (s *Namecard) Update(tx gorp.Transaction) error {
 	return err
 }
 
+// GetNamecardByID ...
+func GetNamecardByID(tx *gorp.Transaction, ID int64) (*NamecardInfo, error) {
+
+	namecard := new(NamecardInfo)
+
+	if err := tx.SelectOne(&namecard, `select namecard.*,
+		COALESCE(contents.link_url, '') as business_logo_url
+		from Namecard
+		 left join Contents on Namecard.business_logo_id=Contents.id
+		where namecard.id = $1;
+		`, ID); err != nil {
+		return nil, err
+	}
+
+	return namecard, nil
+}
+
 // Delete ...
 func (s *Namecard) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
@@ -67,7 +93,7 @@ func (s *Namecard) Delete(tx gorp.Transaction) error {
 func GetNamecardsByUserID(tx *gorp.Transaction, ID int) ([]NamecardInfo, error) {
 	results := []NamecardInfo{}
 
-	if _, err := tx.Select(&results, `select Namecard.*,
+	if _, err := tx.Select(&results, `select namecard.*,
 		COALESCE(contents.link_url, '') as business_logo_url
 		from Namecard
 		 left join Contents on Namecard.business_logo_id=Contents.id
@@ -76,5 +102,21 @@ func GetNamecardsByUserID(tx *gorp.Transaction, ID int) ([]NamecardInfo, error) 
 		return nil, err
 	}
 
+	return results, nil
+}
+
+// GetContacteeNamecards ...
+func GetContacteeNamecards(tx *gorp.Transaction, fromUserID int, contacteeUserID int) ([]ContacteeNamecard, error) {
+	results := []ContacteeNamecard{}
+	if _, err := tx.Select(&results, `select Namecard.id as name_card_id,
+		Namecard.business_name,
+		contact.related_event_id,
+		contact.contacted_date
+		from namecard
+		   left join contact on namecard.id=contact.name_card_id
+		where contact.mitty_id = $1 and namecard.mitty_id=$2;
+		`, fromUserID, contacteeUserID); err != nil {
+		return nil, err
+	}
 	return results, nil
 }
