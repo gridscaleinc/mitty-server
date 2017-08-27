@@ -104,10 +104,7 @@ func GetRequestDetailByID(tx *gorp.Transaction, ID int64) (*RequestInfo, error) 
 func GetRequestByUserID(tx *gorp.Transaction, userID int, key string) ([]Request, error) {
 	requests := []Request{}
 	_, err := tx.Select(&requests, `
-		select
-      *
-      from request
-      where owner_id=$1 and (title like '%$2' or description like '%$2');
+		select * from request where owner_id=$1 and (title like %$2 or description like %$2);
 		`, userID, key)
 	return requests, err
 }
