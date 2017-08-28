@@ -94,7 +94,6 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/myprofile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
 	r.Handle("/user/profile", apiAuth(controllers.GetUserProfileHandler)).Methods("GET")
 	r.Handle("/mynamecards", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
-	r.Handle("/namecard/info", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
 	r.Handle("/contactee/namecards", apiAuth(controllers.GetContacteeNamecardsHandler)).Methods("GET")
 
 	// DELETE
