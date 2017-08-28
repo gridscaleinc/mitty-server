@@ -115,9 +115,9 @@ func GetContacteeNamecards(tx *gorp.Transaction, fromUserID int, contacteeUserID
 		contact.related_event_id,
 		contact.contacted_date
 		from namecard
-		   left join contact on namecard.id=contact.name_card_id
+		   left join contact on namecard.id=contact.name_card_id and contact.mitty_id = $1
 			 left join Contents on Namecard.business_logo_id=Contents.id
-		where contact.mitty_id = $1 and namecard.mitty_id=$2;
+		where namecard.mitty_id=$2;
 		`, fromUserID, contacteeUserID); err != nil {
 		return nil, err
 	}

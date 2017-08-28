@@ -78,6 +78,6 @@ func GetContacteeNamecardsHandler(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Print(namecards)
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"ok": namecards,
+		"contacteeNamecards": namecards,
 	})
 }
