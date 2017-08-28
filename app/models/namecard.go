@@ -39,7 +39,7 @@ type ContacteeNamecard struct {
 	BusinessName    string    `db:"business_name" json:"business_name"`
 	BusinessLogoURL string    `db:"business_logo_url" json:"business_logo_url"`
 	RelatedEventID  int64     `db:"related_event_id" json:"related_event_id"`
-	ContctedDate    time.Time `contacted_date:"id" json:"contacted_date"`
+	ContctedDate    time.Time `db:"contacted_date" json:"contacted_date"`
 }
 
 // Save ...
