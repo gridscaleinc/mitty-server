@@ -34,11 +34,12 @@ type NamecardInfo struct {
 
 // ContacteeNamecard ...
 type ContacteeNamecard struct {
-	NamecardID     int64     `db:"name_card_id" json:"name_card_id"`
-	ContactID      int64     `db:"contact_id" json:"contact_id"`
-	BusinessName   string    `db:"business_name" json:"business_name"`
-	RelatedEventID int64     `db:"related_event_id" json:"related_event_id"`
-	ContctedDate   time.Time `contacted_date:"id" json:"contacted_date"`
+	NamecardID      int64     `db:"name_card_id" json:"name_card_id"`
+	ContactID       int64     `db:"contact_id" json:"contact_id"`
+	BusinessName    string    `db:"business_name" json:"business_name"`
+	BusinessLogoURL string    `db:"business_logo_url" json:"business_logo_url"`
+	RelatedEventID  int64     `db:"related_event_id" json:"related_event_id"`
+	ContctedDate    time.Time `contacted_date:"id" json:"contacted_date"`
 }
 
 // Save ...
@@ -110,10 +111,12 @@ func GetContacteeNamecards(tx *gorp.Transaction, fromUserID int, contacteeUserID
 	results := []ContacteeNamecard{}
 	if _, err := tx.Select(&results, `select Namecard.id as name_card_id,
 		Namecard.business_name,
+		COALESCE(contents.link_url, '') as business_logo_url,
 		contact.related_event_id,
 		contact.contacted_date
 		from namecard
 		   left join contact on namecard.id=contact.name_card_id
+			 left join Contents on Namecard.business_logo_id=Contents.id
 		where contact.mitty_id = $1 and namecard.mitty_id=$2;
 		`, fromUserID, contacteeUserID); err != nil {
 		return nil, err
