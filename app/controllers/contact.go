@@ -4,6 +4,7 @@ import (
 	// 	"database/sql"
 	// 	"errors"
 	// 	"fmt"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -75,7 +76,8 @@ func GetContacteeNamecardsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	fmt.Print(namecards)
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"namecards": namecards,
+		"ok": namecards,
 	})
 }
