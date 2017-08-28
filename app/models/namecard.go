@@ -112,7 +112,7 @@ func GetContacteeNamecards(tx *gorp.Transaction, fromUserID int, contacteeUserID
 	if _, err := tx.Select(&results, `select Namecard.id as name_card_id,
 		Namecard.business_name,
 		COALESCE(contents.link_url, '') as business_logo_url,
-		contact.related_event_id,
+		COALESCE(contact.related_event_id, 0) as related_event_id,
 		contact.contacted_date
 		from namecard
 		   left join contact on namecard.id=contact.name_card_id and contact.mitty_id=$1
