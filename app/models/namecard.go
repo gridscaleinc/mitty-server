@@ -34,12 +34,12 @@ type NamecardInfo struct {
 
 // ContacteeNamecard ...
 type ContacteeNamecard struct {
-	NamecardID      int64     `db:"name_card_id" json:"name_card_id"`
-	ContactID       int64     `db:"contact_id" json:"contact_id"`
-	BusinessName    string    `db:"business_name" json:"business_name"`
-	BusinessLogoURL string    `db:"business_logo_url" json:"business_logo_url"`
-	RelatedEventID  int64     `db:"related_event_id" json:"related_event_id"`
-	ContctedDate    time.Time `db:"contacted_date" json:"contacted_date"`
+	NamecardID      int64      `db:"name_card_id" json:"name_card_id"`
+	ContactID       int64      `db:"contact_id" json:"contact_id"`
+	BusinessName    string     `db:"business_name" json:"business_name"`
+	BusinessLogoURL string     `db:"business_logo_url" json:"business_logo_url"`
+	RelatedEventID  int64      `db:"related_event_id" json:"related_event_id"`
+	ContctedDate    *time.Time `db:"contacted_date" json:"contacted_date"`
 }
 
 // Save ...
