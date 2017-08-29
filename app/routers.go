@@ -66,6 +66,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/gallery/content", apiAuth(controllers.PostGalleryContentHandler)).Methods("POST")
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
 	r.Handle("/send/like", apiAuth(controllers.SendLikeHandler)).Methods("POST")
+	r.Handle("/send/offers", apiAuth(controllers.PostOfferHandler)).Methods("POST")
 
 	// UPDATE
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
@@ -73,6 +74,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/update/activity/item", apiAuth(controllers.UpdateActivityItemHandler)).Methods("POST")
 	r.Handle("/accept/proposal", apiAuth(controllers.PostAcceptProposalHandler)).Methods("POST")
 	r.Handle("/approve/proposal", apiAuth(controllers.PostApproveProposalHandler)).Methods("POST")
+	r.Handle("/accept/offers", apiAuth(controllers.AcceptOfferHandler)).Methods("POST")
 
 	// SELECT
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
