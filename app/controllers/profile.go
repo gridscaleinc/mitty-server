@@ -185,13 +185,11 @@ func fetchProfile(w http.ResponseWriter, r *http.Request, userID int) {
 		err = tx.Commit()
 	}()
 
-	currentUserID := filters.GetCurrentUserID(r)
-
-	profile, err := models.GetProfileByUserID(tx, currentUserID)
+	profile, err := models.GetProfileByUserID(tx, userID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			profile = new(models.Profile)
-			profile.MittyID = currentUserID
+			profile.MittyID = userID
 		} else {
 			filters.RenderError(w, r, err)
 			return
