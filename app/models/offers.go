@@ -43,3 +43,16 @@ func (s *Offers) Load(tx gorp.Transaction) error {
 	err := tx.SelectOne(&s, `select * from offers where id=$1;`, s.ID)
 	return err
 }
+
+// GetOfferListByUserID ...
+func GetOfferListByUserID(tx *gorp.Transaction, userID int) ([]Offers, error) {
+	myOffers := []Offers{}
+	_, err := tx.Select(&myOffers, `
+	select
+			*
+	from
+			offers
+	where
+		 to_mitty_id = $1;`, userID)
+	return myOffers, err
+}
