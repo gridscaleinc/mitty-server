@@ -28,6 +28,7 @@ type Profile struct {
 // Contactee ...
 type Contactee struct {
 	ContacteeName string `db:"contactee_name" json:"contactee_name"`
+	ContacteeIcon string `db:"contactee_icon" json:"contactee_icon"`
 	Profile
 }
 
@@ -77,6 +78,7 @@ func GetContacteeListByUserID(tx *gorp.Transaction, userID int) ([]Contactee, er
 	_, err := tx.Select(&contacteeList, `
 		select
 		   users.user_name as contactee_name,
+			 users.icon as contactee_icon,
 			 profile.*
 		from
 			 users
