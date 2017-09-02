@@ -77,27 +77,65 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/accept/offers", apiAuth(controllers.AcceptOfferHandler)).Methods("POST")
 
 	// SELECT
-	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
-	r.Handle("/event/of", apiAuth(controllers.EventFetchingHandler)).Methods("GET")
-	r.Handle("/activity/list", apiAuth(controllers.GetActivityListHandler)).Methods("GET")
+	// A
 	r.Handle("/activity/details", apiAuth(controllers.GetActivityDetailHandler)).Methods("GET")
-	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
-	r.Handle("/mycontents/list", apiAuth(controllers.GetMyContentsHandler)).Methods("GET")
-	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
-	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
-	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
-	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
-	r.HandleFunc("/proposals/of", controllers.GetProposalsHandler).Methods("GET")
-	r.HandleFunc("/contact/list", controllers.GetContateeListHandler).Methods("GET")
+	r.Handle("/activity/list", apiAuth(controllers.GetActivityListHandler)).Methods("GET")
 
-	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
-	r.HandleFunc("/request/details", controllers.GetRequestDetailsHandler).Methods("GET")
+	// B
+	// C
+	r.HandleFunc("/contact/list", controllers.GetContateeListHandler).Methods("GET")
+	r.Handle("/contactee/namecards", apiAuth(controllers.GetContacteeNamecardsHandler)).Methods("GET")
+
+	// D
+	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
+
+	// E
+	r.Handle("/event/of", apiAuth(controllers.EventFetchingHandler)).Methods("GET")
+	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
+
+	// F
+	// G
+	// H
+	// I
+	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
+
+	// J
+	// K
+	// L
+	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
+
+	// M
+	r.Handle("/mycontents/list", apiAuth(controllers.GetMyContentsHandler)).Methods("GET")
 	r.Handle("/myrequest", apiAuth(controllers.GetMyRequestHandler)).Methods("GET")
 	r.Handle("/myprofile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
-	r.Handle("/user/profile", apiAuth(controllers.GetUserProfileHandler)).Methods("GET")
 	r.Handle("/mynamecards", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
-	r.Handle("/contactee/namecards", apiAuth(controllers.GetContacteeNamecardsHandler)).Methods("GET")
 	r.Handle("/myoffers", apiAuth(controllers.GetOfferListHandler)).Methods("GET")
+
+	// N
+	r.Handle("/namecard/of", apiAuth(controllers.GetNamecardHandler)).Methods("GET")
+
+	// O
+	// P
+	r.HandleFunc("/proposals/of", controllers.GetProposalsHandler).Methods("GET")
+
+	// Q
+	// R
+	r.HandleFunc("/request/details", controllers.GetRequestDetailsHandler).Methods("GET")
+
+	// S
+	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
+	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+
+	// T
+	// U
+	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
+	r.Handle("/user/profile", apiAuth(controllers.GetUserProfileHandler)).Methods("GET")
+
+	// V
+	// W
+	// X
+	// Y
+	// Z
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")

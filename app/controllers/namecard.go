@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/mholt/binding"
 	"mitty.co/mitty-server/app/filters"
@@ -169,5 +170,38 @@ func GetMyNamecardsHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"namecards": namecards,
+	})
+}
+
+// GetNamecardHandler ...
+func GetNamecardHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	id, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	namecard, err := models.GetNamecardByID(tx, id)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"namecard": namecard,
 	})
 }
