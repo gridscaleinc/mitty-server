@@ -76,7 +76,7 @@ func GetProfileByUserID(tx *gorp.Transaction, ID int) (*Profile, error) {
 func GetContacteeListByUserID(tx *gorp.Transaction, userID int) ([]Contactee, error) {
 	contacteeList := []Contactee{}
 	_, err := tx.Select(&contacteeList, `
-		select
+		select distinct
 		   users.user_name as contactee_name,
 			 users.icon as contactee_icon,
 			 profile.*
