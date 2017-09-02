@@ -74,7 +74,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/update/activity/item", apiAuth(controllers.UpdateActivityItemHandler)).Methods("POST")
 	r.Handle("/accept/proposal", apiAuth(controllers.PostAcceptProposalHandler)).Methods("POST")
 	r.Handle("/approve/proposal", apiAuth(controllers.PostApproveProposalHandler)).Methods("POST")
-	r.Handle("/accept/offers", apiAuth(controllers.AcceptOfferHandler)).Methods("POST")
+	r.Handle("/accept/offers", apiAuth(controllers.AcceptOffersHandler)).Methods("POST")
 
 	// SELECT
 	// A

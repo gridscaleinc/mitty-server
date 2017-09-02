@@ -102,8 +102,8 @@ func PostOfferHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// AcceptOfferHandler ...
-func AcceptOfferHandler(w http.ResponseWriter, r *http.Request) {
+// AcceptOffersHandler ...
+func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
 	dbmap := helpers.GetPostgres()
 	tx, err := dbmap.Begin()
@@ -131,6 +131,13 @@ func AcceptOfferHandler(w http.ResponseWriter, r *http.Request) {
 	offer.ID = p.ID
 
 	err = offer.Load(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	offer.ReplyStatus = p.ReplyStatus
+	err = offer.Update(*tx)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
