@@ -109,7 +109,7 @@ func GetNamecardsByUserID(tx *gorp.Transaction, ID int) ([]NamecardInfo, error) 
 // GetContacteeNamecards ...
 func GetContacteeNamecards(tx *gorp.Transaction, fromUserID int, contacteeUserID int) ([]ContacteeNamecard, error) {
 	results := []ContacteeNamecard{}
-	if _, err := tx.Select(&results, `select Namecard.id as name_card_id,
+	if _, err := tx.Select(&results, `select distinct Namecard.id as name_card_id,
 		Namecard.business_name,
 		COALESCE(contents.link_url, '') as business_logo_url,
 		COALESCE(contact.related_event_id, 0) as related_event_id,
