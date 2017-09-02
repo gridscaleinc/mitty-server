@@ -12,7 +12,7 @@ type Contact struct {
 	MittyID        int       `db:"mitty_id" json:"mitty_id"`
 	RelatedEventID int64     `db:"related_event_id" json:"related_event_id"`
 	NameCardID     int64     `db:"name_card_id" json:"name_card_id"`
-	ContctedDate   time.Time `contacted_date:"id" json:"contacted_date"`
+	ContctedDate   time.Time `db:"contacted_date" json:"contacted_date"`
 }
 
 // Insert ...
