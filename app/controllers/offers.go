@@ -150,6 +150,7 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 		contact.ContctedDate = time.Now().UTC()
 		err = contact.Insert(*tx)
 		if err != nil {
+			filters.RenderError(w, r, err)
 			return
 		}
 
@@ -159,6 +160,7 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 		contact.ContctedDate = time.Now().UTC()
 		err = contact.Insert(*tx)
 		if err != nil {
+			filters.RenderError(w, r, err)
 			return
 		}
 	}
