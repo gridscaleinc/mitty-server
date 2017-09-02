@@ -86,7 +86,7 @@ func GetContacteeListByUserID(tx *gorp.Transaction, userID int) ([]Contactee, er
 				 select namecard.mitty_id
 				 from contact
 				 inner join namecard on namecard.id=contact.name_card_id
-				 where contact.mitty_id=14);
+				 where contact.mitty_id=$1);
 		`, userID)
 	return contacteeList, err
 }
