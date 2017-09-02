@@ -53,6 +53,6 @@ func GetOfferListByUserID(tx *gorp.Transaction, userID int) ([]Offers, error) {
 	from
 			offers
 	where
-		 to_mitty_id = $1;`, userID)
+		 to_mitty_id = $1 and reply_status='NONE';`, userID)
 	return myOffers, err
 }
