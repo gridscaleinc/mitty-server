@@ -53,6 +53,13 @@ func APIAuthHandler(next http.Handler) http.Handler {
 	return &apiAuth{next}
 }
 
+// GetCurrentUserID ...
+//  Get the authorized user id.
+//   return 0 if thre request context has not an authorized user.
 func GetCurrentUserID(r *http.Request) int {
-	return r.Context().Value(apiAuthContextKey).(int)
+	value := r.Context().Value(apiAuthContextKey)
+	if value == nil {
+		return 0
+	}
+	return value.(int)
 }
