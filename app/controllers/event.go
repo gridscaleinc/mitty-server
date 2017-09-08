@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"database/sql"
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -297,20 +299,22 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	query1 := elastic.NewBoolQuery()
 	query1.Should(matchQuery1, matchQuery2, matchQuery3, matchQuery4, matchQuery5)
+
 	query := elastic.NewBoolQuery()
-	query.Must(query1, elastic.NewTermQuery("accessControl", "public"))
+	query.Must(query1, elastic.NewTermQuery("accessControl", "public"), elastic.NewRangeQuery("endDatetime").Gt(time.Now()))
+	//query.Must()
 
 	// Debug
-	// src, err := query.Source()
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// data, err := json.Marshal(src)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// s := string(data)
-	// fmt.Println(s)
+	src, err := query.Source()
+	if err != nil {
+		panic(err)
+	}
+	data, err := json.Marshal(src)
+	if err != nil {
+		panic(err)
+	}
+	s := string(data)
+	fmt.Println(s)
 
 	searchResult, err := helpers.ESSearchBoolQuery("mitty", "event", "id", offset, limit, query)
 	if err != nil {
