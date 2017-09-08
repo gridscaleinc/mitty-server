@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"crypto/md5"
+	"crypto/sha1"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -24,4 +25,11 @@ func PasswordHashed(plainPassword string) string {
 	bytes := sha256.Sum256([]byte(plainPassword))
 	hashedPassword := hex.EncodeToString(bytes[:])
 	return hashedPassword
+}
+
+// GenerateUserIDWithSalt ...
+func GenerateUserIDWithSalt(text string) string {
+	data := []byte(text + salt + time.Now().String())
+	hash := fmt.Sprintf("%x", sha1.Sum(data))
+	return hash
 }
