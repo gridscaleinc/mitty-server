@@ -46,6 +46,7 @@ func AddTableWithName(dbmap *gorp.DbMap) {
 
 	// R
 	dbmap.AddTableWithName(Request{}, "request").SetKeys(true, "ID")
+	dbmap.AddTableWithName(ResetPassword{}, "reset_passwords").SetKeys(true, "ID")
 
 	// S
 	dbmap.AddTableWithName(SocialID{}, "socialid").SetKeys(true, "ID")
