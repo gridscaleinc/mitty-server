@@ -37,3 +37,12 @@ func RemoveLikesByID(tx *gorp.Transaction, userID int, entityType string, entity
 	}
 	return nil
 }
+
+// ExistLikeFromIDs ...
+func ExistLikeFromIDs(tx gorp.Transaction, mittyID int, entityType string, entityID int64) (bool, error) {
+	count, err := tx.SelectInt("select count(*) from likes where mitty_id = $1 and entity_type = $2 and entity_id = $3", mittyID, entityType, entityID)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}

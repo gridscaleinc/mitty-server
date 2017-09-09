@@ -60,16 +60,22 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	likes := new(models.Likes)
-	likes.MittyID = currentUserID
-	likes.EntityType = p.Type
-	likes.EntityID = p.ID
-
-	if err := likes.Insert(*tx); err != nil {
+	exist, err := models.ExistLikeFromIDs(*tx, currentUserID, p.Type, p.ID)
+	if err != nil {
 		filters.RenderError(w, r, err)
 		return
 	}
+	if exist == false {
+		likes := new(models.Likes)
+		likes.MittyID = currentUserID
+		likes.EntityType = p.Type
+		likes.EntityID = p.ID
 
+		if err := likes.Insert(*tx); err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
+	}
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"ok": true,
 	})
