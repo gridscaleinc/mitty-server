@@ -144,24 +144,37 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if offer.Type == "NAMECARD" && offer.ReplyStatus == "ACCEPTED" {
-		contact := new(models.Contact)
-		contact.MittyID = offer.FromMittyID
-		contact.NameCardID = offer.RepliedID
-		contact.ContctedDate = time.Now().UTC()
-		err = contact.Insert(*tx)
+		existA, err := models.ExistContactFromIDs(*tx, offer.FromMittyID, offer.RepliedID)
 		if err != nil {
 			filters.RenderError(w, r, err)
 			return
 		}
-
-		contact = new(models.Contact)
-		contact.MittyID = offer.ToMittyID
-		contact.NameCardID = offer.OfferredID
-		contact.ContctedDate = time.Now().UTC()
-		err = contact.Insert(*tx)
+		if existA == false {
+			contact := new(models.Contact)
+			contact.MittyID = offer.FromMittyID
+			contact.NameCardID = offer.RepliedID
+			contact.ContctedDate = time.Now().UTC()
+			err = contact.Insert(*tx)
+			if err != nil {
+				filters.RenderError(w, r, err)
+				return
+			}
+		}
+		existB, err := models.ExistContactFromIDs(*tx, offer.ToMittyID, offer.OfferredID)
 		if err != nil {
 			filters.RenderError(w, r, err)
 			return
+		}
+		if existB == false {
+			contact := new(models.Contact)
+			contact.MittyID = offer.ToMittyID
+			contact.NameCardID = offer.OfferredID
+			contact.ContctedDate = time.Now().UTC()
+			err = contact.Insert(*tx)
+			if err != nil {
+				filters.RenderError(w, r, err)
+				return
+			}
 		}
 	}
 

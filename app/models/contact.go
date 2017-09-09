@@ -26,3 +26,12 @@ func (s *Contact) Update(tx gorp.Transaction) error {
 	_, err := tx.Update(s)
 	return err
 }
+
+// ExistContactFromIDs ...
+func ExistContactFromIDs(tx gorp.Transaction, mittyID int, nameCardID int64) (bool, error) {
+	count, err := tx.SelectInt("select count(*) from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID)
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
