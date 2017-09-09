@@ -1,6 +1,16 @@
 package models
 
-import "gopkg.in/gorp.v1"
+import (
+	"log"
+
+	"gopkg.in/gorp.v1"
+)
+
+type MyGorpTracer struct{}
+
+func (t *MyGorpTracer) Printf(format string, v ...interface{}) {
+	log.Printf(format, v...)
+}
 
 // AddTableWithName ...
 func AddTableWithName(dbmap *gorp.DbMap) {
@@ -54,4 +64,11 @@ func AddTableWithName(dbmap *gorp.DbMap) {
 
 	// U
 	dbmap.AddTableWithName(User{}, "users").SetKeys(true, "ID")
+
+	// Loggerを生成
+	tracer := &MyGorpTracer{}
+
+	// Logging有効化
+	dbmap.TraceOn("[gorp SQL trace]", tracer)
+
 }
