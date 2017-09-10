@@ -126,6 +126,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"user_id":      user.ID,
 		"access_token": user.AccessToken,
+		"created":      user.Created,
 	})
 }
 
