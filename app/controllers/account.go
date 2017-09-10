@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/mail"
+	"regexp"
 	"time"
 
 	"mitty.co/mitty-server/app/filters"
@@ -42,6 +43,23 @@ func (p *SignUpParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+var usernameRegexp = regexp.MustCompile(`^[a-zA-Z0-9_-]{1,15}$`)
+var emailRegexp = regexp.MustCompile(`^[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
+
+// Validate ...
+func (p *SignUpParams) Validate(req *http.Request) error {
+	if !usernameRegexp.MatchString(p.UserName) {
+		return errors.New("username is invalid string")
+	}
+	if !emailRegexp.MatchString(p.MailAddress) {
+		return errors.New("email address is invalid")
+	}
+	if len(p.Password) > 255 {
+		return errors.New("password is too long")
+	}
+	return nil
+}
+
 // SignUpHandler ...
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -59,7 +77,12 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(SignUpParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
@@ -123,7 +146,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(SignUpParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
