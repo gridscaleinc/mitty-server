@@ -56,7 +56,7 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := new(LikesForm)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
@@ -101,7 +101,7 @@ func RemoveLikeHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := new(LikesForm)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 

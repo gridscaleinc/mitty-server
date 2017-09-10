@@ -163,7 +163,7 @@ func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ProposalParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
@@ -221,7 +221,7 @@ func PostAcceptProposalHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := new(ProposalStatusParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
@@ -271,7 +271,7 @@ func PostApproveProposalHandler(w http.ResponseWriter, r *http.Request) {
 
 	p := new(ProposalStatusParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 

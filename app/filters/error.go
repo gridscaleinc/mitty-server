@@ -6,8 +6,8 @@ import (
 	"github.com/mholt/binding"
 )
 
-// RenderInputError ...
-func RenderInputError(w http.ResponseWriter, r *http.Request, errs binding.Errors) {
+// RenderInputErrorss ...
+func RenderInputErrors(w http.ResponseWriter, r *http.Request, errs binding.Errors) {
 	render := GetRenderer(r)
 	var errors []string
 	for _, e := range errs {
@@ -25,6 +25,14 @@ func RenderInputError(w http.ResponseWriter, r *http.Request, errs binding.Error
 func RenderError(w http.ResponseWriter, r *http.Request, err error) {
 	render := GetRenderer(r)
 	render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+		"errors": []string{err.Error()},
+	})
+}
+
+// RenderInputError ...
+func RenderInputError(w http.ResponseWriter, r *http.Request, err error) {
+	render := GetRenderer(r)
+	render.JSON(w, http.StatusBadRequest, map[string]interface{}{
 		"errors": []string{err.Error()},
 	})
 }

@@ -119,7 +119,7 @@ func PostRequestHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(RequestParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 

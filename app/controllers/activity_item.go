@@ -76,7 +76,7 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityItemParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
@@ -129,7 +129,7 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityItemParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 

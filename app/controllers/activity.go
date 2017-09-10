@@ -88,7 +88,7 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
@@ -211,7 +211,7 @@ func UpdateActivityHandler(w http.ResponseWriter, r *http.Request) {
 	}()
 	p := new(ActivityParams)
 	if errs := binding.Bind(r, p); errs != nil {
-		filters.RenderInputError(w, r, errs)
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
 
