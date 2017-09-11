@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
 	"mitty.co/mitty-server/app/filters"
@@ -185,6 +186,83 @@ func (p *IslandParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *IslandParams) Validate(req *http.Request) error {
+	if len(p.Nickname) > 89 {
+		return errors.New("nickname is too long")
+	}
+	if len(p.Name) > 80 {
+		return errors.New("name is too long")
+	}
+	if len(p.Category) > 20 {
+		return errors.New("category is too long")
+	}
+	if len(p.MobilityType) > 20 {
+		return errors.New("mobility type is too long")
+	}
+	if len(p.RealityType) > 20 {
+		return errors.New("reality type is too long")
+	}
+	if len(p.OwnershipType) > 20 {
+		return errors.New("ownership type is too long")
+	}
+	if len(p.OwnerName) > 80 {
+		return errors.New("owner name is too long")
+	}
+	if len(p.Tel) > 20 {
+		return errors.New("tel is too long")
+	}
+	if len(p.Fax) > 20 {
+		return errors.New("fax is too long")
+	}
+	if len(p.MailAddress) > 50 {
+		return errors.New("maill address is too long")
+	}
+	if len(p.Webpage) > 50 {
+		return errors.New("webpage is too long")
+	}
+	if len(p.CountryCode) > 2 {
+		return errors.New("country code is too long")
+	}
+	if len(p.CountryName) > 30 {
+		return errors.New("country name is too long")
+	}
+	if len(p.State) > 30 {
+		return errors.New("state is too long")
+	}
+	if len(p.City) > 30 {
+		return errors.New("city is too long")
+	}
+	if len(p.Postcode) > 20 {
+		return errors.New("postcode is too long")
+	}
+	if len(p.Thoroghfare) > 30 {
+		return errors.New("thoroghfare is too long")
+	}
+	if len(p.Subthroghfare) > 30 {
+		return errors.New("subthroghfare is too long")
+	}
+	if len(p.BuildingName) > 50 {
+		return errors.New("building name is too long")
+	}
+	if len(p.FloorNumber) > 3 {
+		return errors.New("floor number is too long")
+	}
+	if len(p.RoomNumber) > 10 {
+		return errors.New("room number is too long")
+	}
+	if len(p.Address1) > 100 {
+		return errors.New("address1 is too long")
+	}
+	if len(p.Address2) > 100 {
+		return errors.New("address2 is too long")
+	}
+	if len(p.Address3) > 100 {
+		return errors.New("address3 is too long")
+	}
+	return nil
+}
+
 // PostIslandHandler ...
 func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -203,6 +281,11 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(IslandParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

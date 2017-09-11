@@ -4,6 +4,7 @@ import (
 	// 	"database/sql"
 	// 	"errors"
 	// 	"fmt"
+	"errors"
 	"net/http"
 	"time"
 
@@ -47,6 +48,14 @@ func (s *InvitationParams) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (s *InvitationParams) Validate(req *http.Request) error {
+	if len(s.Message) > 1000 {
+		return errors.New("password is too long")
+	}
+	return nil
+}
+
 // SendInvitationsHandler ... to be done....
 func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -68,6 +77,11 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(InvitationParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

@@ -4,6 +4,7 @@ import (
 	// 	"database/sql"
 	// 	"errors"
 	// 	"fmt"
+	"errors"
 	"net/http"
 
 	// 	goutils "github.com/dongri/goutils"
@@ -36,6 +37,14 @@ func (s *LikesForm) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (s *LikesForm) Validate(req *http.Request) error {
+	if len(s.Type) > 50 {
+		return errors.New("type is too long")
+	}
+	return nil
+}
+
 // SendLikeHandler ...
 func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -57,6 +66,11 @@ func SendLikeHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(LikesForm)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

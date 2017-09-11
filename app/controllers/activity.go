@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -70,6 +71,14 @@ func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *ActivityParams) Validate(req *http.Request) error {
+	if len(p.Title) > 200 {
+		return errors.New("title is too long")
+	}
+	return nil
+}
+
 // PostActivityHandler ...
 func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -89,6 +98,11 @@ func PostActivityHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ActivityParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
@@ -212,6 +226,11 @@ func UpdateActivityHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ActivityParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

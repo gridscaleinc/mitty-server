@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"time"
 
@@ -59,6 +60,14 @@ func (p *ActivityItemParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *ActivityItemParams) Validate(req *http.Request) error {
+	if len(p.Title) > 200 {
+		return errors.New("title is too long")
+	}
+	return nil
+}
+
 // PostActivityItemHandler ...
 func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -77,6 +86,11 @@ func PostActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ActivityItemParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
@@ -130,6 +144,11 @@ func UpdateActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ActivityItemParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

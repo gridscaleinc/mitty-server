@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -71,6 +72,20 @@ func (p *UploadContentsParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *UploadContentsParams) Validate(req *http.Request) error {
+	if len(p.Mime) > 50 {
+		return errors.New("mime is too long")
+	}
+	if len(p.Name) > 100 {
+		return errors.New("name is too long")
+	}
+	if len(p.Thumbnail) > 1000 {
+		return errors.New("thumbnail is too long")
+	}
+	return nil
+}
+
 // UploadContentsHandler ...
 func UploadContentsHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -103,6 +118,11 @@ func UploadContentsHandler(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 			"errors": err,
 		})
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

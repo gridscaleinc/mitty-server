@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -95,6 +96,44 @@ func (p *NameCardParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *NameCardParams) Validate(req *http.Request) error {
+	if len(p.BusinessName) > 200 {
+		return errors.New("business name is too long")
+	}
+	if len(p.BusinessSubName) > 200 {
+		return errors.New("business sub name is too long")
+	}
+	if len(p.BusinessTitle) > 200 {
+		return errors.New("business title is too long")
+	}
+	if len(p.AddressLine1) > 100 {
+		return errors.New("address line1 is too long")
+	}
+	if len(p.AddressLine2) > 100 {
+		return errors.New("address line2 is too long")
+	}
+	if len(p.Phone) > 20 {
+		return errors.New("phone is too long")
+	}
+	if len(p.Fax) > 20 {
+		return errors.New("fax is too long")
+	}
+	if len(p.MobilePhone) > 20 {
+		return errors.New("mobile phone is too long")
+	}
+	if len(p.Webpage) > 100 {
+		return errors.New("webpage is too long")
+	}
+	if len(p.Email) > 100 {
+		return errors.New("email is too long")
+	}
+	if len(p.Name) > 200 {
+		return errors.New("name is too long")
+	}
+	return nil
+}
+
 // PostNameCardHandler ...
 func PostNameCardHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -114,6 +153,11 @@ func PostNameCardHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(NameCardParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

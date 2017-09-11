@@ -3,6 +3,7 @@ package controllers
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"reflect"
@@ -168,6 +169,62 @@ func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *EventParams) Validate(req *http.Request) error {
+	if len(p.Type) > 20 {
+		return errors.New("type is too long")
+	}
+	if len(p.Tag) > 50 {
+		return errors.New("tag is too long")
+	}
+	if len(p.Title) > 100 {
+		return errors.New("title is too long")
+	}
+	if len(p.PriceName1) > 100 {
+		return errors.New("price_name1 is too long")
+	}
+	if len(p.PriceName2) > 100 {
+		return errors.New("price_name2 is too long")
+	}
+	if len(p.Currency) > 3 {
+		return errors.New("currency is too long")
+	}
+	if len(p.PriceInfo) > 200 {
+		return errors.New("price info is too long")
+	}
+	if len(p.ContactTel) > 20 {
+		return errors.New("contact tel is too long")
+	}
+	if len(p.ContactFax) > 20 {
+		return errors.New("contact fax is too long")
+	}
+	if len(p.ContactMail) > 50 {
+		return errors.New("contact mail is too long")
+	}
+	if len(p.OfficialURL) > 200 {
+		return errors.New("official url is too long")
+	}
+	if len(p.Organizer) > 100 {
+		return errors.New("organizer url is too long")
+	}
+	if len(p.SourceName) > 100 {
+		return errors.New("organizer url is too long")
+	}
+	if len(p.SourceURL) > 200 {
+		return errors.New("organizer url is too long")
+	}
+	if len(p.Participation) > 20 {
+		return errors.New("organizer url is too long")
+	}
+	if len(p.AccessControl) > 20 {
+		return errors.New("organizer url is too long")
+	}
+	if len(p.Language) > 10 {
+		return errors.New("language url is too long")
+	}
+	return nil
+}
+
 // PostEventHandler ...
 func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -187,6 +244,11 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(EventParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

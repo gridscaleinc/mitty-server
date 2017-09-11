@@ -4,6 +4,7 @@ import (
 	// 	"database/sql"
 	// 	"errors"
 	// 	"fmt"
+	"errors"
 	"net/http"
 	"time"
 
@@ -59,6 +60,17 @@ func (s *OffersForm) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (s *OffersForm) Validate(req *http.Request) error {
+	if len(s.Type) > 50 {
+		return errors.New("type is too long")
+	}
+	if len(s.ReplyStatus) > 50 {
+		return errors.New("reply status is too long")
+	}
+	return nil
+}
+
 // PostOfferHandler ...
 func PostOfferHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -80,6 +92,11 @@ func PostOfferHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(OffersForm)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
@@ -124,6 +141,11 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(OffersForm)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
