@@ -4,6 +4,7 @@ import (
 	// 	"database/sql"
 	// 	"encoding/json"
 	// 	"fmt"
+	"errors"
 	"net/http"
 	// 	"reflect"
 	"time"
@@ -115,6 +116,38 @@ func (p *ProposalParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *ProposalParams) Validate(req *http.Request) error {
+	if len(p.ContactTel) > 20 {
+		return errors.New("ContactTel is too long")
+	}
+	if len(p.ContactEmail) > 50 {
+		return errors.New("ContactEmail is too long")
+	}
+	if len(p.PriceName1) > 50 {
+		return errors.New("PriceName1 is too long")
+	}
+	if len(p.PriceName2) > 50 {
+		return errors.New("PriceName2 is too long")
+	}
+	if len(p.PriceCurrency) > 3 {
+		return errors.New("PriceCurrency is too long")
+	}
+	if len(p.PriceInfo) > 1000 {
+		return errors.New("PriceInfo is too long")
+	}
+	if len(p.ProposerInfo) > 1000 {
+		return errors.New("ProposerInfo is too long")
+	}
+	if len(p.ConfirmTel) > 20 {
+		return errors.New("ConfirmTel is too long")
+	}
+	if len(p.ConfirmEmail) > 50 {
+		return errors.New("ConfirmEmail is too long")
+	}
+	return nil
+}
+
 // ProposalStatusParams ...
 type ProposalStatusParams struct {
 	ProposalID   int64  `json:"proposal_id"`
@@ -164,6 +197,11 @@ func PostProposalHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ProposalParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

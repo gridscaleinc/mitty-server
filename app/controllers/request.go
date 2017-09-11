@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -101,6 +102,26 @@ func (p *RequestParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *RequestParams) Validate(req *http.Request) error {
+	if len(p.Title) > 100 {
+		return errors.New("Title is too long")
+	}
+	if len(p.Tag) > 20 {
+		return errors.New("Tag is too long")
+	}
+	if len(p.StartPlace) > 100 {
+		return errors.New("StartPlace is too long")
+	}
+	if len(p.TerminatePlace) > 200 {
+		return errors.New("TerminatePlace is too long")
+	}
+	if len(p.Status) > 20 {
+		return errors.New("Status is too long")
+	}
+	return nil
+}
+
 // PostRequestHandler ...
 func PostRequestHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -120,6 +141,11 @@ func PostRequestHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(RequestParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 

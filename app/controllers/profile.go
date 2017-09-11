@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -100,6 +101,50 @@ func (p *ProfileParams) FieldMap(r *http.Request) binding.FieldMap {
 	}
 }
 
+// Validate ...
+func (p *ProfileParams) Validate(req *http.Request) error {
+	if len(p.Gender) > 10 {
+		return errors.New("Gender is too long")
+	}
+	if len(p.OneWordSpeech) > 200 {
+		return errors.New("OneWordSpeech is too long")
+	}
+	if len(p.Constellation) > 20 {
+		return errors.New("Constellation is too long")
+	}
+	if len(p.AgeGroup) > 20 {
+		return errors.New("AgeGroup is too long")
+	}
+	if len(p.AppearanceTag) > 20 {
+		return errors.New("AppearanceTag is too long")
+	}
+	if len(p.OccupationTag1) > 20 {
+		return errors.New("OccupationTag1 is too long")
+	}
+	if len(p.OccupationTag2) > 20 {
+		return errors.New("OccupationTag2 is too long")
+	}
+	if len(p.OccupationTag3) > 20 {
+		return errors.New("OccupationTag3 is too long")
+	}
+	if len(p.HobbyTag1) > 20 {
+		return errors.New("HobbyTag1 is too long")
+	}
+	if len(p.HobbyTag2) > 20 {
+		return errors.New("HobbyTag2 is too long")
+	}
+	if len(p.HobbyTag3) > 20 {
+		return errors.New("HobbyTag3 is too long")
+	}
+	if len(p.HobbyTag4) > 20 {
+		return errors.New("HobbyTag4 is too long")
+	}
+	if len(p.HobbyTag5) > 20 {
+		return errors.New("HobbyTag5 is too long")
+	}
+	return nil
+}
+
 // PostProfileHandler ...
 func PostProfileHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
@@ -119,6 +164,11 @@ func PostProfileHandler(w http.ResponseWriter, r *http.Request) {
 	p := new(ProfileParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
 		return
 	}
 
