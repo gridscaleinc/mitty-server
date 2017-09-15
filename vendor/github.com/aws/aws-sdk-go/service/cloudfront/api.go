@@ -3386,7 +3386,7 @@ type CacheBehavior struct {
 	// are listed in the distribution.
 	//
 	// You can optionally include a slash (/) at the beginning of the path pattern.
-	// For example, /images/*.jpg. CloudFront behavior is the same with or without
+	// For example, /img/*.jpg. CloudFront behavior is the same with or without
 	// the leading /.
 	//
 	// The path pattern for the default cache behavior is * and cannot be changed.

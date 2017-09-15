@@ -1087,7 +1087,7 @@
             {
               "Field": "path-pattern",
               "Values": [
-                "/images/*"
+                "/img/*"
               ]
             }
           ],
@@ -1106,7 +1106,7 @@
                 {
                   "Field": "path-pattern",
                   "Values": [
-                    "/images/*"
+                    "/img/*"
                   ]
                 }
               ],

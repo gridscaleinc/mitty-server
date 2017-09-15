@@ -18,7 +18,7 @@ func BuildRouter() http.Handler {
 
 	http.Handle("/css/", http.StripPrefix("/css/", cssHandler))
 	http.Handle("/fonts/", http.StripPrefix("/fonts/", fontsHandler))
-	http.Handle("/img/", http.StripPrefix("/images/", imagesHandler))
+	http.Handle("/img/", http.StripPrefix("/img/", imagesHandler))
 	http.Handle("/js/", http.StripPrefix("/js/", javascriptHandler))
 
 	appRouter := mux.NewRouter()

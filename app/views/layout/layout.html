@@ -1,33 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="">
+<!--<![endif]-->
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="google-site-verification" content="lJ3GWU_5ZYV3qfGjwhsFi6pWuY9L8s4ZE8MtbZXs_-0" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{% block title %} Mitty {% endblock %}</title>
-  <!-- Bootstrap -->
-  <link href="/css/bootstrap.min.css" rel="stylesheet">
-  <link href="/css/offcanvas.css" rel="stylesheet">
+<meta charset="utf-8">
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %} Mitty {% endblock %}</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/flexslider.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/responsive.css">
+<link rel="stylesheet" href="/css/font-icon.css">
+<link rel="stylesheet" href="/css/animate.min.css">
+<link rel="stylesheet" href="/css/font-awesome.css">
 </head>
+
 <body>
+<!-- header section -->
+<section class="banner" role="banner">
 
   {% include "header.html" %}
 
+  <!-- banner text -->
   <div class="container">
+    <div class="col-md-10 col-md-offset-1">
+      <div class="banner-text text-center">
+        <h1>Mitty</h1>
+        <p>Mitty Mitty</p>
+        <!-- <a href="#" class="btn btn-large">Find out more</a> </div> -->
+      <!-- banner text -->
+    </div>
+  </div>
+</section>
+<!-- header section -->
 
-    <div class="row row-offcanvas row-offcanvas-right">
-      {% block content %}{% endblock %}
-    </div><!--/row-->
+{% block content %}{% endblock %}
 
-    <hr>
 
-    {% include "footer.html" %}
+{% include "footer.html" %}
 
-  </div><!--/.container-->
-
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="/js/jquery.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="/js/bootstrap.min.js"></script>
+<!-- JS FILES -->
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.flexslider-min.js"></script>
+<script src="/js/jquery.fancybox.pack.js"></script>
+<script src="/js/retina.min.js"></script>
+<script src="/js/modernizr.js"></script>
+<script src="/js/main.js"></script>
+<script type="text/javascript" src="/js/jquery.contact.js"></script>
 </body>
 </html>

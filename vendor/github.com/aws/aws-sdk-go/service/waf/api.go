@@ -5194,7 +5194,7 @@ type ByteMatchTuple struct {
 	//    string, which is the part of a URL that appears after a ? character.
 	//
 	//    * URI: The value that you want AWS WAF to search for in the part of a
-	//    URL that identifies a resource, for example, /images/daily-ad.jpg.
+	//    URL that identifies a resource, for example, /img/daily-ad.jpg.
 	//
 	//    * BODY: The part of a request that contains any additional data that you
 	//    want to send to your web server as the HTTP request body, such as data
@@ -6719,7 +6719,7 @@ type FieldToMatch struct {
 	//    after a ? character, if any.
 	//
 	//    * URI: The part of a web request that identifies a resource, for example,
-	//    /images/daily-ad.jpg.
+	//    /img/daily-ad.jpg.
 	//
 	//    * BODY: The part of a request that contains any additional data that you
 	//    want to send to your web server as the HTTP request body, such as data
@@ -7634,7 +7634,7 @@ type HTTPRequest struct {
 	// the following methods: DELETE, GET, HEAD, OPTIONS, PATCH, POST, and PUT.
 	Method *string `type:"string"`
 
-	// The part of a web request that identifies the resource, for example, /images/daily-ad.jpg.
+	// The part of a web request that identifies the resource, for example, /img/daily-ad.jpg.
 	URI *string `type:"string"`
 }
 

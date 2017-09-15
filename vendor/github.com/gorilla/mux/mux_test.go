@@ -1194,11 +1194,11 @@ func TestStrictSlash(t *testing.T) {
 		},
 		{
 			title:          "Propagate StrictSlash to subrouters",
-			route:          r.NewRoute().PathPrefix("/static/").Subrouter().Path("/images/"),
+			route:          r.NewRoute().PathPrefix("/static/").Subrouter().Path("/img/"),
 			request:        newRequest("GET", "http://localhost/static/images"),
 			vars:           map[string]string{},
 			host:           "",
-			path:           "/static/images/",
+			path:           "/static/img/",
 			shouldMatch:    true,
 			shouldRedirect: true,
 		},

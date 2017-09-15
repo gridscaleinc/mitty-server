@@ -3,7 +3,7 @@ gorilla/mux
 [![GoDoc](https://godoc.org/github.com/gorilla/mux?status.svg)](https://godoc.org/github.com/gorilla/mux)
 [![Build Status](https://travis-ci.org/gorilla/mux.svg?branch=master)](https://travis-ci.org/gorilla/mux)
 
-![Gorilla Logo](http://www.gorillatoolkit.org/static/images/gorilla-icon-64.png)
+![Gorilla Logo](http://www.gorillatoolkit.org/static/img/gorilla-icon-64.png)
 
 http://www.gorillatoolkit.org/pkg/mux
 
