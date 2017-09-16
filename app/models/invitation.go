@@ -11,7 +11,7 @@ type Invitation struct {
 	ID               int64     `db:"id" json:"id"`
 	InvitaterID      int       `db:"invitater_id" json:"invitater_id"`
 	ForType          string    `db:"for_type" json:"for_type"`
-	IDOfType         int64     `db:"entity_id" json:"id_of_type"`
+	IDOfType         int64     `db:"id_of_type" json:"id_of_type"`
 	Message          string    `db:"message" json:"message"`
 	TimeOfInvitation time.Time `db:"time_of_invitation" json:"time_of_invitation"`
 }
