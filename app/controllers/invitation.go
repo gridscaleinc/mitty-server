@@ -6,6 +6,7 @@ import (
 	// 	"fmt"
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	// 	goutils "github.com/dongri/goutils"
@@ -41,7 +42,23 @@ func (s *InvitationParams) FieldMap(req *http.Request) binding.FieldMap {
 			Form:     "message",
 			Required: true,
 		},
-		&s.Invitees: binding.Field{
+		"invitees": binding.Field{
+			Binder: func(fieldName string, formVals []string, errs binding.Errors) binding.Errors {
+				values := make([]int, len(formVals))
+
+				for _, v := range formVals {
+					val, err := strconv.Atoi(v)
+					if err != nil {
+						// errs.Add(["invitees"])
+						errs.Add([]string{"invitees"}, "conversion", "not an integer")
+						return errs
+					}
+					values = append(values, val)
+				}
+
+				s.Invitees = values
+				return nil
+			},
 			Form:     "invitees",
 			Required: true,
 		},
