@@ -51,7 +51,7 @@ func (s *InvitationParams) FieldMap(req *http.Request) binding.FieldMap {
 // Validate ...
 func (s *InvitationParams) Validate(req *http.Request) error {
 	if len(s.Message) > 1000 {
-		return errors.New("password is too long")
+		return errors.New("Message is too long")
 	}
 	return nil
 }

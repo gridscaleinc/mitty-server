@@ -67,6 +67,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/upload/content", apiAuth(controllers.UploadContentsHandler)).Methods("POST")
 	r.Handle("/send/like", apiAuth(controllers.SendLikeHandler)).Methods("POST")
 	r.Handle("/send/offers", apiAuth(controllers.PostOfferHandler)).Methods("POST")
+	r.Handle("/send/invitation", apiAuth(controllers.SendInvitationsHandler)).Methods("POST")
 
 	// UPDATE
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
