@@ -4,7 +4,7 @@ type developmentConfig struct {
 }
 
 func (c developmentConfig) PostgresURI() string {
-	return "host=localhost dbname=mitty user=root sslmode=disable"
+	return "postgres://root:mpNffadJrfnWpvZxnrZz2Zjz@52.196.151.53:5432/mitty_db?sslmode=disable"
 }
 
 func (c developmentConfig) PasswordSalt() string {
