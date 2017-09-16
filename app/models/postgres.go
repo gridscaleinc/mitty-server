@@ -6,8 +6,10 @@ import (
 	"gopkg.in/gorp.v1"
 )
 
+// MyGorpTracer ...
 type MyGorpTracer struct{}
 
+// Printf ...
 func (t *MyGorpTracer) Printf(format string, v ...interface{}) {
 	log.Printf(format, v...)
 }
