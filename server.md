@@ -43,3 +43,56 @@ listen_addresses = '*'
 
 $ sudo /etc/init.d/postgresql95 restart
 ```
+
+# elasticsearch
+
+install
+```
+$ sudo yum -y install java-1.8.0-openjdk
+$ sudo alternatives --config java
+select number
+
+$ sudo rpm -i https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.3.2.rpm
+```
+
+start
+```
+$ sudo service elasticsearch start
+Starting elasticsearch: OpenJDK 64-Bit Server VM warning: INFO: os::commit_memory(0x0000000085330000, 2060255232, 0) failed; error='Cannot allocate memory' (errno=12)
+
+$ sudo vim /etc/init.d/elasticsearch
+export ES_JAVA_OPTS="-Xms512m -Xmx512m"
+
+$ sudo service elasticsearch start
+```
+config
+```
+$ sudo chkconfig --add elasticsearch
+
+$ cd /usr/share/elasticsearch/
+$ sudo bin/elasticsearch-plugin install analysis-kuromoji
+
+$ sudo service elasticsearch start
+```
+
+setting
+```
+$ curl localhost:9200/_cluster/health?pretty
+{
+  "cluster_name" : "elasticsearch",
+  "status" : "green",
+  "timed_out" : false,
+  "number_of_nodes" : 1,
+  "number_of_data_nodes" : 1,
+  "active_primary_shards" : 13,
+  "active_shards" : 13,
+  "relocating_shards" : 0,
+  "initializing_shards" : 0,
+  "unassigned_shards" : 0,
+  "delayed_unassigned_shards" : 0,
+  "number_of_pending_tasks" : 0,
+  "number_of_in_flight_fetch" : 0,
+  "task_max_waiting_in_queue_millis" : 0,
+  "active_shards_percent_as_number" : 100.0
+}
+```
