@@ -22,13 +22,14 @@ import (
 // GalleryContentParams ...
 type GalleryContentParams struct {
 	Gallery struct {
-		ID        int    `json:"id"`
-		Seq       int    `json:"seq"`
-		Caption   string `json:"caption"`
-		BriefInfo string `json:"briefInfo"`
-		FreeText  string `json:"freeText"`
-		EventID   int    `json:"eventId"`
-		IslandID  int    `json:"islandId"`
+		ID         int    `json:"id"`
+		Seq        int    `json:"seq"`
+		Caption    string `json:"caption"`
+		BriefInfo  string `json:"briefInfo"`
+		FreeText   string `json:"freeText"`
+		EventID    int    `json:"eventId"`
+		IslandID   int    `json:"islandId"`
+		ProposalID int    `json:"proposalId"`
 	} `json:"gallery"`
 	Content struct {
 		Mime    string `json:"mime"`
@@ -135,6 +136,24 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		island.GalleryID = gallery.ID
 		if err := island.Update(*tx); err != nil {
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
+	}
+
+	if p.Gallery.ProposalID != 0 {
+		proposal, err := models.GetProposalByID(*tx, int64(p.Gallery.ProposalID))
+		if err != nil {
+			fmt.Println(err)
+			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"errors": err,
+			})
+			return
+		}
+		proposal.GalleryID = gallery.ID
+		if err := proposal.Update(*tx); err != nil {
 			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 				"errors": err,
 			})
