@@ -14,6 +14,7 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, http.StatusOK, map[string]string{
 		"name":    config.AppName,
 		"version": config.ServerVersion,
+		"env":     config.CurrentEnv,
 	})
 }
 
