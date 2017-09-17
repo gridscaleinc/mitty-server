@@ -29,7 +29,7 @@ type GalleryContentParams struct {
 		FreeText   string `json:"freeText"`
 		EventID    int    `json:"eventId"`
 		IslandID   int    `json:"islandId"`
-		ProposalID int    `json:"proposalId"`
+		ProposalID int64  `json:"proposalId"`
 	} `json:"gallery"`
 	Content struct {
 		Mime    string `json:"mime"`
@@ -144,7 +144,7 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if p.Gallery.ProposalID != 0 {
-		proposal, err := models.GetProposalByID(*tx, int64(p.Gallery.ProposalID))
+		proposal, err := models.GetProposalByID(*tx, p.Gallery.ProposalID)
 		if err != nil {
 			fmt.Println(err)
 			render.JSON(w, http.StatusInternalServerError, map[string]interface{}{
