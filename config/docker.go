@@ -10,3 +10,7 @@ func (c dockerConfig) PostgresURI() string {
 func (c dockerConfig) PasswordSalt() string {
 	return "FKTaM87v3otln8C3EKaVcL9zhFElaRVC"
 }
+
+func (c dockerConfig) ESURI() string {
+	return "http://13.113.101.120:9200"
+}

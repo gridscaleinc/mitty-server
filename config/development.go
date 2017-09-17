@@ -10,3 +10,7 @@ func (c developmentConfig) PostgresURI() string {
 func (c developmentConfig) PasswordSalt() string {
 	return "tJhFkhVNR3vJclPb56V5aA9n37TxXT4O"
 }
+
+func (c developmentConfig) ESURI() string {
+	return "http://13.113.101.120:9200"
+}

@@ -4,12 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	elastic "gopkg.in/olivere/elastic.v5"
-)
+	"mitty.co/mitty-server/config"
 
-// const
-const (
-	esURL = "http://13.113.101.120:9200"
+	elastic "gopkg.in/olivere/elastic.v5"
 )
 
 // User ...
@@ -34,7 +31,7 @@ func ESIndex(esIndex string, esType string, body interface{}, esID string) error
 	ctx := context.Background()
 
 	// Create a client
-	client, err := elastic.NewSimpleClient(elastic.SetURL(esURL))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(config.CurrentSet.ESURI()))
 	if err != nil {
 		// Handle error
 		return err
@@ -79,7 +76,7 @@ func ESDelete(esIndex, esType, esID string) error {
 	// Create a context
 	ctx := context.Background()
 	// Create a client
-	client, err := elastic.NewSimpleClient(elastic.SetURL(esURL))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(config.CurrentSet.ESURI()))
 	if err != nil {
 		// Handle error
 		return err
@@ -107,7 +104,7 @@ func ESSearchMatchQuery(esIndex, esType, esSort string, from, size int, matchQue
 	ctx := context.Background()
 
 	// Create a client
-	client, err := elastic.NewSimpleClient(elastic.SetURL(esURL))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(config.CurrentSet.ESURI()))
 	if err != nil {
 		// Handle error
 		return nil, err
@@ -146,7 +143,7 @@ func ESSearchBoolQuery(esIndex, esType, esSort string, from, size int, boolQuery
 	ctx := context.Background()
 
 	// Create a client
-	client, err := elastic.NewSimpleClient(elastic.SetURL(esURL))
+	client, err := elastic.NewSimpleClient(elastic.SetURL(config.CurrentSet.ESURI()))
 	if err != nil {
 		// Handle error
 		return nil, err
