@@ -20,7 +20,11 @@ type Gallery struct {
 
 // GalleryContent ...
 type GalleryContent struct {
-	Gallery
+	GalleryID int64  `db:"gallery_id" json:"gallery_id"`
+	Seq       int    `db:"seq" json:"seq"`
+	Caption   string `db:"caption" json:"caption"`
+	BriefInfo string `db:"brief_info" json:"brief_info"`
+	FreeText  string `db:"free_text" json:"free_text"`
 	Contents
 }
 
@@ -53,12 +57,16 @@ func GetGalleryContentsByID(tx *gorp.Transaction, ID int64) (*[]GalleryContent, 
 	contents := []GalleryContent{}
 	_, err := tx.Select(&contents, `
 	select
-		  gallery.*,
+		  gallery.id as gallery_id,
+			gallery.seq,
+			gallery.caption,
+			gallery.brief_info,
+			gallery.free_text,
 			contents.*
 	from
 			contents
 			inner join gallery on gallery.id=$1 and gallery.content_id=contents.id
 	order by
-		 gallery.seq;`, ID)
+		  gallery.seq;`, ID)
 	return &contents, err
 }
