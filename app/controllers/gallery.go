@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
@@ -198,4 +199,38 @@ func TempFileName(prefix, suffix string) string {
 	randBytes := make([]byte, 8)
 	rand.Read(randBytes)
 	return prefix + hex.EncodeToString(randBytes) + suffix
+}
+
+// GetGalleryContentsHandler ...
+func GetGalleryContentsHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	gid := r.URL.Query().Get("id")
+	galleryID, err := strconv.ParseInt(gid, 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	galleryContents, err := models.GetGalleryContentsByID(tx, galleryID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"galleryContents": galleryContents,
+	})
 }

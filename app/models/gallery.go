@@ -18,6 +18,12 @@ type Gallery struct {
 	Updated   time.Time `db:"updated" json:"updated"`
 }
 
+// GalleryContent ...
+type GalleryContent struct {
+	Gallery
+	Contents
+}
+
 // Insert ...
 func (s *Gallery) Insert(tx gorp.Transaction) error {
 	s.Created = time.Now().UTC()
@@ -31,4 +37,28 @@ func (s *Gallery) Update(tx gorp.Transaction) error {
 	s.Updated = time.Now().UTC()
 	_, err := tx.Update(s)
 	return err
+}
+
+// GetGalleryByID ...
+func GetGalleryByID(tx *gorp.Transaction, ID int64) (*Gallery, error) {
+	gallery := new(Gallery)
+	if err := tx.SelectOne(&gallery, "select * from gallery where id = $1", ID); err != nil {
+		return nil, err
+	}
+	return gallery, nil
+}
+
+// GetGalleryContentsByID ...
+func GetGalleryContentsByID(tx *gorp.Transaction, ID int64) (*[]GalleryContent, error) {
+	contents := []GalleryContent{}
+	_, err := tx.Select(&contents, `
+	select
+		  gallery.*,
+			contents.*
+	from
+			contents
+			inner join gallery on gallery.id=$1 and gallery.content_id=contents.id
+	order by
+		 gallery.seq;`, ID)
+	return &contents, err
 }
