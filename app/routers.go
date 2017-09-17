@@ -96,6 +96,8 @@ func publicRoutes(r *mux.Router) {
 
 	// F
 	// G
+	r.HandleFunc("/gallery/contents", controllers.GetGalleryContentsHandler).Methods("GET")
+
 	// H
 	// I
 	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
