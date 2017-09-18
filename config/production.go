@@ -4,7 +4,7 @@ type productionConfig struct {
 }
 
 func (c productionConfig) PostgresURI() string {
-	return "postgres://mitty_user:PxeFKA9nXawKhyrFCi2Ajrenyzkocy@13.115.50.60:5432/mitty_db?sslmode=disable"
+	return "postgres://mitty_user:PxeFKA9nXawKhyrFCi2Ajrenyzkocy@13.114.158.66:5432/mitty_db?sslmode=disable"
 }
 
 func (c productionConfig) PasswordSalt() string {
