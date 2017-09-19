@@ -154,3 +154,30 @@ func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, 
 	}
 	return eventDetail, nil
 }
+
+// CountOfEventByUserID ...
+func CountOfEventByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from activity
+    	inner join activity_item as item on activity.id=item.activity_id
+	    inner join events on item.event_id=events.id
+	    where activity.owner_id=$1 and end_datetime>current_timestamp;`, uid)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
+
+// CountOfTodaysEventByUserID ...
+func CountOfTodaysEventByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from activity
+    	inner join activity_item as item on activity.id=item.activity_id
+	    inner join events on item.event_id=events.id
+	    where activity.owner_id=$1 and end_datetime<current_date+1 and date(end_datetime)=current_date;`, uid)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return count, err
+
+}

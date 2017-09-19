@@ -129,6 +129,7 @@ func publicRoutes(r *mux.Router) {
 	// S
 	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+	r.Handle("/social/mirror", apiAuth(controllers.GetSocialMirrorHandler)).Methods("GET")
 
 	// T
 	// U

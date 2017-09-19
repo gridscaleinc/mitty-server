@@ -32,3 +32,13 @@ func (s *Invitees) Delete(tx gorp.Transaction) error {
 	_, err := tx.Delete(s)
 	return err
 }
+
+// CountOfEventInvitationByUserID ...
+func CountOfEventInvitationByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from invitees
+	    where invitee_id=$1 and reply_status='NONE';`, uid)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

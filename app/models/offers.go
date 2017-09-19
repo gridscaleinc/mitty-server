@@ -56,3 +56,13 @@ func GetOfferListByUserID(tx *gorp.Transaction, userID int) ([]Offers, error) {
 		 to_mitty_id = $1 and reply_status='NONE';`, userID)
 	return myOffers, err
 }
+
+// CountOfNamecardOfferByUserID ...
+func CountOfNamecardOfferByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from offers
+	    where to_mitty_id=$1 and reply_status='NONE';`, uid)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

@@ -89,3 +89,14 @@ func GetProposalsOf(tx *gorp.Transaction, requestID int64) ([]ProposalInfo, erro
     `, requestID)
 	return proposals, err
 }
+
+// CountOfProposalByUserID ...
+func CountOfProposalByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from proposal
+	    inner join request on request.id=proposal.reply_to_request_id
+	    where proposer_id=$1 and request.expiry_date>current_date;`, uid)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}

@@ -108,3 +108,13 @@ func GetRequestByUserID(tx *gorp.Transaction, userID int, key string) ([]Request
 		`, userID, key)
 	return requests, err
 }
+
+// CountOfRequestByUserID ...
+func CountOfRequestByUserID(tx *gorp.Transaction, uid int) (int64, error) {
+	count, err := tx.SelectInt(`select count(*) from request
+	    where owner_id=$1 and expiry_date>current_date;`, uid)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
+}
