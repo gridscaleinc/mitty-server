@@ -62,12 +62,12 @@ func GetSocialMirrorHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
-		"Event":             eventCount,
-		"TodaysEvent":       todaysEventCount,
-		"EventInvitation":   eventInvitationCount,
-		"BusinessCardOffer": namecardOfferCount,
-		"Request":           requestCount,
-		"Proposal":          proposalCount,
+		"event":             eventCount,
+		"todaysEvent":       todaysEventCount,
+		"eventInvitation":   eventInvitationCount,
+		"businessCardOffer": namecardOfferCount,
+		"request":           requestCount,
+		"proposal":          proposalCount,
 	})
 }
 
