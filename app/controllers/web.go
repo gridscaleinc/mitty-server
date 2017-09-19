@@ -54,3 +54,8 @@ func EmailConfirmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	filters.RenderHTML(w, r, "app/views/email_confirm.html", output)
 }
+
+// UserGuideHandler ...
+func UserGuideHandler(w http.ResponseWriter, r *http.Request) {
+	filters.RenderHTML(w, r, "app/views/userguide.html", nil)
+}

@@ -20,5 +20,6 @@ func StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 // NotFoundHandler return 404 NotFound
 func NotFoundHandler(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "404 NotFound", http.StatusNotFound)
+	http.Redirect(w, r, "/userguide", http.StatusFound)
+	//http.Error(w, "404 NotFound", http.StatusNotFound)
 }

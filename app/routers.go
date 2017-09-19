@@ -36,6 +36,7 @@ func BuildRouter() http.Handler {
 
 func webRoutes(r *mux.Router) {
 	r.HandleFunc("/", controllers.WelcomeHandler).Methods("GET")
+	r.HandleFunc("/userguide", controllers.UserGuideHandler).Methods("GET")
 	r.HandleFunc("/email/confirm", controllers.EmailConfirmHandler).Methods("GET")
 	r.Handle("/admin", basicAuth(controllers.AdminIndexHandler)).Methods("GET")
 	r.Handle("/admin/users", basicAuth(controllers.AdminUsersHandler)).Methods("GET")
