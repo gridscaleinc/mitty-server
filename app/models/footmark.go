@@ -20,6 +20,7 @@ type Footmark struct {
 
 // Insert ...
 func (s *Footmark) Insert(tx gorp.Transaction) error {
+	s.CheckinTime = time.Now().UTC()
 	err := tx.Insert(s)
 	return err
 }

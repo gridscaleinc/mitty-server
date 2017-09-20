@@ -71,12 +71,16 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/send/invitation", apiAuth(controllers.SendInvitationsHandler)).Methods("POST")
 
 	// UPDATE
-	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
-	r.Handle("/update/activity", apiAuth(controllers.UpdateActivityHandler)).Methods("POST")
-	r.Handle("/update/activity/item", apiAuth(controllers.UpdateActivityItemHandler)).Methods("POST")
+
 	r.Handle("/accept/proposal", apiAuth(controllers.PostAcceptProposalHandler)).Methods("POST")
 	r.Handle("/approve/proposal", apiAuth(controllers.PostApproveProposalHandler)).Methods("POST")
 	r.Handle("/accept/offers", apiAuth(controllers.AcceptOffersHandler)).Methods("POST")
+
+	r.Handle("/checkin", apiAuth(controllers.PostCheckinHandler)).Methods("POST")
+
+	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
+	r.Handle("/update/activity", apiAuth(controllers.UpdateActivityHandler)).Methods("POST")
+	r.Handle("/update/activity/item", apiAuth(controllers.UpdateActivityItemHandler)).Methods("POST")
 
 	// SELECT
 	// A
