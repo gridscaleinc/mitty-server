@@ -151,11 +151,6 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if inputErr := p.Validate(r); inputErr != nil {
-		filters.RenderInputError(w, r, inputErr)
-		return
-	}
-
 	user, err := models.GetUserByUserName(*tx, p.UserName)
 	if err != nil {
 		filters.RenderError(w, r, err)
