@@ -118,6 +118,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/myprofile", apiAuth(controllers.GetMyProfileHandler)).Methods("GET")
 	r.Handle("/mynamecards", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
 	r.Handle("/myoffers", apiAuth(controllers.GetOfferListHandler)).Methods("GET")
+	r.Handle("/myinvitation/status", apiAuth(controllers.GetMyInvitationsHandler)).Methods("GET")
 
 	// N
 	r.Handle("/namecard/of", apiAuth(controllers.GetNamecardHandler)).Methods("GET")

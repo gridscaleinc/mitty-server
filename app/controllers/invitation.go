@@ -130,3 +130,32 @@ func SendInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 		"id": invitation.ID,
 	})
 }
+
+// GetMyInvitationsHandler ...
+func GetMyInvitationsHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	currentUserID := filters.GetCurrentUserID(r)
+
+	invitationStatus, err := models.GetInvitationStatusByUserID(tx, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"invitationStatus": invitationStatus,
+	})
+}
