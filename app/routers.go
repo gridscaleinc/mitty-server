@@ -9,6 +9,22 @@ import (
 	//"mitty.co/mitty-server/app/talk"
 )
 
+// const ...
+const (
+	isMaintenance = false
+)
+
+// Middleware ...
+func Middleware(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if isMaintenance == true {
+			w.WriteHeader(503)
+			return
+		}
+		h.ServeHTTP(w, r)
+	})
+}
+
 // BuildRouter creates and returns a router which hold whole handler functions.
 func BuildRouter() http.Handler {
 	cssHandler := http.FileServer(http.Dir("./public/css/"))
@@ -31,7 +47,7 @@ func BuildRouter() http.Handler {
 
 	appRouter.NotFoundHandler = http.HandlerFunc(controllers.NotFoundHandler)
 
-	return appRouter
+	return Middleware(appRouter)
 }
 
 func webRoutes(r *mux.Router) {
