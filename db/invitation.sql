@@ -3,7 +3,7 @@ create table invitation (
     id  serial8  PRIMARY KEY,
     invitater_id    int  ,
     for_type    varchar  (50),
-    id_of_type    varchar  (50),
+    id_of_type    int8 ,
     message    text  ,
-    time_of_invitation    timestamp 
+    time_of_invitation    timestamp
 );
