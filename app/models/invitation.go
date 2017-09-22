@@ -48,10 +48,10 @@ func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStat
 	if _, err := tx.Select(&statusList, `select invitation.*,
 		 invitees.id as invitees_id,
 		 invitees.reply_status as reply_status,
-		 envents.title as invitation_title
+		 events.title as invitation_title
 		 from invitation
 		 inner join invitees on invitation.id=invitees.invitation_id
-		 inner join events on event.id=invitation.id_of_type
+		 inner join events on events.id=invitation.id_of_type
 		  where invitees.invitee_id = $1`, ID); err != nil {
 		return nil, err
 	}
