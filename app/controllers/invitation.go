@@ -159,3 +159,9 @@ func GetMyInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 		"invitationStatus": invitationStatus,
 	})
 }
+
+// AcceptInvitationHandler ...
+func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
+	// Invitationテーブルを削除
+	// Acceptの場合、Eventの参加をする。
+}

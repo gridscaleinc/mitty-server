@@ -51,7 +51,7 @@ func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStat
 		 events.title as invitation_title
 		 from invitation
 		 inner join invitees on invitation.id=invitees.invitation_id
-		 inner join events on events.id=NULLIF(invitation.id_of_type, '0')::int
+		 inner join events on events.id=invitation.id_of_type
 		  where invitees.invitee_id = $1`, ID); err != nil {
 		return nil, err
 	}
