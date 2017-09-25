@@ -1,12 +1,15 @@
 package controllers
 
 import (
+	"bytes"
 	"database/sql"
+	"fmt"
 	"net/http"
 
-	"mitty.co/mitty-server/app/helpers"
+	"github.com/mholt/binding"
 
 	"mitty.co/mitty-server/app/filters"
+	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
 )
 
@@ -58,4 +61,65 @@ func EmailConfirmHandler(w http.ResponseWriter, r *http.Request) {
 // UserGuideHandler ...
 func UserGuideHandler(w http.ResponseWriter, r *http.Request) {
 	filters.RenderHTML(w, r, "app/views/userguide.html", nil)
+}
+
+// ContactForm ...
+type ContactForm struct {
+	Name    string
+	Email   string
+	Comment string
+}
+
+// FieldMap ...
+func (s *ContactForm) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&s.Name: binding.Field{
+			Form:     "name",
+			Required: true,
+		},
+		&s.Email: binding.Field{
+			Form:     "email",
+			Required: true,
+		},
+		&s.Comment: binding.Field{
+			Form:     "comment",
+			Required: true,
+		},
+	}
+}
+
+// ContactHandler ...
+func ContactHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	form := new(ContactForm)
+	errs := binding.Bind(r, form)
+	fmt.Println(errs)
+	if errs.Handle(w) {
+		return
+	}
+	body := "Name: " + form.Name + "\nEmail: " + form.Email + "\nComment: " + form.Comment
+	err := helpers.SendEmail("contact@mitty.co", "admin@mitty.co", "Contact from Mitty Web", body)
+	fmt.Println(err)
+
+	jsonStr := `{"text":"` + body + `"}`
+	url := "https://hooks.slack.com/services/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"
+	req, err := http.NewRequest(
+		"POST",
+		url,
+		bytes.NewBuffer([]byte(jsonStr)),
+	)
+	if err != nil {
+		fmt.Println(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer resp.Body.Close()
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"result": "ok",
+	})
 }
