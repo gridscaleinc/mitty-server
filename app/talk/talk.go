@@ -24,10 +24,11 @@ var upgrader = websocket.Upgrader{
 
 // Define our message object
 type Message struct {
-	MessageType  string              `json:"messageType"`
-	Topic        string              `json:"topic"`
-	Command      string              `json:"command"`
-	Conversation models.Conversation `json:"conversation"`
+	MessageType   string               `json:"messageType"`
+	Topic         string               `json:"topic"`
+	Command       string               `json:"command"`
+	Conversation  models.Conversation  `json:"conversation"`
+	Teleportation models.Teleportation `json:"teleportation"`
 }
 
 // Websocket Client
