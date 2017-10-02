@@ -42,3 +42,12 @@ func CountOfEventInvitationByUserID(tx *gorp.Transaction, uid int) (int64, error
 	}
 	return count, nil
 }
+
+// GetInviteeForAccept ...
+func GetInviteeForAccept(tx *gorp.Transaction, invitationID int64, inviteesID int64, userID int) (*Invitees, error) {
+	invitee := new(Invitees)
+	if err := tx.SelectOne(&invitee, "select * from invitees where id = $1 and invitation_id=$2 and invitee_id=$3", inviteesID, invitationID, userID); err != nil {
+		return nil, err
+	}
+	return invitee, nil
+}

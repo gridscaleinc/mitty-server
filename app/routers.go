@@ -57,6 +57,7 @@ func publicRoutes(r *mux.Router) {
 
 	//
 	// INSERT
+	r.Handle("/checkin", apiAuth(controllers.PostCheckinHandler)).Methods("POST")
 	r.Handle("/new/event", apiAuth(controllers.PostEventHandler)).Methods("POST")
 	r.Handle("/new/activity", apiAuth(controllers.PostActivityHandler)).Methods("POST")
 	r.Handle("/new/activity/item", apiAuth(controllers.PostActivityItemHandler)).Methods("POST")
@@ -76,8 +77,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/accept/proposal", apiAuth(controllers.PostAcceptProposalHandler)).Methods("POST")
 	r.Handle("/approve/proposal", apiAuth(controllers.PostApproveProposalHandler)).Methods("POST")
 	r.Handle("/accept/offers", apiAuth(controllers.AcceptOffersHandler)).Methods("POST")
-
-	r.Handle("/checkin", apiAuth(controllers.PostCheckinHandler)).Methods("POST")
+	r.Handle("/accept/invitation", apiAuth(controllers.AcceptInvitationHandler)).Methods("POST")
 
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
 	r.Handle("/update/activity", apiAuth(controllers.UpdateActivityHandler)).Methods("POST")

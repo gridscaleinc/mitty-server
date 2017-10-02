@@ -42,6 +42,15 @@ func (s *Invitation) Delete(tx gorp.Transaction) error {
 	return err
 }
 
+// GetInvitationByID ...
+func GetInvitationByID(tx *gorp.Transaction, ID int64) (*Invitation, error) {
+	invitation := new(Invitation)
+	if err := tx.SelectOne(&invitation, "select * from Invitation where id = $1", ID); err != nil {
+		return nil, err
+	}
+	return invitation, nil
+}
+
 // GetInvitationStatusByUserID ...
 func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStatus, error) {
 	statusList := []InvitationStatus{}

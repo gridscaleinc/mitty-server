@@ -100,7 +100,7 @@ func GetAdminEvents(dbmap *gorp.DbMap) ([]Event, error) {
 }
 
 // GetEventByID ...
-func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
+func GetEventByID(tx *gorp.Transaction, ID int64) (*Event, error) {
 	event := new(Event)
 	if err := tx.SelectOne(&event, "select * from events where id = $1", ID); err != nil {
 		return nil, err

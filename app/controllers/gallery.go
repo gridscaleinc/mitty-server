@@ -28,8 +28,8 @@ type GalleryContentParams struct {
 		Caption    string `json:"caption"`
 		BriefInfo  string `json:"briefInfo"`
 		FreeText   string `json:"freeText"`
-		EventID    int    `json:"eventId"`
-		IslandID   int    `json:"islandId"`
+		EventID    int64  `json:"eventId"`
+		IslandID   int64  `json:"islandId"`
 		ProposalID int64  `json:"proposalId"`
 	} `json:"gallery"`
 	Content struct {
