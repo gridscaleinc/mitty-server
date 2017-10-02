@@ -61,7 +61,7 @@ func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStat
 		 from invitation
 		 inner join invitees on invitation.id=invitees.invitation_id
 		 inner join events on events.id=invitation.id_of_type
-		  where invitees.invitee_id = $1`, ID); err != nil {
+		  where invitees.invitee_id = $1 and invitees.reply_status='NONE'`, ID); err != nil {
 		return nil, err
 	}
 	return statusList, nil
