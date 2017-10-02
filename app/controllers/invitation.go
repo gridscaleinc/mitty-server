@@ -229,6 +229,8 @@ func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
 
 	// update invitees Status
 	invitee.ReplyStatus = p.ReplyStatus
+	invitee.ReplyTime = time.Now().UTC()
+
 	err = invitee.Update(*tx)
 	if err != nil {
 		filters.RenderError(w, r, err)
@@ -241,6 +243,7 @@ func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
 	activity.MainEventID = event.ID
 	activity.Title = event.Title
 	activity.Memo = event.Action
+	activity.OwnerID = currentUserID
 	err = activity.Insert(*tx)
 	if err != nil {
 		filters.RenderError(w, r, err)
@@ -251,6 +254,8 @@ func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
 	activityItem.ActivityID = activity.ID
 	activityItem.Title = event.Title
 	activityItem.EventID = event.ID
+	activityItem.Memo = event.Action
+
 	err = activityItem.Insert(*tx)
 	if err != nil {
 		filters.RenderError(w, r, err)
