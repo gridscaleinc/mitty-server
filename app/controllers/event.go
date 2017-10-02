@@ -389,7 +389,7 @@ func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	var event models.Event
 	for _, item := range searchResult.Each(reflect.TypeOf(event)) {
 		if t, ok := item.(models.Event); ok {
-			eventDetail, err := models.GetEventDetailByID(tx, userID, int(t.ID))
+			eventDetail, err := models.GetEventDetailByID(tx, userID, t.ID)
 			if err != nil && err != sql.ErrNoRows {
 				filters.RenderError(w, r, err)
 				return
@@ -418,7 +418,7 @@ func EventFetchingHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 	idParams := r.URL.Query().Get("id")
-	eventID, err := strconv.Atoi(idParams)
+	eventID, err := strconv.ParseInt(idParams, 10, 64)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return

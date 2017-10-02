@@ -221,7 +221,7 @@ func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	event, err := models.GetEventByID(tx, invitation.IDOfType)
+	event, err := models.GetEventDetailByID(tx, currentUserID, invitation.IDOfType)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
@@ -237,7 +237,15 @@ func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO
+	// すでに参加した場合、活動登録を行わない。
+	// Rejectの場合も登録しない。
+	if event.ParticipationStatus != "NOT" || p.ReplyStatus == "REJECTED" {
+		render.JSON(w, http.StatusOK, map[string]interface{}{
+			"ok": true,
+		})
+		return
+	}
+
 	// Acceptの場合、Eventの参加をする。
 	activity := new(models.Activity)
 	activity.MainEventID = event.ID
