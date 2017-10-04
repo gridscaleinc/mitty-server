@@ -53,6 +53,7 @@ type Event struct {
 	AmenderID           int       `db:"amender_id" json:"amenderId"`
 }
 
+// EventDetail ...
 type EventDetail struct {
 	Event
 	CoverImageURL       *string `db:"cover_img_url" json:"coverImageUrl"`
