@@ -52,8 +52,8 @@ type ActivityParams struct {
 	Memo        string `json:"memo"`
 }
 
-// ActivityItemParams ...
-type ActivityItemParams struct {
+// ActivityItemRemoveParams ...
+type ActivityItemRemoveParams struct {
 	ActivityID int64 `json:"activityId"`
 	ItemID     int64 `json:"itemId"`
 }
@@ -78,7 +78,7 @@ func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 }
 
 // FieldMap defines parameter requirements
-func (p *ActivityItemParams) FieldMap(r *http.Request) binding.FieldMap {
+func (p *ActivityItemRemoveParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
 		&p.ActivityID: binding.Field{
 			Form:     "activityId",
@@ -328,7 +328,7 @@ func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	p := new(ActivityItemParams)
+	p := new(ActivityItemRemoveParams)
 	if errs := binding.Bind(r, p); errs != nil {
 		filters.RenderInputErrors(w, r, errs)
 		return
@@ -337,10 +337,27 @@ func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 	activityID := p.ActivityID
 	itemID := p.ItemID
 
-	_, err = models.GetMyActivityByID(tx, currentUserID, activityID)
+	activity, err := models.GetMyActivityByID(tx, currentUserID, activityID)
 	if err != nil {
 		filters.RenderError(w, r, err)
 		return
+	}
+
+	item := new(models.ActivityItem)
+	item.ID = itemID
+	err = item.Load(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	if activity.MainEventID == item.EventID {
+		activity.MainEventID = 0
+		err = activity.Update(*tx)
+		if err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
 	}
 
 	err = models.DeleteActivityItemByItemID(tx, activityID, itemID)
