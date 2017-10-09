@@ -52,6 +52,6 @@ func DeleteActivityItemByID(tx *gorp.Transaction, ID int64) error {
 
 // DeleteActivityItemByItemID ...
 func DeleteActivityItemByItemID(tx *gorp.Transaction, activityID int64, ID int64) error {
-	_, err := tx.Exec("delete from activity_item where activity_id=$1 and ID=&2", activityID, ID)
+	_, err := tx.Exec("delete from activity_item where activity_id=$1 and ID=$2", activityID, ID)
 	return err
 }
