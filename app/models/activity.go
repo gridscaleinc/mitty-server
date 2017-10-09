@@ -73,6 +73,13 @@ func (s *Activity) Update(tx gorp.Transaction) error {
 	return err
 }
 
+// Delete ...
+func (s *Activity) Delete(tx gorp.Transaction) error {
+	s.Updated = time.Now().UTC()
+	_, err := tx.Delete(s)
+	return err
+}
+
 // GetActivityByMainEventID ...
 func GetActivityByMainEventID(tx *gorp.Transaction, ID int) (*Activity, error) {
 	activity := new(Activity)
@@ -144,6 +151,16 @@ func GetActivityDetailsByID(tx *gorp.Transaction, userID int, id string) ([]Acti
 		   a.owner_id=$2;
 		`, id, userID)
 	return details, err
+
+}
+
+// GetMyActivityByID ...
+func GetMyActivityByID(tx *gorp.Transaction, userID int, ID int64) (*Activity, error) {
+	activity := new(Activity)
+	if err := tx.SelectOne(&activity, "select * from activity where id = $1 and owner_id=$2", ID, userID); err != nil {
+		return nil, err
+	}
+	return activity, nil
 
 }
 

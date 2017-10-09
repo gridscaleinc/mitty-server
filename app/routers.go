@@ -150,6 +150,10 @@ func publicRoutes(r *mux.Router) {
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")
+
+	// DELETE
+	r.Handle("/remove/activity", apiAuth(controllers.DeleteActivityHandler)).Methods("POST")
+	r.Handle("/remove/activityItem", apiAuth(controllers.DeleteActivityItemHandler)).Methods("POST")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

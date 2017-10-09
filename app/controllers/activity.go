@@ -248,3 +248,90 @@ func UpdateActivityHandler(w http.ResponseWriter, r *http.Request) {
 		"activityId": activity.ID,
 	})
 }
+
+// DeleteActivityHandler ...
+func DeleteActivityHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	ID, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+
+	activity, err := models.GetMyActivityByID(tx, currentUserID, ID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = activity.Delete(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = models.DeleteActivityItemByID(tx, ID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"ok": true,
+	})
+}
+
+// DeleteActivityItemHandler ...
+func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	activityID, err := strconv.ParseInt(r.URL.Query().Get("activityId"), 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+	itemID, err := strconv.ParseInt(r.URL.Query().Get("itemId"), 10, 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	_, err = models.GetMyActivityByID(tx, currentUserID, activityID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = models.DeleteActivityItemByItemID(tx, activityID, itemID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"ok": true,
+	})
+}
