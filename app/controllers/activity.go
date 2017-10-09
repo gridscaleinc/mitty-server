@@ -52,6 +52,12 @@ type ActivityParams struct {
 	Memo        string `json:"memo"`
 }
 
+// ActivityItemParams ...
+type ActivityItemParams struct {
+	ActivityID int64 `json:"activityId"`
+	ItemID     int64 `json:"itemId"`
+}
+
 // FieldMap defines parameter requirements
 func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
@@ -67,6 +73,20 @@ func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 		&p.Memo: binding.Field{
 			Form:     "memo",
 			Required: false,
+		},
+	}
+}
+
+// FieldMap defines parameter requirements
+func (p *ActivityItemParams) FieldMap(r *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&p.ActivityID: binding.Field{
+			Form:     "activityId",
+			Required: true,
+		},
+		&p.ItemID: binding.Field{
+			Form:     "itemId",
+			Required: true,
 		},
 	}
 }
@@ -308,16 +328,14 @@ func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 		err = tx.Commit()
 	}()
 
-	activityID, err := strconv.ParseInt(r.URL.Query().Get("activityId"), 10, 64)
-	if err != nil {
-		filters.RenderError(w, r, err)
+	p := new(ActivityItemParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputErrors(w, r, errs)
 		return
 	}
-	itemID, err := strconv.ParseInt(r.URL.Query().Get("itemId"), 10, 64)
-	if err != nil {
-		filters.RenderError(w, r, err)
-		return
-	}
+
+	activityID := p.ActivityID
+	itemID := p.ItemID
 
 	_, err = models.GetMyActivityByID(tx, currentUserID, activityID)
 	if err != nil {
