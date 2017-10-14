@@ -4,5 +4,6 @@ create table contact (
     mitty_id    int  ,
     name_card_id    int8,
     contacted_date    timestamp,
-    related_event_id    int8
+    related_event_id    int8,
+    meeting_id          int8
 )
