@@ -6,6 +6,8 @@ import (
 	// 	"fmt"
 	"errors"
 	"net/http"
+
+	gorp "gopkg.in/gorp.v1"
 	// 	"reflect"
 	"time"
 
@@ -269,6 +271,14 @@ func PostAcceptProposalHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// already done
+	if proposal.AcceptStatus != "NONE" {
+		render.JSON(w, http.StatusCreated, map[string]interface{}{
+			"id": proposal.ID,
+		})
+		return
+	}
+
 	// check status and ownership
 	request, err := models.GetRequestDetailByID(tx, proposal.ReplyToRequestID)
 	if request.OwnerID != currentUserID {
@@ -285,6 +295,16 @@ func PostAcceptProposalHandler(w http.ResponseWriter, r *http.Request) {
 
 	proposal.Update(*tx)
 
+	//　if accepted then ...
+	if p.Status == "ACCEPTED" {
+		err = createActivity(*tx, proposal, request)
+		if err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
+	}
+
+	// everything is ok so...
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"id": proposal.ID,
 	})
@@ -335,4 +355,62 @@ func PostApproveProposalHandler(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"id": proposal.ID,
 	})
+}
+
+// createActivity ...
+func createActivity(tx gorp.Transaction, proposal *models.Proposal, request *models.RequestInfo) error {
+
+	m := new(models.Meeting)
+	m.Name = request.Title
+	m.Type = models.EventType
+	if err := m.Insert(tx); err != nil {
+		return err
+	}
+
+	event := new(models.Event)
+	event.Action = request.Description
+	event.Tag = request.Tag
+	event.ContactMail = proposal.ContactEmail
+	event.ContactTel = proposal.ContactTel
+	event.GalleryID = proposal.GalleryID
+	event.Description = proposal.ProposerInfo
+	event.StartDatetime = proposal.ProposedDatetime1
+	event.EndDatetime = proposal.ProposedDatetime2
+	event.IslandID = int(proposal.ProposedIslandID)
+	event.IslandID2 = int(proposal.ProposedIslandID2)
+
+	// Meeting create needed
+	event.MeetingID = m.ID
+
+	event.Title = request.Title
+	event.Price1 = proposal.Price1
+	event.Price2 = proposal.Price2
+	event.Currency = proposal.PriceCurrency
+	event.AccessControl = "PRIVATE"
+
+	event.Save(tx)
+
+	// Acceptの場合、Eventの参加をする。
+	activity := new(models.Activity)
+	activity.MainEventID = event.ID
+	activity.Title = event.Title
+	activity.Memo = event.Action
+	activity.OwnerID = request.OwnerID
+	err := activity.Insert(tx)
+	if err != nil {
+		return err
+	}
+
+	activityItem := new(models.ActivityItem)
+	activityItem.ActivityID = activity.ID
+	activityItem.Title = event.Title
+	activityItem.EventID = event.ID
+	activityItem.Memo = event.Action
+
+	err = activityItem.Insert(tx)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -52,6 +52,7 @@ func BuildRouter() http.Handler {
 
 func webRoutes(r *mux.Router) {
 	r.HandleFunc("/", controllers.WelcomeHandler).Methods("GET")
+	r.HandleFunc("/contact", controllers.ContactHandler).Methods("POST")
 	r.HandleFunc("/userguide", controllers.UserGuideHandler).Methods("GET")
 	r.HandleFunc("/email/confirm", controllers.EmailConfirmHandler).Methods("GET")
 	r.Handle("/admin", basicAuth(controllers.AdminIndexHandler)).Methods("GET")
@@ -72,6 +73,7 @@ func publicRoutes(r *mux.Router) {
 
 	//
 	// INSERT
+	r.Handle("/checkin", apiAuth(controllers.PostCheckinHandler)).Methods("POST")
 	r.Handle("/new/event", apiAuth(controllers.PostEventHandler)).Methods("POST")
 	r.Handle("/new/activity", apiAuth(controllers.PostActivityHandler)).Methods("POST")
 	r.Handle("/new/activity/item", apiAuth(controllers.PostActivityItemHandler)).Methods("POST")
@@ -91,8 +93,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/accept/proposal", apiAuth(controllers.PostAcceptProposalHandler)).Methods("POST")
 	r.Handle("/approve/proposal", apiAuth(controllers.PostApproveProposalHandler)).Methods("POST")
 	r.Handle("/accept/offers", apiAuth(controllers.AcceptOffersHandler)).Methods("POST")
-
-	r.Handle("/checkin", apiAuth(controllers.PostCheckinHandler)).Methods("POST")
+	r.Handle("/accept/invitation", apiAuth(controllers.AcceptInvitationHandler)).Methods("POST")
 
 	r.Handle("/update/user/icon", apiAuth(controllers.UpdateUserIconHandler)).Methods("POST")
 	r.Handle("/update/activity", apiAuth(controllers.UpdateActivityHandler)).Methods("POST")
@@ -135,6 +136,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/mynamecards", apiAuth(controllers.GetMyNamecardsHandler)).Methods("GET")
 	r.Handle("/myoffers", apiAuth(controllers.GetOfferListHandler)).Methods("GET")
 	r.Handle("/myinvitation/status", apiAuth(controllers.GetMyInvitationsHandler)).Methods("GET")
+	r.Handle("/myrequest/meeting", apiAuth(controllers.GetRequestMeeting)).Methods("GET")
 
 	// N
 	r.Handle("/namecard/of", apiAuth(controllers.GetNamecardHandler)).Methods("GET")
@@ -165,6 +167,10 @@ func publicRoutes(r *mux.Router) {
 
 	// DELETE
 	r.Handle("/remove/like", apiAuth(controllers.RemoveLikeHandler)).Methods("POST")
+
+	// DELETE
+	r.Handle("/remove/activity", apiAuth(controllers.DeleteActivityHandler)).Methods("POST")
+	r.Handle("/remove/activityItem", apiAuth(controllers.DeleteActivityItemHandler)).Methods("POST")
 }
 
 func basicAuth(handler http.HandlerFunc) http.Handler {

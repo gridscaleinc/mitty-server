@@ -201,6 +201,14 @@ func ResetPasswordResetHandler(w http.ResponseWriter, r *http.Request) {
 		filters.RenderError(w, r, err)
 		return
 	}
+
+	// Disable token
+	resetPassword.Token = ""
+	if err := resetPassword.Update(dbmap); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
 	output := map[string]interface{}{
 		"title": "reset password done",
 	}

@@ -27,6 +27,13 @@ type InvitationParams struct {
 	Invitees []int  `json:"invitees"`
 }
 
+// AcceptInvitationParams ...
+type AcceptInvitationParams struct {
+	InvitationID int64  `json:"invitation_id"`
+	InviteesID   int64  `json:"invitees_id"`
+	ReplyStatus  string `json:"reply_status"`
+}
+
 // FieldMap ...
 func (s *InvitationParams) FieldMap(req *http.Request) binding.FieldMap {
 	return binding.FieldMap{
@@ -71,6 +78,24 @@ func (s *InvitationParams) Validate(req *http.Request) error {
 		return errors.New("Message is too long")
 	}
 	return nil
+}
+
+// FieldMap ...
+func (s *AcceptInvitationParams) FieldMap(req *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&s.InvitationID: binding.Field{
+			Form:     "invitation_id",
+			Required: true,
+		},
+		&s.InviteesID: binding.Field{
+			Form:     "invitees_id",
+			Required: true,
+		},
+		&s.ReplyStatus: binding.Field{
+			Form:     "reply_status",
+			Required: true,
+		},
+	}
 }
 
 // SendInvitationsHandler ... to be done....
@@ -157,5 +182,95 @@ func GetMyInvitationsHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusOK, map[string]interface{}{
 		"invitationStatus": invitationStatus,
+	})
+}
+
+// AcceptInvitationHandler ...
+func AcceptInvitationHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	currentUserID := filters.GetCurrentUserID(r)
+
+	p := new(AcceptInvitationParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	invitee, err := models.GetInviteeForAccept(tx, p.InvitationID, p.InviteesID, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	invitation, err := models.GetInvitationByID(tx, p.InvitationID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	event, err := models.GetEventDetailByID(tx, currentUserID, invitation.IDOfType)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	// update invitees Status
+	invitee.ReplyStatus = p.ReplyStatus
+	invitee.ReplyTime = time.Now().UTC()
+
+	err = invitee.Update(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	// すでに参加した場合、活動登録を行わない。
+	// Rejectの場合も登録しない。
+	if event.ParticipationStatus != "NOT" || p.ReplyStatus == "REJECTED" {
+		render.JSON(w, http.StatusOK, map[string]interface{}{
+			"ok": true,
+		})
+		return
+	}
+
+	// Acceptの場合、Eventの参加をする。
+	activity := new(models.Activity)
+	activity.MainEventID = event.ID
+	activity.Title = event.Title
+	activity.Memo = event.Action
+	activity.OwnerID = currentUserID
+	err = activity.Insert(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	activityItem := new(models.ActivityItem)
+	activityItem.ActivityID = activity.ID
+	activityItem.Title = event.Title
+	activityItem.EventID = event.ID
+	activityItem.Memo = event.Action
+
+	err = activityItem.Insert(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"ok": true,
 	})
 }

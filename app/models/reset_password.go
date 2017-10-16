@@ -45,6 +45,27 @@ func (rp *ResetPassword) Save(dbmap *gorp.DbMap) error {
 	return nil
 }
 
+// Update ...
+func (rp *ResetPassword) Update(dbmap *gorp.DbMap) error {
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+		return
+	}()
+	rp.Updated = time.Now().UTC()
+	if _, err := tx.Update(rp); err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetEmailByToken ...
 func GetEmailByToken(dbmap *gorp.DbMap, token string) (*ResetPassword, error) {
 	resetPasswords := []ResetPassword{}

@@ -62,7 +62,7 @@ func (s *Island) Update(tx gorp.Transaction) error {
 }
 
 // GetIslandByID ...
-func GetIslandByID(tx *gorp.Transaction, ID int) (*Island, error) {
+func GetIslandByID(tx *gorp.Transaction, ID int64) (*Island, error) {
 	island := new(Island)
 	if err := tx.SelectOne(&island, "select * from island where id = $1", ID); err != nil {
 		return nil, err

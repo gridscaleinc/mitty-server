@@ -51,6 +51,32 @@ func GetEventMeeting(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+// GetRequestMeeting ...
+func GetRequestMeeting(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	meetingList, err := models.GetRequestMeetingList(tx, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"requestMeetingList": meetingList,
+	})
+}
+
 // GetLatestConversation ...
 func GetLatestConversation(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)

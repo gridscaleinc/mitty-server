@@ -60,3 +60,21 @@ func GetEventMeetingList(tx *gorp.Transaction, userID int) ([]MeetingInfo, error
 	   events.start_datetime, events.end_datetime;`, userID)
 	return eventMeeting, err
 }
+
+// GetRequestMeetingList ...
+func GetRequestMeetingList(tx *gorp.Transaction, userID int) ([]MeetingInfo, error) {
+	requestMeeting := []MeetingInfo{}
+	_, err := tx.Select(&requestMeeting, `
+	select
+	    meeting.*,
+	    request.title as title,
+	    '' as logo_url
+	from
+	    meeting inner join request on request.meeting_id=meeting.id
+	where
+	   request.owner_id=$1
+		 or request.id in (select reply_to_request_id from proposal where proposer_id=$1)
+	order by
+	   request.preferred_datetime1;`, userID)
+	return requestMeeting, err
+}

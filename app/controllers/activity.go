@@ -52,6 +52,12 @@ type ActivityParams struct {
 	Memo        string `json:"memo"`
 }
 
+// ActivityItemRemoveParams ...
+type ActivityItemRemoveParams struct {
+	ActivityID int64 `json:"activityId"`
+	ItemID     int64 `json:"itemId"`
+}
+
 // FieldMap defines parameter requirements
 func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
@@ -67,6 +73,20 @@ func (p *ActivityParams) FieldMap(r *http.Request) binding.FieldMap {
 		&p.Memo: binding.Field{
 			Form:     "memo",
 			Required: false,
+		},
+	}
+}
+
+// FieldMap defines parameter requirements
+func (p *ActivityItemRemoveParams) FieldMap(r *http.Request) binding.FieldMap {
+	return binding.FieldMap{
+		&p.ActivityID: binding.Field{
+			Form:     "activityId",
+			Required: true,
+		},
+		&p.ItemID: binding.Field{
+			Form:     "itemId",
+			Required: true,
 		},
 	}
 }
@@ -246,5 +266,107 @@ func UpdateActivityHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"activityId": activity.ID,
+	})
+}
+
+// DeleteActivityHandler ...
+func DeleteActivityHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	ID, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+
+	activity, err := models.GetMyActivityByID(tx, currentUserID, ID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = activity.Delete(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = models.DeleteActivityItemByID(tx, ID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"ok": true,
+	})
+}
+
+// DeleteActivityItemHandler ...
+func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	p := new(ActivityItemRemoveParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputErrors(w, r, errs)
+		return
+	}
+
+	activityID := p.ActivityID
+	itemID := p.ItemID
+
+	activity, err := models.GetMyActivityByID(tx, currentUserID, activityID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	item := new(models.ActivityItem)
+	item.ID = itemID
+	err = item.Load(*tx)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	if activity.MainEventID == item.EventID {
+		activity.MainEventID = 0
+		err = activity.Update(*tx)
+		if err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
+	}
+
+	err = models.DeleteActivityItemByItemID(tx, activityID, itemID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"ok": true,
 	})
 }

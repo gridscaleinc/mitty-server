@@ -42,6 +42,15 @@ func (s *Invitation) Delete(tx gorp.Transaction) error {
 	return err
 }
 
+// GetInvitationByID ...
+func GetInvitationByID(tx *gorp.Transaction, ID int64) (*Invitation, error) {
+	invitation := new(Invitation)
+	if err := tx.SelectOne(&invitation, "select * from Invitation where id = $1", ID); err != nil {
+		return nil, err
+	}
+	return invitation, nil
+}
+
 // GetInvitationStatusByUserID ...
 func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStatus, error) {
 	statusList := []InvitationStatus{}
@@ -51,8 +60,8 @@ func GetInvitationStatusByUserID(tx *gorp.Transaction, ID int) ([]InvitationStat
 		 events.title as invitation_title
 		 from invitation
 		 inner join invitees on invitation.id=invitees.invitation_id
-		 inner join events on events.id=NULLIF(invitation.id_of_type, '0')::int
-		  where invitees.invitee_id = $1`, ID); err != nil {
+		 inner join events on events.id=invitation.id_of_type
+		  where invitees.invitee_id = $1 and invitees.reply_status='NONE'`, ID); err != nil {
 		return nil, err
 	}
 	return statusList, nil

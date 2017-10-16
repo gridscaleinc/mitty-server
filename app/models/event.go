@@ -53,6 +53,22 @@ type Event struct {
 	AmenderID           int       `db:"amender_id" json:"amenderId"`
 }
 
+// EventDetail ...
+type EventDetail struct {
+	Event
+	CoverImageURL       *string `db:"cover_img_url" json:"coverImageUrl"`
+	EventLogoURL        *string `db:"event_logo_url" json:"eventLogoUrl"`
+	IsLandName          *string `db:"island_name" json:"isLandName"`
+	IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
+	Latitude            float64 `db:"latitude" json:"latitude"`
+	Longitude           float64 `db:"longitude" json:"longitude"`
+	PublisherName       *string `db:"publisher_name" json:"publisherName"`
+	PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
+	PublishedDays       int     `db:"published_days" json:"publishedDays"`
+	ParticipationStatus string  `db:"participation_status" json:"participationStatus"`
+	NumberOfLikes       int     `db:"num_of_likes" json:"numberOfLikes"`
+}
+
 // Save ...
 func (s *Event) Save(tx gorp.Transaction) error {
 	s.Created = time.Now().UTC()
@@ -100,7 +116,7 @@ func GetAdminEvents(dbmap *gorp.DbMap) ([]Event, error) {
 }
 
 // GetEventByID ...
-func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
+func GetEventByID(tx *gorp.Transaction, ID int64) (*Event, error) {
 	event := new(Event)
 	if err := tx.SelectOne(&event, "select * from events where id = $1", ID); err != nil {
 		return nil, err
@@ -109,23 +125,9 @@ func GetEventByID(tx *gorp.Transaction, ID int) (*Event, error) {
 }
 
 // GetEventDetailByID ...
-func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int) (interface{}, error) {
-	type result struct {
-		Event
-		CoverImageURL       *string `db:"cover_img_url" json:"coverImageUrl"`
-		EventLogoURL        *string `db:"event_logo_url" json:"eventLogoUrl"`
-		IsLandName          *string `db:"island_name" json:"isLandName"`
-		IsLandLogoURL       *string `db:"island_logo_url" json:"isLandLogoUrl"`
-		Latitude            float64 `db:"latitude" json:"latitude"`
-		Longitude           float64 `db:"longitude" json:"longitude"`
-		PublisherName       *string `db:"publisher_name" json:"publisherName"`
-		PublisherIconURL    *string `db:"publisher_icon_url" json:"publisherIconUrl"`
-		PublishedDays       int     `db:"published_days" json:"publishedDays"`
-		ParticipationStatus string  `db:"participation_status" json:"participationStatus"`
-		NumberOfLikes       int     `db:"num_of_likes" json:"numberOfLikes"`
-	}
+func GetEventDetailByID(tx *gorp.Transaction, userID int, ID int64) (*EventDetail, error) {
 
-	eventDetail := new(result)
+	eventDetail := new(EventDetail)
 	if err := tx.SelectOne(&eventDetail, `select events.*,
 	  COALESCE(c1.link_url, '') as cover_img_url,
 	  COALESCE(c2.link_url, '') as event_logo_url,
