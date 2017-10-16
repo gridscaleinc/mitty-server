@@ -60,7 +60,7 @@ func (rp *ResetPassword) Update(dbmap *gorp.DbMap) error {
 		return
 	}()
 	rp.Updated = time.Now().UTC()
-	if err := tx.Insert(rp); err != nil {
+	if _, err := tx.Update(rp); err != nil {
 		return err
 	}
 	return nil
