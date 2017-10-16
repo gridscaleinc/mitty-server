@@ -133,8 +133,15 @@ func ResetPasswordVerifyHandler(w http.ResponseWriter, r *http.Request) {
 	dbmap := helpers.GetPostgres()
 	token := r.URL.Query().Get("token")
 	resetPassword, err := models.GetEmailByToken(dbmap, token)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		filters.RenderError(w, r, err)
+		return
+	}
+	if err == sql.ErrNoRows {
+		output := map[string]interface{}{
+			"message": "有効なURLではありません",
+		}
+		filters.RenderHTML(w, r, "app/views/error.html", output)
 		return
 	}
 	output := map[string]interface{}{
