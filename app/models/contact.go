@@ -12,6 +12,7 @@ type Contact struct {
 	MittyID        int       `db:"mitty_id" json:"mitty_id"`
 	RelatedEventID int64     `db:"related_event_id" json:"related_event_id"`
 	NameCardID     int64     `db:"name_card_id" json:"name_card_id"`
+	MeetingID      int64     `db:"meeting_id" json:"meeting_id"`
 	ContctedDate   time.Time `db:"contacted_date" json:"contacted_date"`
 }
 
@@ -28,10 +29,11 @@ func (s *Contact) Update(tx gorp.Transaction) error {
 }
 
 // ExistContactFromIDs ...
-func ExistContactFromIDs(tx gorp.Transaction, mittyID int, nameCardID int64) (bool, error) {
-	count, err := tx.SelectInt("select count(*) from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID)
+func ExistContactFromIDs(tx gorp.Transaction, mittyID int, nameCardID int64) (*Contact, error) {
+	contact := new(Contact)
+	err := tx.SelectOne(&contact, "select * from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-	return count > 0, nil
+	return contact, nil
 }

@@ -166,33 +166,57 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if offer.Type == "NAMECARD" && offer.ReplyStatus == "ACCEPTED" {
+		meetingID := int64(0)
 		existA, err := models.ExistContactFromIDs(*tx, offer.FromMittyID, offer.RepliedID)
 		if err != nil {
 			filters.RenderError(w, r, err)
 			return
 		}
-		if existA == false {
-			contact := new(models.Contact)
-			contact.MittyID = offer.FromMittyID
-			contact.NameCardID = offer.RepliedID
-			contact.ContctedDate = time.Now().UTC()
-			err = contact.Insert(*tx)
-			if err != nil {
-				filters.RenderError(w, r, err)
-				return
-			}
-		}
+
 		existB, err := models.ExistContactFromIDs(*tx, offer.ToMittyID, offer.OfferredID)
 		if err != nil {
 			filters.RenderError(w, r, err)
 			return
 		}
-		if existB == false {
-			contact := new(models.Contact)
-			contact.MittyID = offer.ToMittyID
-			contact.NameCardID = offer.OfferredID
-			contact.ContctedDate = time.Now().UTC()
-			err = contact.Insert(*tx)
+
+		if existA != nil {
+			meetingID = existA.MeetingID
+		} else if existB != nil {
+			meetingID = existB.MeetingID
+		}
+
+		if meetingID == 0 {
+			meeting := new(models.Meeting)
+			meeting.Name = "Contact"
+			meeting.Type = "CONTACT"
+			err = meeting.Insert(*tx)
+			if err != nil {
+				filters.RenderError(w, r, err)
+				return
+			}
+			meetingID = meeting.ID
+		}
+
+		if existA == nil {
+			contactA := new(models.Contact)
+			contactA.MittyID = offer.FromMittyID
+			contactA.NameCardID = offer.RepliedID
+			contactA.ContctedDate = time.Now().UTC()
+			contactA.MeetingID = meetingID
+			err = contactA.Insert(*tx)
+			if err != nil {
+				filters.RenderError(w, r, err)
+				return
+			}
+		}
+
+		if existB == nil {
+			contactB := new(models.Contact)
+			contactB.MittyID = offer.ToMittyID
+			contactB.NameCardID = offer.OfferredID
+			contactB.ContctedDate = time.Now().UTC()
+			contactB.MeetingID = meetingID
+			err = contactB.Insert(*tx)
 			if err != nil {
 				filters.RenderError(w, r, err)
 				return
