@@ -22,7 +22,8 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-// Define our message object
+// Message ...
+//  package message of various types
 type Message struct {
 	MessageType   string               `json:"messageType"`
 	Topic         string               `json:"topic"`
@@ -31,13 +32,14 @@ type Message struct {
 	Teleportation models.Teleportation `json:"teleportation"`
 }
 
-// Websocket Client
+// Client Websocket Client
 type Client struct {
 	UserID    int    `json:"userId"`
-	UserName  string `json:userName`
-	Connected bool   `json:connected`
+	UserName  string `json:"userName"`
+	Connected bool   `json:"connected"`
 }
 
+// WebsocketHandler ...
 func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	accessToken := r.Header.Get("X-Mitty-AccessToken")
 	user, err := models.GetUserByAccessToken(accessToken)
@@ -89,6 +91,9 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				tx.Commit()
 			}
+		} else if msg.Command == "teleport" {
+			msg.Teleportation.MittyID = int(client.UserID)
+			pubsub.publish(msg)
 		}
 	}
 }
@@ -156,4 +161,9 @@ func (pubsub *PubSub) unsubscribe(ws *websocket.Conn) {
 	}
 
 	delete(clients, ws)
+}
+
+// SendMessage ...
+func SendMessage(msg *Message) {
+	broadcast <- *msg
 }

@@ -11,9 +11,12 @@ type Conversation struct {
 	ID        int64     `db:"id" json:"id"`
 	MeetingID int64     `db:"meeting_id" json:"meetingId"`
 	ReplyToID int64     `db:"reply_to_id" json:"replyToId"`
+	Type      string    `db:"type" json:"type"`
 	Speaking  string    `db:"speaking" json:"speaking"`
 	SpeakerID int64     `db:"speaker_id" json:"speakerId"`
 	SpeakTime time.Time `db:"speak_time" json:"speakTime"`
+	Latitude  float64   `db:"latitude" json:"latitude"`
+	Longitude float64   `db:"longitude" json:"longitude"`
 }
 
 // Insert ...

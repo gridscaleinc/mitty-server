@@ -4,9 +4,10 @@ import gorp "gopkg.in/gorp.v1"
 
 // SocialLink ...
 type SocialLink struct {
-	ID       int64 `db:"id" json:"id"`
-	MittyID  int   `db:"mitty_id" json:"mitty_id"`
-	SocialID int64 `db:"social_id" json:"social_id"`
+	ID        int64 `db:"id" json:"id"`
+	MittyID   int   `db:"mitty_id" json:"mitty_id"`
+	SocialID  int64 `db:"social_id" json:"social_id"`
+	ContactID int64 `db:"contact_id" json:"contact_id"`
 }
 
 // Insert ...
