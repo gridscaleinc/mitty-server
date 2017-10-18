@@ -63,13 +63,13 @@ func webRoutes(r *mux.Router) {
 
 func publicRoutes(r *mux.Router) {
 	// Configure websocket route
-	r.HandleFunc("/status", controllers.StatusHandler).Methods("GET")
-	r.HandleFunc("/signup", controllers.SignUpHandler).Methods("POST")
-	r.HandleFunc("/signin", controllers.SignInHandler).Methods("POST")
+	r.Handle("/status", apiKey(controllers.StatusHandler)).Methods("GET")
+	r.Handle("/signup", apiKey(controllers.SignUpHandler)).Methods("POST")
+	r.Handle("/signin", apiKey(controllers.SignInHandler)).Methods("POST")
 
-	r.HandleFunc("/reset_password/send", controllers.ResetPasswordSendHandler).Methods("POST")
-	r.HandleFunc("/reset_password/verify", controllers.ResetPasswordVerifyHandler).Methods("GET")
-	r.HandleFunc("/reset_password/reset", controllers.ResetPasswordResetHandler).Methods("POST")
+	r.Handle("/reset_password/send", apiKey(controllers.ResetPasswordSendHandler)).Methods("POST")
+	r.Handle("/reset_password/verify", apiKey(controllers.ResetPasswordVerifyHandler)).Methods("GET")
+	r.Handle("/reset_password/reset", apiKey(controllers.ResetPasswordResetHandler)).Methods("POST")
 
 	//
 	// INSERT
@@ -118,16 +118,16 @@ func publicRoutes(r *mux.Router) {
 
 	// F
 	// G
-	r.HandleFunc("/gallery/contents", controllers.GetGalleryContentsHandler).Methods("GET")
+	r.Handle("/gallery/contents", apiKey(controllers.GetGalleryContentsHandler)).Methods("GET")
 
 	// H
 	// I
-	r.HandleFunc("/island/info", controllers.GetIslandHandler).Methods("GET")
+	r.Handle("/island/info", apiKey(controllers.GetIslandHandler)).Methods("GET")
 
 	// J
 	// K
 	// L
-	r.HandleFunc("/latest/conversation", controllers.GetLatestConversation).Methods("GET")
+	r.Handle("/latest/conversation", apiKey(controllers.GetLatestConversation)).Methods("GET")
 
 	// M
 	r.Handle("/mycontents/list", apiAuth(controllers.GetMyContentsHandler)).Methods("GET")
@@ -143,20 +143,20 @@ func publicRoutes(r *mux.Router) {
 
 	// O
 	// P
-	r.HandleFunc("/proposals/of", controllers.GetProposalsHandler).Methods("GET")
+	r.Handle("/proposals/of", apiKey(controllers.GetProposalsHandler)).Methods("GET")
 
 	// Q
 	// R
-	r.HandleFunc("/request/details", controllers.GetRequestDetailsHandler).Methods("GET")
+	r.Handle("/request/details", apiKey(controllers.GetRequestDetailsHandler)).Methods("GET")
 
 	// S
-	r.HandleFunc("/search/event", controllers.SearchEventHandler).Methods("GET")
+	r.Handle("/search/event", apiKey(controllers.SearchEventHandler)).Methods("GET")
 	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
 	r.Handle("/social/mirror", apiAuth(controllers.GetSocialMirrorHandler)).Methods("GET")
 
 	// T
 	// U
-	r.HandleFunc("/user/info", controllers.GetUserInfo).Methods("GET")
+	r.Handle("/user/info", apiKey(controllers.GetUserInfo)).Methods("GET")
 	r.Handle("/user/profile", apiAuth(controllers.GetUserProfileHandler)).Methods("GET")
 
 	// V
@@ -179,4 +179,8 @@ func basicAuth(handler http.HandlerFunc) http.Handler {
 
 func apiAuth(handler http.HandlerFunc) http.Handler {
 	return filters.APIAuthHandler(handler)
+}
+
+func apiKey(handler http.HandlerFunc) http.Handler {
+	return filters.APIKeyHandler(handler)
 }

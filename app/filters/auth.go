@@ -19,6 +19,10 @@ type apiAuth struct {
 	next http.Handler
 }
 
+type apiKey struct {
+	next http.Handler
+}
+
 func (b *basicAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	username, password, ok := r.BasicAuth()
 	if ok == true && username == "mitty" && password == "mittymitty" {
@@ -31,6 +35,12 @@ func (b *basicAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (a *apiAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	apiKey := r.Header.Get("X-Mitty-APIKEY")
+	if apiKey != "pdXQWU2EpNMFPoCr6UAdMNUevAzuuG" {
+		w.WriteHeader(403)
+		w.Write([]byte("403 Forbidden\n"))
+		return
+	}
 	accessToken := r.Header.Get("X-Mitty-AccessToken")
 	user, err := models.GetUserByAccessToken(accessToken)
 	if err != nil || user == nil {
@@ -43,6 +53,17 @@ func (a *apiAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+func (a *apiKey) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	apiKey := r.Header.Get("X-Mitty-APIKEY")
+	if apiKey != "pdXQWU2EpNMFPoCr6UAdMNUevAzuuG" {
+		w.WriteHeader(403)
+		w.Write([]byte("403 Forbidden\n"))
+		return
+	}
+	a.next.ServeHTTP(w, r)
+	return
+}
+
 // BasicAuthHandler ...
 func BasicAuthHandler(next http.Handler) http.Handler {
 	return &basicAuth{next}
@@ -51,6 +72,11 @@ func BasicAuthHandler(next http.Handler) http.Handler {
 // APIAuthHandler ...
 func APIAuthHandler(next http.Handler) http.Handler {
 	return &apiAuth{next}
+}
+
+// APIKeyHandler ...
+func APIKeyHandler(next http.Handler) http.Handler {
+	return &apiKey{next}
 }
 
 // GetCurrentUserID ...
