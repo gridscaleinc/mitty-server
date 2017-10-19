@@ -68,7 +68,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/signin", apiKey(controllers.SignInHandler)).Methods("POST")
 
 	r.Handle("/reset_password/send", apiKey(controllers.ResetPasswordSendHandler)).Methods("POST")
-	r.Handle("/reset_password/verify", apiKey(controllers.ResetPasswordVerifyHandler)).Methods("GET")
+	r.HandleFunc("/reset_password/verify", controllers.ResetPasswordVerifyHandler).Methods("GET")
 	r.Handle("/reset_password/reset", apiKey(controllers.ResetPasswordResetHandler)).Methods("POST")
 
 	//

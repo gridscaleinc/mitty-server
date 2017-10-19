@@ -9,6 +9,7 @@ import (
 
 const (
 	apiAuthContextKey = "filters/api_auth"
+	apiKeyString      = "pdXQWU2EpNMFPoCr6UAdMNUevAzuuG"
 )
 
 type basicAuth struct {
@@ -36,7 +37,7 @@ func (b *basicAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (a *apiAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	apiKey := r.Header.Get("X-Mitty-APIKEY")
-	if apiKey != "pdXQWU2EpNMFPoCr6UAdMNUevAzuuG" {
+	if apiKey != apiKeyString {
 		w.WriteHeader(403)
 		w.Write([]byte("403 Forbidden\n"))
 		return
@@ -55,7 +56,7 @@ func (a *apiAuth) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (a *apiKey) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	apiKey := r.Header.Get("X-Mitty-APIKEY")
-	if apiKey != "pdXQWU2EpNMFPoCr6UAdMNUevAzuuG" {
+	if apiKey != apiKeyString {
 		w.WriteHeader(403)
 		w.Write([]byte("403 Forbidden\n"))
 		return
