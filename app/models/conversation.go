@@ -15,7 +15,6 @@ type Conversation struct {
 	Speaking  string    `db:"speaking" json:"speaking"`
 	SpeakerID int64     `db:"speaker_id" json:"speakerId"`
 	SpeakTime time.Time `db:"speak_time" json:"speakTime"`
-	Type      string    `db:"type" json:"type"`
 	Latitude  float64   `db:"latitude" json:"latitude"`
 	Longitude float64   `db:"longitude" json:"longitude"`
 }
