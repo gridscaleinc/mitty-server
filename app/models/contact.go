@@ -30,10 +30,9 @@ func (s *Contact) Update(tx gorp.Transaction) error {
 
 // ExistContactFromIDs ...
 func ExistContactFromIDs(tx gorp.Transaction, mittyID int, nameCardID int64) (*Contact, error) {
-	contact := new(Contact)
-	err := tx.SelectOne(&contact, "select * from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID)
-	if err != nil {
+	contacts := []Contact{}
+	if _, err := tx.Select(&contacts, "select * from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID); err != nil {
 		return nil, err
 	}
-	return contact, nil
+	return &contacts[0], nil
 }
