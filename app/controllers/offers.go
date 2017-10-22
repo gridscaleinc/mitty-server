@@ -6,6 +6,7 @@ import (
 	// 	"fmt"
 	"errors"
 	"net/http"
+	"strings"
 	"time"
 
 	// 	goutils "github.com/dongri/goutils"
@@ -165,7 +166,7 @@ func AcceptOffersHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if offer.Type == "NAMECARD" && offer.ReplyStatus == "ACCEPTED" {
+	if strings.EqualFold(offer.Type, "NAMECARD") && strings.EqualFold(offer.ReplyStatus, "ACCEPTED") {
 		meetingID := int64(0)
 		existA, err := models.ExistContactFromIDs(*tx, offer.FromMittyID, offer.RepliedID)
 		if err != nil {

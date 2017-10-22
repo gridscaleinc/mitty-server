@@ -108,6 +108,7 @@ func publicRoutes(r *mux.Router) {
 	// C
 	r.Handle("/contact/list", apiAuth(controllers.GetContateeListHandler)).Methods("GET")
 	r.Handle("/contactee/namecards", apiAuth(controllers.GetContacteeNamecardsHandler)).Methods("GET")
+	r.Handle("/contact/meeting", apiAuth(controllers.GetContactMeeting)).Methods("GET")
 
 	// D
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
