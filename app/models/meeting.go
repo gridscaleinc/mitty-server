@@ -88,7 +88,7 @@ func GetContactMeetingList(tx *gorp.Transaction, userID int) ([]MeetingInfo, err
 	    namecard.name as title,
 	    COALESCE(users.icon, '') as logo_url
 	from
-	    meeting inner join contact on meeting.id=contact.id
+	    meeting inner join contact on meeting.id=contact.meeting_id
 			inner join namecard on namecard.id=contact.name_card_id
 			inner join users on users.id=namecard.mitty_id
 	where
