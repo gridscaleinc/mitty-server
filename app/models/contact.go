@@ -34,5 +34,8 @@ func ExistContactFromIDs(tx gorp.Transaction, mittyID int, nameCardID int64) (*C
 	if _, err := tx.Select(&contacts, "select * from contact where mitty_id = $1 and name_card_id = $2", mittyID, nameCardID); err != nil {
 		return nil, err
 	}
-	return &contacts[0], nil
+	if len(contacts) > 0 {
+		return &contacts[0], nil
+	}
+	return nil, nil
 }
