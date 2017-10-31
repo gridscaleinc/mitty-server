@@ -54,6 +54,7 @@ type Destination struct {
 	Longitude      float64   `db:"longitude" json:"longitude"`
 	IslandLogo     string    `db:"island_logo" json:"islandLogo"`
 	EventID        int       `db:"event_id" json:"eventId"`
+	EventLogo      string    `db:"event_logo" json:"eventLogo"`
 	EventTitle     string    `db:"event_title" json:"eventTitle"`
 	EventTime      time.Time `db:"event_time" json:"eventTime"`
 }
@@ -176,6 +177,7 @@ func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error)
       island.longitude,
       COALESCE(contents.link_url, '') as island_logo,
       events.id as event_id,
+			COALESCE(c2.link_url, '') as event_logo,
       events.title as event_title,
       events.start_datetime as event_time
   from island
@@ -183,6 +185,7 @@ func GetDestinationList(tx *gorp.Transaction, userID int) ([]Destination, error)
       inner join events on island.id=events.islandid
       inner join activity_item on activity_item.event_id=events.id
       inner join activity on activity.id=activity_item.activity_id
+			inner join contents c2 on events.logo_id=c2.id
   where activity.owner_id=$1
   order by events.start_datetime;
 		`, userID)
