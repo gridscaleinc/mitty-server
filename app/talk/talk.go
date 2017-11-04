@@ -28,6 +28,7 @@ type Message struct {
 	MessageType   string               `json:"messageType"`
 	Topic         string               `json:"topic"`
 	Command       string               `json:"command"`
+	Sender        Client               `json:"sender"`
 	Conversation  models.Conversation  `json:"conversation"`
 	Teleportation models.Teleportation `json:"teleportation"`
 }
@@ -35,6 +36,7 @@ type Message struct {
 // Client Websocket Client
 type Client struct {
 	UserID    int    `json:"userId"`
+	UserIcon  string `json:"userIcon"`
 	UserName  string `json:"userName"`
 	Connected bool   `json:"connected"`
 }
@@ -48,6 +50,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("401 Unauthorized\n"))
 		return
 	}
+
 	// Upgrade initial GET request to a websocket
 	ws, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -57,7 +60,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 	defer ws.Close()
 
 	// Register our new client
-	client := Client{UserID: user.ID, UserName: user.Name, Connected: true}
+	client := Client{UserID: user.ID, UserIcon: user.Icon, UserName: user.Name, Connected: true}
 
 	logrus.Printf("WebsocketHandler Start handling new client.")
 
@@ -79,6 +82,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 		} else if msg.Command == "talk" {
 			// Send the newly received message to the broadcast channel
 			msg.Conversation.SpeakerID = int64(client.UserID)
+			msg.Sender = client
 			pubsub.publish(msg)
 			tx, err := dbmap.Begin()
 			if err != nil {
@@ -93,6 +97,7 @@ func WebsocketHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		} else if msg.Command == "teleport" {
 			msg.Teleportation.MittyID = int(client.UserID)
+			msg.Sender = client
 			pubsub.publish(msg)
 		}
 	}
