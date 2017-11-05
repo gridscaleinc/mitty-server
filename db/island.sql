@@ -34,6 +34,9 @@ create table island (
     address3        varchar(100),
     latitude        float8,
     longitude       float8,
+    geohash_l8      int8,
+    geohash_l10     int8,
+    geohash_l12     int8,
     created    timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   	updated   timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
