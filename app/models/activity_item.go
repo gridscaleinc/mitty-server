@@ -55,3 +55,10 @@ func DeleteActivityItemByItemID(tx *gorp.Transaction, activityID int64, ID int64
 	_, err := tx.Exec("delete from activity_item where activity_id=$1 and ID=$2", activityID, ID)
 	return err
 }
+
+// DeleteActivityItemByEventID ...
+func DeleteActivityItemByEventID(tx *gorp.Transaction, eventID int64, uid int) error {
+	_, err := tx.Exec(`delete from activity_item where event_id=$1 and exists (select id from activity
+		where id=activity_item.activity_id and owner=$2)`, eventID, uid)
+	return err
+}

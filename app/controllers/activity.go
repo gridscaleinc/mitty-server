@@ -370,3 +370,39 @@ func DeleteActivityItemHandler(w http.ResponseWriter, r *http.Request) {
 		"ok": true,
 	})
 }
+
+// DeleteEventItemHandler ...
+func DeleteEventItemHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	eventID, err := strconv.ParseInt(r.URL.Query().Get("id"), 10, 64)
+
+	err = models.DeleteActivityItemByEventID(tx, eventID, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	err = models.UpdateActivityRemoveEventID(tx, eventID, currentUserID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"ok": true,
+	})
+}

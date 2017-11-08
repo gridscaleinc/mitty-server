@@ -21,6 +21,7 @@ import (
 
 // EventParams ...
 type EventParams struct {
+	ID                int64     `json:"id"`
 	Type              string    `json:"type"`
 	Tag               string    `json:"tag"`
 	Title             string    `json:"title"`
@@ -54,6 +55,10 @@ type EventParams struct {
 // FieldMap defines parameter requirements
 func (p *EventParams) FieldMap(r *http.Request) binding.FieldMap {
 	return binding.FieldMap{
+		&p.ID: binding.Field{
+			Form:     "id",
+			Required: false,
+		},
 		&p.Type: binding.Field{
 			Form:     "type",
 			Required: true,

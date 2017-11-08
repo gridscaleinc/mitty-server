@@ -199,3 +199,11 @@ func (s *Activity) Save(tx *gorp.Transaction) error {
 	}
 	return nil
 }
+
+// UpdateActivityRemoveEventID ...
+func UpdateActivityRemoveEventID(tx *gorp.Transaction, eventID int64, uid int) error {
+	if _, err := tx.Exec("Update Activity set main_event_id=0 where main_event_id=$1 and owner_id=$2", eventID, uid); err != nil {
+		return err
+	}
+	return nil
+}
