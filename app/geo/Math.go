@@ -88,6 +88,14 @@ func (q *QuadTree) divide() {
 	q.grid3.init(q.subID(q.id, 3), q.level+1, q.bound.southEast())
 }
 
+//merge ... reverse of divide
+func (q *QuadTree) merge() {
+	q.grid0 = nil
+	q.grid1 = nil
+	q.grid2 = nil
+	q.grid3 = nil
+}
+
 // EARTH ...
 var EARTH = QuadTree{
 	id:    0,

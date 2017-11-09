@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"mitty.co/mitty-server/app/filters"
+	"mitty.co/mitty-server/app/geo"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
 
@@ -331,6 +332,14 @@ func PostIslandHandler(w http.ResponseWriter, r *http.Request) {
 	island.Address3 = p.Address3
 	island.Latitude = p.Latitude
 	island.Longitude = p.Longitude
+
+	// if geo info set, calculate the geohashes.
+	if island.Latitude != 999 && island.Longitude != 999 {
+		island.GeohashLevel8 = geo.GenerateHashID(island.Latitude, island.Longitude, 8)
+		island.GeohashLevel10 = geo.GenerateHashID(island.Latitude, island.Longitude, 10)
+		island.GeohashLevel12 = geo.GenerateHashID(island.Latitude, island.Longitude, 12)
+	}
+
 	if err := island.Insert(*tx); err != nil {
 		filters.RenderError(w, r, err)
 		return

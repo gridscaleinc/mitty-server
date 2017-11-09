@@ -329,6 +329,11 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+//UpdateEventHandler ... イベント編集した後に更新する。
+func UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
 // SearchEventHandler ...
 func SearchEventHandler(w http.ResponseWriter, r *http.Request) {
 	render := filters.GetRenderer(r)
