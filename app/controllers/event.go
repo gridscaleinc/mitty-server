@@ -331,7 +331,82 @@ func PostEventHandler(w http.ResponseWriter, r *http.Request) {
 
 //UpdateEventHandler ... イベント編集した後に更新する。
 func UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	currentUserID := filters.GetCurrentUserID(r)
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+	p := new(EventParams)
+	if errs := binding.Bind(r, p); errs != nil {
+		filters.RenderInputErrors(w, r, errs)
+		return
+	}
 
+	if inputErr := p.Validate(r); inputErr != nil {
+		filters.RenderInputError(w, r, inputErr)
+		return
+	}
+
+	if p.ID == 0 {
+		filters.RenderError(w, r, errors.New("Event ID needed"))
+		return
+	}
+
+	e, err := models.GetEventByID(tx, p.ID)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	if e.PublisherID != currentUserID {
+		filters.RenderError(w, r, errors.New("Not owner"))
+		return
+	}
+
+	e.Type = p.Type
+	e.Tag = p.Tag
+	e.Title = p.Title
+	e.LogoID = p.LogoID
+	e.Action = p.Action
+	e.StartDatetime = p.StartDatetime
+	e.EndDatetime = p.EndDatetime
+	e.AlldayFlag = p.AlldayFlag
+	e.IslandID = p.IslandID
+	e.PriceName1 = p.PriceName1
+	e.Price1 = p.Price1
+	e.PriceName2 = p.PriceName2
+	e.Price2 = p.Price2
+	e.Currency = p.Currency
+	e.PriceInfo = p.PriceInfo
+	e.Description = p.Description
+	e.ContactTel = p.ContactTel
+	e.ContactFax = p.ContactFax
+	e.ContactMail = p.ContactMail
+	e.OfficialURL = p.OfficialURL
+	e.Organizer = p.Organizer
+	e.SourceName = p.SourceName
+	e.SourceURL = p.SourceURL
+	e.Participation = p.Participation
+	e.AccessControl = p.AccessControl
+	e.Language = p.Language
+
+	if err := e.Update(*tx); err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusCreated, map[string]interface{}{
+		"OK": true,
+	})
 }
 
 // SearchEventHandler ...
