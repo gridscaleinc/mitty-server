@@ -23,7 +23,7 @@ import (
 // GalleryContentParams ...
 type GalleryContentParams struct {
 	Gallery struct {
-		ID         int    `json:"id"`
+		ID         int64  `json:"id"`
 		Seq        int    `json:"seq"`
 		Caption    string `json:"caption"`
 		BriefInfo  string `json:"briefInfo"`
@@ -95,11 +95,22 @@ func PostGalleryContentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	gallery := new(models.Gallery)
-	gallery.Seq = p.Gallery.Seq
-	gallery.Caption = p.Gallery.Caption
-	gallery.BriefInfo = p.Gallery.BriefInfo
-	gallery.FreeText = p.Gallery.FreeText
-	gallery.ContentID = contents.ID
+
+	if p.Gallery.ID == 0 {
+		gallery.Seq = p.Gallery.Seq
+		gallery.Caption = p.Gallery.Caption
+		gallery.BriefInfo = p.Gallery.BriefInfo
+		gallery.FreeText = p.Gallery.FreeText
+		gallery.ContentID = contents.ID
+	} else {
+		gallery, err = models.GetGalleryByID(tx, p.Gallery.ID)
+		if err != nil {
+			filters.RenderError(w, r, err)
+			return
+		}
+		gallery.Seq = gallery.Seq + 1
+	}
+
 	if err = gallery.Insert(*tx); err != nil {
 		fmt.Println(err)
 		render.JSON(w, http.StatusInternalServerError, map[string]interface{}{

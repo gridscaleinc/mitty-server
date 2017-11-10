@@ -44,9 +44,9 @@ func (s *Gallery) Update(tx gorp.Transaction) error {
 }
 
 // GetGalleryByID ...
-func GetGalleryByID(tx *gorp.Transaction, ID int64) (*Gallery, error) {
+func GetGalleryByID(tx *gorp.Transaction, ID int) (*Gallery, error) {
 	gallery := new(Gallery)
-	if err := tx.SelectOne(&gallery, "select * from gallery where id = $1", ID); err != nil {
+	if err := tx.SelectOne(&gallery, "select * from gallery where id = $1 and seq=(select max(seq) from gallery where id = $1)", ID); err != nil {
 		return nil, err
 	}
 	return gallery, nil
