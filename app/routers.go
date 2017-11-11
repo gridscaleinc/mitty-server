@@ -119,6 +119,8 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
 
 	// F
+	r.Handle("/find/events/bygeohash", apiAuth(controllers.FindEventByGeoHashHandler)).Methods("GET")
+
 	// G
 	r.Handle("/gallery/contents", apiKey(controllers.GetGalleryContentsHandler)).Methods("GET")
 

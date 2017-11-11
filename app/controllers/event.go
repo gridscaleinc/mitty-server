@@ -8,11 +8,13 @@ import (
 	"net/http"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	elastic "gopkg.in/olivere/elastic.v5"
 
 	"mitty.co/mitty-server/app/filters"
+	"mitty.co/mitty-server/app/geo"
 	"mitty.co/mitty-server/app/helpers"
 	"mitty.co/mitty-server/app/models"
 
@@ -406,6 +408,57 @@ func UpdateEventHandler(w http.ResponseWriter, r *http.Request) {
 
 	render.JSON(w, http.StatusCreated, map[string]interface{}{
 		"OK": true,
+	})
+}
+
+// FindEventByGeoHashHandler ...
+func FindEventByGeoHashHandler(w http.ResponseWriter, r *http.Request) {
+	render := filters.GetRenderer(r)
+	dbmap := helpers.GetPostgres()
+	tx, err := dbmap.Begin()
+	if err != nil {
+		return
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+			return
+		}
+		err = tx.Commit()
+	}()
+
+	rangeFlage := r.URL.Query().Get("range")
+	latitude, err := strconv.ParseFloat(r.URL.Query().Get("latitude"), 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	longitude, err := strconv.ParseFloat(r.URL.Query().Get("longitude"), 64)
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	var events []models.EventDetail
+	if strings.Compare(rangeFlage, "near") == 0 {
+		geohash := geo.GenerateHashID(latitude, longitude, 12)
+		events, err = models.SearchByGeohashL12(tx, geohash)
+	} else if strings.Compare(rangeFlage, "middle") == 0 {
+		geohash := geo.GenerateHashID(latitude, longitude, 10)
+		events, err = models.SearchByGeohashL10(tx, geohash)
+	} else {
+		geohash := geo.GenerateHashID(latitude, longitude, 8)
+		events, err = models.SearchByGeohashL8(tx, geohash)
+	}
+
+	if err != nil {
+		filters.RenderError(w, r, err)
+		return
+	}
+
+	render.JSON(w, http.StatusOK, map[string]interface{}{
+		"events": events,
 	})
 }
 

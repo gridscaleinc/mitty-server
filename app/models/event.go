@@ -183,3 +183,87 @@ func CountOfTodaysEventByUserID(tx *gorp.Transaction, uid int) (int64, error) {
 	return count, err
 
 }
+
+// SearchByGeohashL8 ...
+func SearchByGeohashL8(tx *gorp.Transaction, geoHash int64) ([]EventDetail, error) {
+	events := []EventDetail{}
+	_, err := tx.Select(&events, `select
+		events.*,
+		COALESCE(c1.link_url, '') as cover_img_url,
+		COALESCE(c2.link_url, '') as event_logo_url,
+		island.name as island_name,
+		COALESCE(c3.link_url, '') as island_logo_url,
+		COALESCE(island.latitude, 999) as latitude,
+		COALESCE(island.longitude, 999) as longitude,
+		users.user_name as publisher_name,
+		users.icon as publisher_icon_url,
+		DATE 'now' - events.created as published_days,
+		'NA' as participation_status,
+		(select count(id) from likes where entity_type='EVENT' and entity_id=events.id) as num_of_likes
+		from events
+		left join gallery on events.gallery_id=gallery.id
+		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
+		left join contents as c2 on events.logo_id=c2.id
+		inner join island on island.id = events.islandid
+		left join contents as c3 on c3.id = island.logo_id
+		left join users on users.id = events.publisher_id
+		where access_control='public'
+		and islandId in (select id from island where geohash_l8=$1);`, geoHash)
+	return events, err
+}
+
+// SearchByGeohashL10 ...
+func SearchByGeohashL10(tx *gorp.Transaction, geoHash int64) ([]EventDetail, error) {
+	events := []EventDetail{}
+	_, err := tx.Select(&events, `select
+		events.*,
+		COALESCE(c1.link_url, '') as cover_img_url,
+		COALESCE(c2.link_url, '') as event_logo_url,
+		island.name as island_name,
+		COALESCE(c3.link_url, '') as island_logo_url,
+		COALESCE(island.latitude, 999) as latitude,
+		COALESCE(island.longitude, 999) as longitude,
+		users.user_name as publisher_name,
+		users.icon as publisher_icon_url,
+		DATE 'now' - events.created as published_days,
+		'NA' as participation_status,
+		(select count(id) from likes where entity_type='EVENT' and entity_id=events.id) as num_of_likes
+		from events
+		left join gallery on events.gallery_id=gallery.id
+		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
+		left join contents as c2 on events.logo_id=c2.id
+		inner join island on island.id = events.islandid
+		left join contents as c3 on c3.id = island.logo_id
+		left join users on users.id = events.publisher_id
+		where access_control='public'
+		and islandId in (select id from island where geohash_l10=$1);`, geoHash)
+	return events, err
+}
+
+// SearchByGeohashL12 ...
+func SearchByGeohashL12(tx *gorp.Transaction, geoHash int64) ([]EventDetail, error) {
+	events := []EventDetail{}
+	_, err := tx.Select(&events, `select
+		events.*,
+		COALESCE(c1.link_url, '') as cover_img_url,
+		COALESCE(c2.link_url, '') as event_logo_url,
+		island.name as island_name,
+		COALESCE(c3.link_url, '') as island_logo_url,
+		COALESCE(island.latitude, 999) as latitude,
+		COALESCE(island.longitude, 999) as longitude,
+		users.user_name as publisher_name,
+		users.icon as publisher_icon_url,
+		DATE 'now' - events.created as published_days,
+		'NA' as participation_status,
+		(select count(id) from likes where entity_type='EVENT' and entity_id=events.id) as num_of_likes
+		from events
+		left join gallery on events.gallery_id=gallery.id
+		left join contents as c1 on gallery.content_id=c1.id and gallery.seq=0
+		left join contents as c2 on events.logo_id=c2.id
+		inner join island on island.id = events.islandid
+		left join contents as c3 on c3.id = island.logo_id
+		left join users on users.id = events.publisher_id
+		where access_control='public'
+		and islandId in (select id from island where geohash_l12=$1);`, geoHash)
+	return events, err
+}
