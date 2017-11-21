@@ -115,7 +115,7 @@ func publicRoutes(r *mux.Router) {
 	r.Handle("/destination/list", apiAuth(controllers.GetDestinationListHandler)).Methods("GET")
 
 	// E
-	r.Handle("/event/of", apiAuth(controllers.EventFetchingHandler)).Methods("GET")
+	r.Handle("/event/of", apiKey(controllers.EventFetchingHandler)).Methods("GET")
 	r.Handle("/event/meeting", apiAuth(controllers.GetEventMeeting)).Methods("GET")
 
 	// F
