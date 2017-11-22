@@ -155,13 +155,13 @@ func publicRoutes(r *mux.Router) {
 
 	// S
 	r.Handle("/search/event", apiKey(controllers.SearchEventHandler)).Methods("GET")
-	r.Handle("/search/request", apiAuth(controllers.GetSearchRequestHandler)).Methods("GET")
+	r.Handle("/search/request", apiKey(controllers.GetSearchRequestHandler)).Methods("GET")
 	r.Handle("/social/mirror", apiAuth(controllers.GetSocialMirrorHandler)).Methods("GET")
 
 	// T
 	// U
 	r.Handle("/user/info", apiKey(controllers.GetUserInfo)).Methods("GET")
-	r.Handle("/user/profile", apiAuth(controllers.GetUserProfileHandler)).Methods("GET")
+	r.Handle("/user/profile", apiKey(controllers.GetUserProfileHandler)).Methods("GET")
 
 	// V
 	// W
